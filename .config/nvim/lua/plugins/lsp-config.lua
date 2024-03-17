@@ -124,7 +124,6 @@ return {
 			})
 
 
-			vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
 			vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 			vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 			vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
@@ -137,10 +136,37 @@ return {
 					-- Enable completion triggered by <c-x><c-o>
 					vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
+					vim.diagnostic.config({
+						virtual_text = true,
+						signs = true,
+						underline = true,
+						update_in_insert = false,
+						severity_sort = false,
+						float = {
+							focusable = false,
+							style = 'minimal',
+							border = 'rounded',
+							source = 'always',
+							header = '',
+							prefix = '',
+							wrap = true
+						},
+					})
+
+					vim.keymap.set('n', '<leader>e', function()
+						vim.diagnostic.open_float(nil, {
+							scope = 'cursor',
+							focusable = false,
+							close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
+						})
+					end, { desc = 'Show line diagnostics' })
+
+					-- Remap to press leader + . to show the code actions
+					vim.keymap.set('n', '<leader>.', vim.lsp.buf.code_action, { buffer = ev.buf })
+
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
 					local opts = { buffer = ev.buf }
-					vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
 					vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 					vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 					vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
@@ -153,6 +179,20 @@ return {
 					vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
 					vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
 					vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+
+					vim.keymap.set('n', 'gd', function()
+						require('telescope.builtin').lsp_definitions({
+							show_line = false,
+							trim_text = true,
+							layout_strategy = "horizontal",
+							layout_config = {
+								width = 0.6,
+								height = 0.8,
+								preview_cutoff = 1,
+								prompt_position = "top",
+							},
+						})
+					end, opts)
 
 					vim.keymap.set('n', 'gr', function()
 						require('telescope.builtin').lsp_references({

@@ -2,7 +2,6 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("n", "<leader>l", vim.cmd.Lazy)
 vim.keymap.set("n", "<Enter>", "o")
 vim.keymap.set("n", "<S-Enter>", "O")
-vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeFocus)
 vim.keymap.set('v', '<leader>y', '"+y')
 vim.keymap.set('n', '<leader>p', '"+p')
 
@@ -14,6 +13,8 @@ vim.keymap.set('n', '<leader>]', '<C-i>', { noremap = true })
 vim.keymap.set('n', '<leader>{', ':bprevious<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>}', ':bnext<CR>', { noremap = true })
 
+-- undo tree
+vim.keymap.set('n', '<leader>u', ':UndotreeToggle<CR>', { noremap = true })
 
 
 -- Add this to your init.lua file
