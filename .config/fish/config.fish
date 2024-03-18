@@ -52,6 +52,9 @@ alias swin="dp1"
 # Reccomended for NX
 alias pnx="pnpm nx"
 
+# LazyGit/Git
+alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/repo.git"
+
 starship init fish | source
 
 nvm use 20
