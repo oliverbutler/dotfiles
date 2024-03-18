@@ -12,6 +12,9 @@ return {
 					enable = true,
 					update_cwd = true,
 				},
+				view = {
+					width = 30,
+				},
 			}
 
 			vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { noremap = true })
