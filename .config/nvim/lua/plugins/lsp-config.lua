@@ -104,6 +104,16 @@ return {
 
 	},
 	{
+		"antosha417/nvim-lsp-file-operations",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-tree.lua",
+		},
+		config = function()
+			require("lsp-file-operations").setup()
+		end,
+	},
+	{
 		"neovim/nvim-lspconfig",
 		config = function()
 			local lspconfig = require("lspconfig")
@@ -153,7 +163,7 @@ return {
 						},
 					})
 
-					vim.keymap.set('n', '<leader>e', function()
+					vim.keymap.set('n', '<leader>o', function()
 						vim.diagnostic.open_float(nil, {
 							scope = 'cursor',
 							focusable = false,

@@ -38,7 +38,7 @@ end, { desc = "Quit Neovim with prompt to save changes" })
 
 local notify = require("notify")
 
-vim.keymap.set("n", "<leader>§", function()
+vim.keymap.set("n", "<leader>+", function()
 	local current_word = vim.fn.expand("<cword>")
 	local monorepo_root = vim.fn.getcwd()
 

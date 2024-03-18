@@ -5,6 +5,10 @@ vim.g.loaded_netrwPlugin = 1
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
+-- set numbers by defaults
+vim.opt.number = true
+
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
