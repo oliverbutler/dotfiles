@@ -14,7 +14,7 @@ return {
 
 		'hrsh7th/nvim-cmp',
 		config = function()
-			local cmp = require'cmp'
+			local cmp = require('cmp')
 
 			require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -22,7 +22,47 @@ return {
 			cmp.setup({
 				snippet = {
 					expand = function(args)
-						require('luasnip').lsp_expand(args.body)
+
+
+						local ls = require('luasnip')
+
+						ls.lsp_expand(args.body)
+
+						local s = ls.snippet
+						local i = ls.insert_node
+						local f = ls.function_node
+						local fmt = require("luasnip.extras.fmt").fmt
+
+						-- Function to convert file name to PascalCase
+						local function to_pascal_case(file_name)
+							local parts = vim.split(file_name, "[-.]")
+							local pascal_case_parts = {}
+
+							for _, part in ipairs(parts) do
+								if part ~= "ts" then
+									table.insert(pascal_case_parts, vim.fn.substitute(part, "^.", string.upper, ""))
+								end
+							end
+
+							return table.concat(pascal_case_parts, "")
+						end
+
+
+						ls.add_snippets("typescript", {
+							s("exportclass", fmt(
+							[[
+							export class {} {{
+								constructor() {{}}
+							}}
+							]],
+							{
+								f(function(_, snip)
+									return to_pascal_case(vim.fn.expand("%:t"))
+								end, {}),
+							}
+							)),
+						})
+
 					end,
 				},
 				window = {
