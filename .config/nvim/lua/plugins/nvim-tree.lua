@@ -13,7 +13,7 @@ return {
 					update_cwd = true,
 				},
 				view = {
-					width = 30,
+					width = 60,
 				},
 			}
 
