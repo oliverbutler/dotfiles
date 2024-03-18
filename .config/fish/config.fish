@@ -1,4 +1,5 @@
 # ~/.config/fish/config.fish
+set XDG_CONFIG_HOME $HOME/.config
 
 set PATH /opt/homebrew/bin $PATH
 set PATH /Users/olly/go/bin $PATH
@@ -21,10 +22,10 @@ alias fishr="source ~/.config/fish/config.fish"
 
 alias wakeomega="wakeonlan -i 255.255.255.255 -p 7 d8:bb:c1:9a:de:d1"
 alias sleepomega="ssh omega 'date && winsleep'"
-alias ll="exa -l --icons"
-alias llo="ll --octal-permissions"
-alias ls="exa --icons"
-alias tree="exa --tree --level=2 -a"
+# alias ll="exa -l --icons"
+# alias llo="ll --octal-permissions"
+# alias ls="exa --icons"
+# alias tree="exa --tree --level=2 -a"
 alias n="nnn"
 alias nf="neofetch"
 alias nano="nvim"
