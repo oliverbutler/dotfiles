@@ -37,6 +37,10 @@ alias c="clear"
 alias confish="vim ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
 
+# Git
+git config --global pull.rebase true
+git config --global rebase.autoStash true
+
 alias gpnv="git push --no-verify"
 alias gpsu="git push --set-upstream origin HEAD"
 alias gpsunv="git push --set-upstream origin HEAD --no-verify"
