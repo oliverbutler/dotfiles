@@ -3,19 +3,32 @@ return {
 	{
 		'nvim-telescope/telescope.nvim',
 		tag = '0.1.6',
-		dependencies = { 'nvim-lua/plenary.nvim' },
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			{
+				'nvim-telescope/telescope-fzf-native.nvim',
+				-- When i stole this from kickstar this was a thing it had
+				build = 'make',
+				cond = function()
+					return vim.fn.executable 'make' == 1
+				end,
+			}, {
+				"nvim-telescope/telescope-ui-select.nvim"
+			},
+			{
+				'nvim-tree/nvim-web-devicons',
+				enabled = vim.g.have_nerd_font
+			},
+		},
 		config = function()
 			local builtin = require('telescope.builtin')
-			vim.keymap.set('n', '<leader> ', builtin.find_files, {})
-
-			vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-			vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-			vim.keymap.set('n', '<leader>ft', builtin.treesitter, {})
-			vim.keymap.set('n', '<leader>fw', builtin.lsp_workspace_symbols, {})
-			vim.keymap.set('n', '<leader>fr', builtin.oldfiles, {})
-
 
 			require('telescope').setup {
+				extensions = {
+					['ui-select'] = {
+						require("telescope.themes").get_dropdown()
+					}
+				},
 				defaults = {
 					vimgrep_arguments = {
 						'rg',
@@ -57,12 +70,43 @@ return {
 				},
 			}
 
+			pcall(require('telescope').load_extension, 'fzf')
+			pcall(require('telescope').load_extension, 'ui-select')
+
+
+
+			vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = "[S]search [H]elp" })
+			vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = "[S]search [K]eymaps" })
+			vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = "[S]search [F]iles" })
+			vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = "[S]search [S]trings" })
+			vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = "[S]search [B]uffers" })
+			vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = "[S]search [W]ord" })
+			vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = "[S]search [G]rep" })
+			vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = "[S]search [R]esume" })
+			vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+			vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = "[ ] Find existing buffers" })
+
+			-- Visual mode when <leader>sw search for selected text
+			vim.keymap.set('v', '<leader>sw', function()
+				local selected_text = vim.fn.getreg '"'
+				if selected_text and #selected_text > 0 then
+					builtin.grep_string { search = selected_text }
+				else
+					builtin.grep_string()
+				end
+			end, { desc = "[S]search [W]ord" })
+
+
+			-- Slightly advanced e.ample of overriding default behavior and theme
+			vim.keymap.set('n', '<leader>/', function()
+				-- You can pass additional configuration to Telescope to change the theme, layout, etc.
+				builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+					winblend = 10,
+					previewer = false,
+				})
+			end, { desc = '[/] Fuzzily search in current buffer' })
+
+
 		end
 	},
-	{
-		"nvim-telescope/telescope-ui-select.nvim",
-		config = function()
-			require("telescope").load_extension("ui-select")
-		end
-	}
 }

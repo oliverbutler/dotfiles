@@ -5,7 +5,8 @@ return {
 		"antoinemadec/FixCursorHold.nvim",
 		"marilari88/neotest-vitest",
 		"nvim-treesitter/nvim-treesitter",
-		"nvim-neotest/neotest-jest"
+		"nvim-neotest/neotest-jest",
+		"nvim-neotest/nvim-nio"
 	},
 	config = function()
 		require("neotest").setup({
