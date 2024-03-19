@@ -16,6 +16,11 @@ return {
 			local cmp = require('cmp')
 			require("luasnip.loaders.from_vscode").lazy_load()
 
+
+			-- Open up complete menu to prompt for imports
+			vim.api.nvim_set_keymap('i', '<C-x>', '<Cmd>lua require("cmp").complete()<CR>', { noremap = true, silent = true })
+
+
 			local function to_pascal_case(file_name)
 				local parts = vim.split(file_name, "[-.]")
 				local pascal_case_parts = {}
@@ -37,6 +42,8 @@ return {
 			local i = ls.insert_node
 			local t = ls.text_node
 			local fmt = require("luasnip.extras.fmt").fmt
+			local rep = require("luasnip.extras").rep
+
 
 			ls.add_snippets("typescript", {
 				s("inject", fmt(
@@ -58,8 +65,7 @@ return {
 
 
 			ls.add_snippets("typescript", {
-				s("controller", fmt(
-				[[
+				s("controller", fmt([[
 				import {{ Controller }} from '@nestjs/common';
 				import {{TsRestHandler, tsRestHandler}} from "@ts-rest/nest";
 
@@ -69,22 +75,22 @@ return {
 
 					@TsRestHandler({})
 					async handler() {{
-						return tsRestHandler({}, () => {{
-							{}
+						return tsRestHandler({}, {{
+
 						}})
 					}}
 				}}
 				]],
 				{
 					f(function(_, snip)
-						return to_pascal_case(vim.fn.expand("%:t"))
+						return to_pascal_case(vim.fn.expand("%:t:r"))
 					end, {}),
-					i(1, "contract"),
-					t("{1}"),
-					i(0),
+					i(1, "contract"), -- First insertion, user types here
+					rep(1), -- Repeat the value entered in the first insertion
 				}
 				)),
 			})
+
 
 
 			cmp.setup({
