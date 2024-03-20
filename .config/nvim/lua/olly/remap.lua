@@ -11,6 +11,8 @@ vim.keymap.set("n", "<leader>}", ":bnext<CR>", { noremap = true })
 -- undo tree
 vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", { noremap = true })
 
+vim.keymap.set("n", "<leader>gn", ":Neogit<CR>")
+
 -- Add this to your init.lua file
 vim.keymap.set("n", "<leader>q", function()
 	local bufnr = vim.api.nvim_get_current_buf()

@@ -22,8 +22,6 @@ return {
 		},
 		config = function ()
 			require("neogit").setup()
-
-			vim.keymap.set("n", "<leader>gn", ":Neogit<CR>")
 		end
 	},
 
