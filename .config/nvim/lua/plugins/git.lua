@@ -1,6 +1,7 @@
 return {
 	{
 		"lewis6991/gitsigns.nvim",
+		event = "BufReadPre", -- Loads on buffer read, but you can adjust based on your use-case
 		config = function ()
 			require("gitsigns").setup()
 			vim.keymap.set("n", "<leader>gt", ":Gitsigns toggle_current_line_blame<CR>")
@@ -9,9 +10,11 @@ return {
 	},
 	{
 		"tpope/vim-fugitive",
+		cmd = {"G", "Git"},
 	},
 	{
 		"NeogitOrg/neogit",
+		cmd = "Neogit", -- Load when the Neogit command is executed
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"sindrets/diffview.nvim",
@@ -26,6 +29,7 @@ return {
 
 	{
 		"sindrets/diffview.nvim",
+		event = "BufReadPre",
 		config = function()
 			require("diffview").setup({})
 

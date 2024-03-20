@@ -2,56 +2,64 @@ return {
 	{
 		"nvimtools/none-ls.nvim",
 		event = "VeryLazy",
-		config = function ()
+		config = function()
 			local null_ls = require("null-ls")
-			local augroup =  vim.api.nvim_create_augroup("LspFormatting", {})
+			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 			null_ls.setup({
 				sources = {
-					null_ls.builtins.formatting.prettierd
+					null_ls.builtins.formatting.prettierd,
+					null_ls.builtins.formatting.stylua,
 				},
-				on_attach  = function (client, bufnr)
+				on_attach = function(client, bufnr)
 					if client.supports_method("textDocument/formatting") then
+						local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 						vim.api.nvim_clear_autocmds({
 							group = augroup,
-							buffer = bufnr
+							buffer = bufnr,
 						})
-						vim.api.nvim_create_autocmd("BufWritePre",  {
+						vim.api.nvim_create_autocmd("BufWritePre", {
 							group = augroup,
 							buffer = bufnr,
-							callback = function ()
+							callback = function()
+								-- Use vim.lsp.buf.format or vim.lsp.buf.formatting() depending on your Neovim version
 								vim.lsp.buf.format({ bufnr = bufnr })
-							end
+							end,
 						})
 					end
-				end
+				end,
 			})
-
-		end
+		end,
 	},
 	{
 		"williamboman/mason.nvim",
 		config = function()
-			require("mason").setup({
-			})
-		end
+			require("mason").setup({})
+		end,
 	},
 	{
 		"williamboman/mason-lspconfig.nvim",
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed =  { "lua_ls", "tsserver", 'tailwindcss', "eslint", "prettierd" }
+				ensure_installed = {
+					"lua_ls",
+					"tsserver",
+					"tailwindcss",
+					"eslint",
+					"prettierd",
+					"stylua",
+				},
 			})
-		end
+		end,
 	},
 	{
 
 		"pmizio/typescript-tools.nvim",
 		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-		config  = function ()
-			require("typescript-tools").setup {
-				on_attach = function()  end,
-				handlers = {  },
+		config = function()
+			require("typescript-tools").setup({
+				on_attach = function() end,
+				handlers = {},
 				root_dir = function()
 					return vim.fn.getcwd()
 				end,
@@ -96,12 +104,10 @@ return {
 					jsx_close_tag = {
 						enable = false,
 						filetypes = { "javascriptreact", "typescriptreact" },
-					}
+					},
 				},
-			}
-		end
-
-
+			})
+		end,
 	},
 	{
 		"antosha417/nvim-lsp-file-operations",
@@ -114,9 +120,9 @@ return {
 		end,
 	},
 	{
-		'windwp/nvim-autopairs',
+		"windwp/nvim-autopairs",
 		event = "InsertEnter",
-		config = true
+		config = true,
 		-- use opts = {} for passing setup options
 		-- this is equalent to setup({}) function
 	},
@@ -125,33 +131,30 @@ return {
 		config = function()
 			local lspconfig = require("lspconfig")
 
-			local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			lspconfig.lua_ls.setup({
-				capabilities = capabilities
+				capabilities = capabilities,
 			})
 
 			lspconfig.tailwindcss.setup({
-				capabilities = capabilities
+				capabilities = capabilities,
 			})
 
 			lspconfig.eslint.setup({
-				capabilities = capabilities
+				capabilities = capabilities,
 			})
 
-
-			vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-			vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-			vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
+			vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
 			-- Use LspAttach autocommand to only map the following keys
 			-- after the language server attaches to the current buffer
-			vim.api.nvim_create_autocmd('LspAttach', {
-				group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
 					-- Enable completion triggered by <c-x><c-o>
-					vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+					vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
 					vim.diagnostic.config({
 						virtual_text = true,
@@ -161,44 +164,63 @@ return {
 						severity_sort = false,
 						float = {
 							focusable = false,
-							style = 'minimal',
-							border = 'rounded',
-							source = 'always',
-							header = '',
-							prefix = '',
-							wrap = true
+							style = "minimal",
+							border = "rounded",
+							source = "always",
+							header = "",
+							prefix = "",
+							wrap = true,
 						},
 					})
 
-					vim.keymap.set('n', '<leader>o', function()
+					vim.keymap.set("n", "<leader>o", function()
 						vim.diagnostic.open_float(nil, {
-							scope = 'cursor',
+							scope = "cursor",
 							focusable = false,
-							close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
+							close_events = {
+								"BufLeave",
+								"CursorMoved",
+								"InsertEnter",
+								"FocusLost",
+							},
 						})
-					end, { desc = 'Show line diagnostics' })
+					end, { desc = "Show line diagnostics" })
 
 					-- Remap to press leader + . to show the code actions
-					vim.keymap.set('n', '<leader>.', vim.lsp.buf.code_action, { buffer = ev.buf })
+					vim.keymap.set(
+						"n",
+						"<leader>.",
+						vim.lsp.buf.code_action,
+						{ buffer = ev.buf }
+					)
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
 					local opts = { buffer = ev.buf }
-					vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-					vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-					vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-					vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-					vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-					vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-					vim.keymap.set('n', '<space>wl', function()
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+					vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+					vim.keymap.set(
+						"n",
+						"<space>wa",
+						vim.lsp.buf.add_workspace_folder,
+						opts
+					)
+					vim.keymap.set(
+						"n",
+						"<space>wr",
+						vim.lsp.buf.remove_workspace_folder,
+						opts
+					)
+					vim.keymap.set("n", "<space>wl", function()
 						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 					end, opts)
-					vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-					vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-					vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+					vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
+					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
 
-					vim.keymap.set('n', 'gd', function()
-						require('telescope.builtin').lsp_definitions({
+					vim.keymap.set("n", "gd", function()
+						require("telescope.builtin").lsp_definitions({
 							show_line = false,
 							trim_text = true,
 							layout_strategy = "horizontal",
@@ -211,8 +233,8 @@ return {
 						})
 					end, opts)
 
-					vim.keymap.set('n', 'gr', function()
-						require('telescope.builtin').lsp_references({
+					vim.keymap.set("n", "gr", function()
+						require("telescope.builtin").lsp_references({
 							show_line = false,
 							trim_text = true,
 							include_declaration = false,
@@ -226,16 +248,11 @@ return {
 						})
 					end, opts)
 
-					vim.keymap.set('n', '<space>f', function()
-
-						vim.lsp.buf.format { async = true }
+					vim.keymap.set("n", "<leader>s", function()
+						vim.cmd("w")
 					end, opts)
 				end,
 			})
-
-			vim.keymap.set("n", 'K', vim.lsp.buf.hover, {})
-		end
-	}
+		end,
+	},
 }
-
-
