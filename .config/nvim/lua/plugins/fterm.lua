@@ -1,32 +1,44 @@
 return {
-  "numToStr/FTerm.nvim",
-  config = function ()
-    require("FTerm").setup({
-      dimensions = {
-        height = 0.8,
-        width = 0.8,
-      },
-      border = "single",
-    })
+	"numToStr/FTerm.nvim",
+	config = function()
+		local fterm = require("FTerm")
 
-    vim.keymap.set("n", "<leader>tt", function ()
-      require("FTerm").toggle()
-    end, { noremap = true, silent = true, desc = "Toggle [T]erm" })
+		fterm.setup({
+			dimensions = {
+				height = 0.8,
+				width = 0.8,
+			},
+			border = "single",
+		})
 
-    local fterm = require("FTerm")
+		vim.keymap.set("n", "<leader>tt", function()
+			require("FTerm").toggle()
+		end, { noremap = true, silent = true, desc = "Toggle [T]erm" })
 
-    fterm:new({
-      ft = "lazygit",
-      cmd = "lazygit",
-      dimensions = {
-        height = 0.8,
-        width = 0.8,
-      },
-      border = "single",
-    })
+		local lazygitui = fterm:new({
+			cmd = "lazygit",
+			dimensions = {
+				height = 0.9,
+				width = 0.9,
+			},
+			border = "single",
+		})
 
-    vim.keymap.set("n", "<leader>gl", function ()
-      fterm:toggle()
-    end)
-  end
+		vim.keymap.set("n", "<leader>gl", function()
+			lazygitui:toggle()
+		end)
+
+		local lazy_home_git_ui = fterm:new({
+			cmd = "yal",
+			dimensions = {
+				height = 0.9,
+				width = 0.9,
+			},
+			border = "single",
+		})
+
+		vim.keymap.set("n", "<leader>g;", function()
+			lazy_home_git_ui:toggle()
+		end)
+	end,
 }
