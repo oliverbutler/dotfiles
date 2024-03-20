@@ -13,7 +13,7 @@ return {
 			adapters = {
 				--			require("neotest-vitest"),
 				require('neotest-jest')({
-					jestCommand = "pnpm jest",
+					jestCommand = "pnpm jest --ci --runInBand",
 					env = { CI = true },
 					jestConfigFile = function(path)
 						local file = vim.fn.expand('%:p')
