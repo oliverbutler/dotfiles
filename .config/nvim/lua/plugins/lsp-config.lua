@@ -145,8 +145,20 @@ return {
 				capabilities = capabilities,
 			})
 
-			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-			vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
+			vim.filetype.add({
+				extension = {
+					mdx = 'mdx'
+				}
+			})
+
+
+			local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
+			ft_to_parser.mdx = "markdown"
+
+
+			vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+			vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+			vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
 
 			-- Use LspAttach autocommand to only map the following keys
 			-- after the language server attaches to the current buffer

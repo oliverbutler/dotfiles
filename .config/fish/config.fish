@@ -62,6 +62,7 @@ alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/
 
 starship init fish | source
 
+nvm use 18.17
 nvm use
 
 # pnpm
