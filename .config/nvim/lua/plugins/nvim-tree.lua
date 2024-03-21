@@ -1,11 +1,12 @@
 return {
 	{
 		"nvim-tree/nvim-tree.lua",
-		event = "VimEnter",
 		version = "*",
 		dependencies = {
 			"nvim-tree/nvim-web-devicons",
 		},
+		keys = { "<leader>e", "<leader>E" }, -- Example key bindings to trigger loading
+		cmd = { "NvimTreeToggle", "NvimTreeFocus" }, -- These commands will trigger the lazy loading
 		config = function()
 			require("nvim-tree").setup({
 				update_cwd = true,

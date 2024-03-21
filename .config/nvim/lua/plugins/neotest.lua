@@ -8,6 +8,10 @@ return {
 		"nvim-neotest/neotest-jest",
 		"nvim-neotest/nvim-nio",
 	},
+	-- Specifies when to load neotest
+	keys = { "<leader>tr", "<leader>ts", "<leader>tl" }, -- Example key bindings to trigger loading
+	module = "neotest", -- Load when the neotest module is required
+	cmd = { "TestFile", "TestNearest", "TestSuite", "TestLast", "TestVisit" }, -- Load for neotest commands
 	config = function()
 		require("neotest").setup({
 			adapters = {
