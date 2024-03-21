@@ -98,7 +98,7 @@ return {
 			-- vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = "[S]search [F]iles" })
 			vim.keymap.set(
 				"n",
-				"<leader>ss",
+				"<leader>;",
 				builtin.find_files,
 				{ desc = "[S]search Files" }
 			)
@@ -116,7 +116,7 @@ return {
 			)
 			vim.keymap.set(
 				"n",
-				"<leader>sg",
+				"<leader>'",
 				builtin.live_grep,
 				{ desc = "[S]search [G]rep" }
 			)
@@ -128,7 +128,7 @@ return {
 			)
 			vim.keymap.set(
 				"n",
-				"<leader>s.",
+				"<leader>.",
 				builtin.oldfiles,
 				{ desc = '[S]earch Recent Files ("." for repeat)' }
 			)
