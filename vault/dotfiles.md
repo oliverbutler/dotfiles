@@ -1,7 +1,7 @@
 ---
 id: dotfiles
-aliases: []
-tags: []
+aliases: 
+tags:
 ---
 
 # Dotfiles

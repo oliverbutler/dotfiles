@@ -5,7 +5,7 @@ return {
 		require("lualine").setup({
 			theme = "catppuccin",
 			sections = {
-				lualine_a = { "mode" },
+				lualine_a = { "mode", "grapple" },
 				lualine_b = { "branch", "diff", "diagnostics" },
 				lualine_c = { { "filename", path = 1 } },
 				lualine_x = { "encoding", "fileformat", "filetype" },
