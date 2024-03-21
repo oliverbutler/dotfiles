@@ -23,14 +23,14 @@ vim.keymap.set("n", "<leader>q", function()
 			prompt = "You have unsaved changes. Save before quitting? (y/n) ",
 		}, function(input)
 			if input == "y" then
-				vim.cmd("write")
-				vim.cmd("quit")
+				vim.cmd("wa")
+				vim.cmd("qa!")
 			elseif input == "n" or input == "N" then
-				vim.cmd("quit!")
+				vim.cmd("qa!")
 			end
 		end)
 	else
-		vim.cmd("quit")
+		vim.cmd("qa!")
 	end
 end, { desc = "Quit Neovim with prompt to save changes" })
 

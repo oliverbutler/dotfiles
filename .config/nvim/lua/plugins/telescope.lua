@@ -17,6 +17,9 @@ return {
 				"nvim-telescope/telescope-ui-select.nvim",
 			},
 			{
+				"nvim-telescope/telescope-project.nvim",
+			},
+			{
 				"nvim-tree/nvim-web-devicons",
 				enabled = vim.g.have_nerd_font,
 			},
@@ -29,6 +32,7 @@ return {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
 					},
+					"project",
 				},
 				defaults = {
 					vimgrep_arguments = {
@@ -82,6 +86,8 @@ return {
 
 			pcall(require("telescope").load_extension, "fzf")
 			pcall(require("telescope").load_extension, "ui-select")
+
+			require("telescope").load_extension("project")
 
 			vim.keymap.set(
 				"n",

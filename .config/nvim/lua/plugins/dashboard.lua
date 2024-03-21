@@ -1,40 +1,67 @@
-return  {
-	'nvimdev/dashboard-nvim',
-	event = 'VimEnter',
+return {
+	"nvimdev/dashboard-nvim",
+	event = "VimEnter",
 	config = function()
-		local db = require('dashboard')
+		local db = require("dashboard")
+
+		function open_dot_files()
+			vim.cmd("e ~/.config/nvim")
+
+			vim.cmd("Telescope find_files")
+		end
+
+		function open_vault()
+			vim.cmd("e ~/vault")
+
+			vim.cmd("Telescope find_files")
+		end
 
 		db.setup({
-			theme = 'hyper',
-			shortcut_type = 'number',
+			theme = "doom",
+			shortcut_type = "number",
 			config = {
 				week_header = {
 					enable = true,
 				},
-				shortcut = {
-					{ desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
+				center = {
 					{
-						icon = ' ',
-						icon_hl = '@variable',
-						desc = 'Files',
-						group = 'Label',
-						action = 'Telescope find_files',
-						key = 'f',
+						desc = vim.fn.getcwd(),
 					},
 					{
-						desc = ' Apps',
-						group = 'DiagnosticHint',
-						action = 'Telescope app',
-						key = 'a',
+						icon = "📂 ",
+						icon_hl = "Title",
+						desc = "Projects",
+						desc_hl = "String",
+						key = "p",
+						key_hl = "Number",
+						key_format = " %s",
+						action = "lua require('telescope').extensions.project.project{}",
 					},
 					{
-						desc = ' dotfiles',
-						group = 'Number',
-						action = 'Telescope dotfiles',
-						key = 'd',
+						icon = "📦 ",
+						icon_hl = "Title",
+						desc = "Open Dot Files",
+						desc_hl = "String",
+						key = "b",
+						key_hl = "Number",
+						key_format = " %s",
+						action = "lua open_dot_files()",
+					},
+					{
+						icon = "🔒 ",
+						icon_hl = "Title",
+						desc = "Open Vault",
+						desc_hl = "String",
+						key = "v",
+						key_hl = "Number",
+						key_format = " %s",
+						action = "lua open_vault()",
 					},
 				},
 			},
+			footer = {
+				"hi",
+			},
 		})
-	end
+	end,
 }
