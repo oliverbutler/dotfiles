@@ -9,6 +9,7 @@ set PATH /Users/olly/flutter/bin $PATH
 set PATH /Users/olly/Library/Application\ Support/JetBrains/Toolbox/scripts $PATH
 set PATH /usr/local/bin $PATH
 set PATH /Users/olly/projects/oimage $PATH
+set PATH ~/.pub-cache/bin $PATH
 
 set -x nvm_default_version 14
 
