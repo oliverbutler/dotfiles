@@ -19,7 +19,7 @@ vim.keymap.set("n", "<leader>co", ":ChatGPT<CR>")
 vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
 
 -- Add this to your init.lua file
-vim.keymap.set("n", "<leader>q", function()
+vim.keymap.set("n", "<leader>-", function()
   local bufnr = vim.api.nvim_get_current_buf()
   local modified = vim.api.nvim_buf_get_option(bufnr, "modified")
   if modified then

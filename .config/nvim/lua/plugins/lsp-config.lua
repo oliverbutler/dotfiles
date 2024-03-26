@@ -151,7 +151,11 @@ return {
         capabilities = capabilities,
         cmd = { "gopls" },
         filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_dir = lspconfig.util.root_pattern("go.mod", ".git", "go.work"),
+        -- root_dir = lspconfig.util.root_pattern("go.mod", ".git", "go.work"),
+        -- FIXME: had issues with it starting in single file modes
+        root_dir = function(fname)
+          return lspconfig.util.root_pattern("go.mod", ".git", "go.work")(fname) or vim.fn.getcwd()
+        end,
         settings = {
           gopls = {
             completeUnimported = true,
