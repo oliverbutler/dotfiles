@@ -41,6 +41,9 @@ alias sourcefish="source ~/.config/fish/config.fish"
 # Git
 git config --global pull.rebase true
 git config --global rebase.autoStash true
+git config --global push.autoSetupRemote true
+git config --global user.name "Oliver Butler"
+git config --global user.email dev@oliverbutler.uk
 
 alias gpnv="git push --no-verify"
 alias gpsu="git push --set-upstream origin HEAD"
@@ -56,7 +59,7 @@ alias smac="dp2"
 alias swin="dp1"
 
 # Reccomended for NX
-alias pnx="pnpm nx"
+alias nx="pnpm nx"
 
 # LazyGit/Git
 alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/repo.git"

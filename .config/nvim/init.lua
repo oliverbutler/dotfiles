@@ -63,7 +63,7 @@ vim.opt.hlsearch = true
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- set conceallevel to 1
-vim.opt.conceallevel = 1
+vim.opt.conceallevel = 0
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then

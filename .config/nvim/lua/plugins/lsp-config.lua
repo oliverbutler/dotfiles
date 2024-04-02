@@ -44,14 +44,23 @@ return {
           "lua_ls",
           "tsserver",
           "tailwindcss",
-          "eslint",
-          "prettierd",
-          "stylua",
           "gopls",
-          "sql-formatter",
         },
       })
     end,
+  },
+  {
+    "jay-babu/mason-null-ls.nvim",
+    config = function()
+      require("mason-null-ls").setup({
+        ensure_installed = {
+          "eslint",
+          "prettierd",
+          "stylua",
+          "sql-formatter",
+        }
+      })
+    end
   },
   {
 
@@ -66,7 +75,7 @@ return {
         end,
         settings = {
           -- spawn additional tsserver instance to calculate diagnostics on it
-          separate_diagnostic_server = true,
+          separate_diagnostic_server = false, -- testing
           -- "change"|"insert_leave" determine when the client asks the server about diagnostic
           publish_diagnostic_on = "insert_leave",
           -- array of strings("fix_all"|"add_missing_imports"|"remove_unused"|
