@@ -95,7 +95,7 @@ return {
         if not status_ok then
           vim.notify("Failed to open diff for SHA: " .. word .. "\nError: " .. err, vim.log.levels.ERROR)
         end
-      end, { noremap = true, silent = false })
+      end, { noremap = true, silent = false, desc = "[G]it [P]review under cursor" })
     end,
   },
 }

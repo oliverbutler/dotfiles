@@ -13,18 +13,17 @@ return {
 				"rafamadriz/friendly-snippets",
 			},
 		},
+		{
+			"onsails/lspkind-nvim",
+		},
 	},
 	config = function()
 		local cmp = require("cmp")
 		require("luasnip.loaders.from_vscode").lazy_load()
 
 		-- Open up complete menu to prompt for imports
-		vim.api.nvim_set_keymap(
-			"i",
-			"<C-x>",
-			'<Cmd>lua require("cmp").complete()<CR>',
-			{ noremap = true, silent = true }
-		)
+		vim.api.nvim_set_keymap("i", "<C-x>", '<Cmd>lua require("cmp").complete()<CR>',
+			{ noremap = true, silent = true })
 
 		local function to_pascal_case(file_name)
 			local parts = vim.split(file_name, "[-.]")
@@ -109,8 +108,23 @@ return {
 				end,
 			},
 			window = {
-				-- completion = cmp.config.window.bordered(),
-				-- documentation = cmp.config.window.bordered(),
+				completion = {
+					winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+					col_offset = -3,
+					side_padding = 0,
+				},
+			},
+			formatting = {
+				fields = { "kind", "abbr", "menu" },
+				format = function(entry, vim_item)
+					local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(
+					entry, vim_item)
+					local strings = vim.split(kind.kind, "%s", { trimempty = true })
+					kind.kind = " " .. (strings[1] or "") .. " "
+					kind.menu = "    (" .. (strings[2] or "") .. ")"
+
+					return kind
+				end,
 			},
 			mapping = cmp.mapping.preset.insert({
 				["<C-b>"] = cmp.mapping.scroll_docs(-4),
