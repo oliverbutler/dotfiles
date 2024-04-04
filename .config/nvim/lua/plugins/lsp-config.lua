@@ -45,6 +45,7 @@ return {
           "tsserver",
           "tailwindcss",
           "gopls",
+          "terraformls",
         },
       })
     end,
@@ -58,9 +59,9 @@ return {
           "prettierd",
           "stylua",
           "sql-formatter",
-        }
+        },
       })
-    end
+    end,
   },
   {
 
@@ -153,6 +154,10 @@ return {
       })
 
       lspconfig.eslint.setup({
+        capabilities = capabilities,
+      })
+
+      lspconfig.terraformls.setup({
         capabilities = capabilities,
       })
 
