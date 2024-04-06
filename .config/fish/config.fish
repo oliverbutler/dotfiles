@@ -10,6 +10,7 @@ set PATH /Users/olly/Library/Application\ Support/JetBrains/Toolbox/scripts $PAT
 set PATH /usr/local/bin $PATH
 set PATH /Users/olly/projects/oimage $PATH
 set PATH ~/.pub-cache/bin $PATH
+set PATH ~/.local/share/bob/nvim-bin $PATH
 
 set -x nvm_default_version 14
 

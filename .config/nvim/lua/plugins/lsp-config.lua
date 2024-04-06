@@ -69,6 +69,17 @@ return {
     end,
   },
   {
+    "jay-babu/mason-nvim-dap.nvim",
+    config = function()
+      require("mason-nvim-dap").setup({
+        ensure_installed = {
+          "js",
+          "delve",
+        },
+      })
+    end,
+  },
+  {
 
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -100,7 +111,6 @@ return {
           tsserver_max_memory = "auto",
           -- described below
           tsserver_format_options = {},
-          tsserver_file_preferences = {},
           -- locale of all tsserver messages, supported locales you can find here:
           -- https://github.com/microsoft/TypeScript/blob/3c221fc086be52b19801f6e8d82596d04607ede6/src/compiler/utilitiesPublic.ts#L620
           tsserver_locale = "en",
@@ -120,6 +130,14 @@ return {
           jsx_close_tag = {
             enable = true,
             filetypes = { "javascriptreact", "typescriptreact" },
+          },
+          tsserver_file_preferences = {
+            includeInlayParameterNameHints = "all",
+            includeInlayEnumMemberValueHints = true,
+            includeInlayFunctionLikeReturnTypeHints = false,
+            includeInlayFunctionParameterTypeHints = true,
+            includeInlayPropertyDeclarationTypeHints = true,
+            includeInlayVariableTypeHints = false,
           },
         },
       })
@@ -207,6 +225,8 @@ return {
         callback = function(ev)
           -- Enable completion triggered by <c-x><c-o>
           vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+
+          vim.lsp.inlay_hint.enable(0, true)
 
           vim.diagnostic.config({
             virtual_text = true,

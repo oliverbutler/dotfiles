@@ -66,6 +66,7 @@ return {
     vim.keymap.set("n", "<leader>tr", function()
       require("neotest").run.run()
     end, { desc = "[T]est [R]un" })
+
     vim.keymap.set("n", "<leader>tl", function()
       require("neotest").run.run_last()
     end, { desc = "[T]est [L]ast" })
@@ -87,5 +88,13 @@ return {
     vim.keymap.set("n", "<leader>tww", function()
       require("neotest").watch.watch()
     end, { desc = "[T]est [W]atch" })
+
+    -- debugging
+
+    vim.keymap.set("n", "<leader>td", function()
+      require("dapui").open()
+
+      require("neotest").run.run({ strategy = "dap" })
+    end, { desc = "[T]est [D]ebug" })
   end,
 }
