@@ -62,6 +62,7 @@ git config --global rebase.autoStash true
 git config --global push.autoSetupRemote true
 git config --global user.name "Oliver Butler"
 git config --global user.email dev@oliverbutler.uk
+git config --global --type=bool rebase.updateRefs true
 
 alias gpnv="git push --no-verify"
 alias gpsu="git push --set-upstream origin HEAD"
