@@ -28,13 +28,30 @@ alias sleepomega="ssh omega 'date && winsleep'"
 # alias llo="ll --octal-permissions"
 # alias ls="exa --icons"
 # alias tree="exa --tree --level=2 -a"
-alias n="nnn"
 alias nf="neofetch"
 alias nano="nvim"
 alias vim="nvim"
 alias bim="say bim"
 alias vom="say vom"
 alias c="clear"
+alias n="nvim"
+
+function zn
+    if test (count $argv) -eq 0
+        echo "Usage: zn <directory>"
+        return 1
+    end
+
+    set dir (z -e $argv[1])
+
+    if test -n "$dir"
+        cd "$dir"
+        nvim
+    else
+        echo "Directory not found in z database"
+        return 1
+    end
+end
 
 alias confish="vim ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
