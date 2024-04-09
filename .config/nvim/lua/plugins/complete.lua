@@ -19,7 +19,7 @@ return {
   },
   config = function()
     local cmp = require("cmp")
-    require("luasnip.loaders.from_vscode").lazy_load()
+    -- require("luasnip.loaders.from_vscode").lazy_load()
 
     -- Open up complete menu to prompt for imports
     vim.api.nvim_set_keymap("i", "<C-x>", '<Cmd>lua require("cmp").complete()<CR>', { noremap = true, silent = true })
