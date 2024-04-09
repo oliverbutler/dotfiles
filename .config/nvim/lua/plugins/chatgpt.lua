@@ -3,7 +3,7 @@ return {
   cmd = { "ChatGPT", "ChatGPTEditWithInstructions" },
   config = function()
     require("chatgpt").setup({
-      api_key_cmd = 'op item get "OpenAPI" --fields credential',
+      api_key_cmd = "./lua/plugins/get-openapi-key.sh",
     })
   end,
   dependencies = {
