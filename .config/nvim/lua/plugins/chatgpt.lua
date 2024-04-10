@@ -2,8 +2,11 @@ return {
   "jackMort/ChatGPT.nvim",
   cmd = { "ChatGPT", "ChatGPTEditWithInstructions" },
   config = function()
+    local home = os.getenv("HOME")
+    local api_key_cmd = home .. "/.config/nvim/lua/plugins/get-openapi-key.sh"
+
     require("chatgpt").setup({
-      api_key_cmd = "./lua/plugins/get-openapi-key.sh",
+      api_key_cmd = api_key_cmd,
     })
   end,
   dependencies = {
