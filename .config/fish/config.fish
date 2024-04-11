@@ -36,6 +36,9 @@ alias vom="say vom"
 alias c="clear"
 alias n="nvim"
 
+alias pair="upterm host --force-command 'tmux a' -- tmux a"
+alias paircopy="upterm session current | grep '^SSH' | sed 's/^SSH Session: *//' | tr -d '\n' | pbcopy"
+
 function zn
     if test (count $argv) -eq 0
         echo "Usage: zn <directory>"
