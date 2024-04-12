@@ -12,15 +12,17 @@ set PATH /Users/olly/projects/oimage $PATH
 set PATH ~/.pub-cache/bin $PATH
 set PATH ~/.local/share/bob/nvim-bin $PATH
 
-set -x nvm_default_version 14
-
-
-#if status is-interactive
-#and not set -q TMUX
-#    exec tmux
-#end
+set -x nvm_default_version 18
 
 alias fishr="source ~/.config/fish/config.fish"
+
+function nvim
+    if string match -q "$HOME/.config*" (pwd)
+        GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim $argv
+    else
+        command nvim $argv
+    end
+end
 
 alias wakeomega="wakeonlan -i 255.255.255.255 -p 7 d8:bb:c1:9a:de:d1"
 alias sleepomega="ssh omega 'date && winsleep'"
@@ -49,13 +51,12 @@ function zn
 
     if test -n "$dir"
         cd "$dir"
-        nvim
+	nvim
     else
         echo "Directory not found in z database"
         return 1
     end
 end
-
 alias confish="vim ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"
 
