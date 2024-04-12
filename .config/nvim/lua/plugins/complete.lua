@@ -144,6 +144,7 @@ return {
         { name = "vim-dadbod-completion", keyword_length = 2, option = {} },
       }, {
         { name = "buffer" },
+        { name = "path" }, -- file system paths
       }),
     })
   end,

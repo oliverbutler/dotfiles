@@ -14,6 +14,11 @@ vim.opt.number = true
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+-- Spell
+vim.opt.spelllang = "en_gb"
+vim.opt.spell = true
+vim.opt.spelloptions = "camel"
+
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
@@ -82,6 +87,10 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
 vim.g.maplocalleader = "\\" -- Same for `maplocalleader`
 
-require("lazy").setup("plugins")
+require("lazy").setup("plugins", {
+  change_detection = {
+    notify = false,
+  },
+})
 
 require("olly.remap")

@@ -1,85 +1,5 @@
 return {
   {
-    "nvimtools/none-ls.nvim",
-    event = "VeryLazy",
-    config = function()
-      local null_ls = require("null-ls")
-      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.formatting.prettierd,
-          null_ls.builtins.formatting.stylua,
-          null_ls.builtins.formatting.gofumpt,
-          null_ls.builtins.formatting.goimports_reviser,
-          null_ls.builtins.formatting.golines,
-          null_ls.builtins.formatting.sql_formatter,
-        },
-        on_attach = function(client, bufnr)
-          if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              group = augroup,
-              buffer = bufnr,
-              callback = function()
-                vim.lsp.buf.format({
-                  async = false,
-                  filter = function(c)
-                    return c.name == "null-ls"
-                  end,
-                })
-              end,
-            })
-          end
-        end,
-      })
-    end,
-  },
-  {
-    "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup({})
-    end,
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "lua_ls",
-          "tsserver",
-          "tailwindcss",
-          "gopls",
-          "terraformls",
-        },
-      })
-    end,
-  },
-  {
-    "jay-babu/mason-null-ls.nvim",
-    config = function()
-      require("mason-null-ls").setup({
-        ensure_installed = {
-          "eslint",
-          "prettierd",
-          "stylua",
-          "sql-formatter",
-        },
-      })
-    end,
-  },
-  {
-    "jay-babu/mason-nvim-dap.nvim",
-    config = function()
-      require("mason-nvim-dap").setup({
-        ensure_installed = {
-          "js",
-          "delve",
-        },
-      })
-    end,
-  },
-  {
 
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
@@ -153,13 +73,6 @@ return {
     config = function()
       require("lsp-file-operations").setup()
     end,
-  },
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = true,
-    -- use opts = {} for passing setup options
-    -- this is equalent to setup({}) function
   },
   {
     "neovim/nvim-lspconfig",
