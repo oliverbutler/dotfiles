@@ -17,7 +17,7 @@ return {
         key = "<leader>ld",
       },
       {
-        cmd = "gosuite",
+        cmd = "~/projects/gosuite/gosuite",
         key = "<leader>gs",
       },
       {
