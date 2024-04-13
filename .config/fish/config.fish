@@ -16,6 +16,9 @@ set -x nvm_default_version 18
 
 alias fishr="source ~/.config/fish/config.fish"
 
+# enable vim mode
+fish_vi_key_bindings
+
 function nvim
     if string match -q "$HOME/.config*" (pwd)
         GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim $argv

@@ -38,8 +38,6 @@ vim.keymap.set("n", "<leader>-", function()
   end
 end, { desc = "Quit Neovim with prompt to save changes" })
 
-local notify = require("notify")
-
 vim.keymap.set("n", "<leader>+", function()
   local current_word = vim.fn.expand("<cword>")
   local monorepo_root = vim.fn.getcwd()
@@ -64,7 +62,7 @@ vim.keymap.set("n", "<leader>+", function()
     local notification_id
 
     -- Initial notification with loading symbols
-    notification_id = notify("Searching... 🔍🚀", "info", {
+    notification_id = vim.notify("Searching... 🔍🚀", "info", {
       title = "Navigation Progress",
       icon = "🌠",
       replace = notification_id,
@@ -76,7 +74,7 @@ vim.keymap.set("n", "<leader>+", function()
         vim.cmd("edit " .. path)
 
         -- Update the notification with progress
-        notification_id = notify(string.format("%d/%d 🔍 %s", i, #valid_paths, path), "info", {
+        notification_id = vim.notify(string.format("%d/%d 🔍 %s", i, #valid_paths, path), "info", {
           title = "Navigation Progress",
           icon = "🌠",
           replace = notification_id,
@@ -89,14 +87,14 @@ vim.keymap.set("n", "<leader>+", function()
       vim.api.nvim_set_current_buf(original_buffer)
 
       -- Final notification
-      notify(string.format("for '%s'! 🎉", current_word), "info", {
+      vim.notify(string.format("for '%s'! 🎉", current_word), "info", {
         title = "Index Complete",
         icon = "✅",
         replace = notification_id,
       })
     end, #valid_paths * 200)
   else
-    notify("No references found for '" .. current_word .. "' 😔", "warn", {
+    vim.notify("No references found for '" .. current_word .. "' 😔", "warn", {
       title = "Search Results",
       icon = "❌",
     })
