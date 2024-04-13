@@ -92,8 +92,11 @@ alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/
 
 starship init fish | source
 
-nvm use 18.17
-nvm use
+# If .nvmrc exists, use it
+if test -e .nvmrc	
+    nvm use
+end
+
 
 # pnpm
 set -gx PNPM_HOME "/Users/olly/Library/pnpm"

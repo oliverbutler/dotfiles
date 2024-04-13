@@ -17,8 +17,12 @@ return {
         key = "<leader>ld",
       },
       {
-        cmd = "cd ~/projects/gosuite && go run main.go",
+        cmd = "gosuite",
         key = "<leader>gs",
+      },
+      {
+        cmd = "cd ~/projects/gosuite && go run main.go",
+        key = "<leader>gd",
       },
     }
 
