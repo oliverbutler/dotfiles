@@ -23,6 +23,9 @@ return {
         "nvim-tree/nvim-web-devicons",
         enabled = vim.g.have_nerd_font,
       },
+      {
+        "nvim-telescope/telescope-media-files.nvim",
+      },
     },
     config = function()
       local builtin = require("telescope.builtin")
@@ -33,6 +36,13 @@ return {
             require("telescope.themes").get_dropdown(),
           },
           "project",
+          media_files = {
+            -- filetypes whitelist
+            -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
+            filetypes = { "png", "webp", "jpg", "jpeg" },
+            -- find command (defaults to `fd`)
+            find_cmd = "rg",
+          },
         },
         pickers = {
           find_files = {
@@ -91,7 +101,7 @@ return {
 
       pcall(require("telescope").load_extension, "fzf")
       pcall(require("telescope").load_extension, "ui-select")
-
+      require("telescope").load_extension("media_files")
       require("telescope").load_extension("project")
 
       vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]search [H]elp" })
