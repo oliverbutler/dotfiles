@@ -170,8 +170,7 @@ return {
             })
           end, { desc = "Show line diagnostics" })
 
-          -- Remap to press leader + . to show the code actions
-          vim.keymap.set("n", "<leader>.", vim.lsp.buf.code_action, { buffer = ev.buf })
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = ev.buf, desc = "Code action" })
 
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
