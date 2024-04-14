@@ -12,7 +12,7 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 config.font_size = 12.0
 config.foreground_text_hsb = {
   hue = 1.0,
-  saturation = 0.95,
+  saturation = 0.94, -- Was too saturated compared to iTerm as source of truth
   brightness = 1.0,
 }
 config.font = wezterm.font_with_fallback({
