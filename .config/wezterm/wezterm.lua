@@ -11,26 +11,28 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- Emojis 🤣💀👻✅🐳
 config.font_size = 12.0
 config.foreground_text_hsb = {
-  hue = 1.0,
-  saturation = 0.94, -- Was too saturated compared to iTerm as source of truth
-  brightness = 1.0,
+	hue = 1.0,
+	saturation = 0.94, -- Was too saturated compared to iTerm as source of truth
+	brightness = 1.0,
 }
 config.font = wezterm.font_with_fallback({
-  {
-    family = "JetBrains Mono",
-  },
-  { family = "Apple Color Emoji", assume_emoji_presentation = true, scale = 1.2 },
+	{
+		family = "JetBrains Mono",
+	},
+	{ family = "Apple Color Emoji", assume_emoji_presentation = true, scale = 1.2 },
 })
 
 -- Window
 config.window_background_opacity = 0.9
 config.macos_window_background_blur = 15
 config.adjust_window_size_when_changing_font_size = false
+-- Fix opt+3 not giving # https://github.com/wez/wezterm/issues/4353#issuecomment-1759118679
+config.send_composed_key_when_left_alt_is_pressed = true
 config.window_padding = {
-  left = 0,
-  right = 0,
-  top = 0,
-  bottom = 0,
+	left = 0,
+	right = 0,
+	top = 0,
+	bottom = 0,
 }
 config.initial_rows = 50
 config.initial_cols = 180

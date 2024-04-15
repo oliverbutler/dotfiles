@@ -217,7 +217,7 @@ return {
           end, opts)
 
           vim.keymap.set("n", "<leader>w", function()
-            vim.cmd("w")
+            vim.cmd("w!")
           end, opts)
         end,
       })

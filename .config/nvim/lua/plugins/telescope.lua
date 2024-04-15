@@ -44,11 +44,6 @@ return {
             find_cmd = "rg",
           },
         },
-        pickers = {
-          find_files = {
-            hidden = true,
-          },
-        },
         defaults = {
           vimgrep_arguments = {
             "rg",

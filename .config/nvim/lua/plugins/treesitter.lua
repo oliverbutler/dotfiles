@@ -5,23 +5,27 @@ return {
   dependencies = {
     "windwp/nvim-ts-autotag",
     "nvim-treesitter/nvim-treesitter-textobjects",
+    "nvim-treesitter/nvim-treesitter-context",
   },
   config = function()
-    -- import nvim-treesitter plugin
     local treesitter = require("nvim-treesitter.configs")
 
-    -- configure treesitter
     treesitter.setup({ -- enable syntax highlighting
       highlight = {
         enable = true,
       },
-      -- enable indentation
       indent = { enable = true },
-      -- enable autotagging (w/ nvim-ts-autotag plugin)
       autotag = {
         enable = true,
+        enable_rename = true,
+        enable_close = true,
+        enable_close_on_slash = true,
+        filetypes = { "html", "xml" },
       },
-      -- ensure these language parsers are installed
+      context = {
+        enable = true,
+        max_lines = 2,
+      },
       ensure_installed = {
         "json",
         "javascript",
@@ -44,6 +48,7 @@ return {
         "vimdoc",
         "c",
         "dart",
+        "go",
       },
       incremental_selection = {
         enable = true,
