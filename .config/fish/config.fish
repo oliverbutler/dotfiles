@@ -1,8 +1,9 @@
 # ~/.config/fish/config.fish
 set XDG_CONFIG_HOME $HOME/.config
 
+set PATH /Users/olly/bin $PATH
 set PATH /opt/homebrew/bin $PATH
-set PATH /Users/olly/go/bin $PATH
+set PATH ~/go/bin $PATH
 set PATH /opt/homebrew/opt/openvpn/sbin $PATH
 set PATH /Users/olly/.cargo/bin $PATH
 set PATH /Users/olly/flutter/bin $PATH
