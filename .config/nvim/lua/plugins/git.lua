@@ -5,12 +5,15 @@ return {
     config = function()
       require("gitsigns").setup()
       vim.keymap.set("n", "<leader>gt", ":Gitsigns toggle_current_line_blame<CR>")
-      vim.keymap.set("n", "<leader>gb", ":Git blame<CR>")
     end,
   },
   {
-    "tpope/vim-fugitive",
-    cmd = { "G", "Git" },
+    "FabijanZulj/blame.nvim",
+    config = function()
+      require("blame").setup()
+
+      vim.keymap.set("n", "<leader>gb", ":BlameToggle<CR>")
+    end,
   },
   {
     "sindrets/diffview.nvim",

@@ -70,6 +70,10 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 -- set conceallevel to 1
 vim.opt.conceallevel = 0
 
+vim.keymap.set("n", "<leader>w", function()
+  vim.cmd("w!")
+end, opts)
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({

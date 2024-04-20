@@ -1,5 +1,6 @@
 # ~/.config/fish/config.fish
-set XDG_CONFIG_HOME $HOME/.config
+set -gx XDG_CONFIG_HOME $HOME/.config
+set -gx LG_CONFIG_FILE $XDG_CONFIG_HOME/lazygit/config.yml
 
 set PATH /Users/olly/bin $PATH
 set PATH /opt/homebrew/bin $PATH
@@ -28,6 +29,10 @@ function nvim
         command nvim $argv
     end
 end
+
+# function lazygit
+# 	command lazygit --use-config-file="$HOME/.config/lazygit/config.yml" $argv
+# end
 
 alias wakeomega="wakeonlan -i 255.255.255.255 -p 7 d8:bb:c1:9a:de:d1"
 alias sleepomega="ssh omega 'date && winsleep'"
@@ -72,6 +77,19 @@ git config --global push.autoSetupRemote true
 git config --global user.name "Oliver Butler"
 git config --global user.email dev@oliverbutler.uk
 git config --global --type=bool rebase.updateRefs true
+# Set Delta as the default pager for Git
+git config --global core.pager 'delta'
+# Set Delta as the diff filter for interactive usage
+git config --global interactive.diffFilter 'delta --color-only'
+# Delta specific settings
+git config --global delta.navigate 'true'  # Allows navigation between diff sections
+# Uncomment one of the following if you need to fix the color mode
+#git config --global delta.dark 'true'    # For dark terminal backgrounds
+#git config --global delta.light 'true'   # For light terminal backgrounds
+# Set merge configuration
+git config --global merge.conflictstyle 'diff3'
+# Set diff configuration
+git config --global diff.colorMoved 'default'
 
 alias gpnv="git push --no-verify"
 alias gpsu="git push --set-upstream origin HEAD"
