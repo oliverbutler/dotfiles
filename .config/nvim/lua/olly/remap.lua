@@ -11,6 +11,10 @@ vim.keymap.set("n", "<leader>}", ":bnext<CR>", { noremap = true })
 -- undo tree
 vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", { noremap = true })
 
+vim.keymap.set("n", "<leader>w", function()
+  vim.cmd("w")
+end)
+
 -- Git
 vim.keymap.set("n", "<leader>gn", ":Neogit<CR>")
 

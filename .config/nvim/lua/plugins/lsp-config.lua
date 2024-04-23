@@ -86,6 +86,25 @@ return {
 
       lspconfig.tailwindcss.setup({
         capabilities = capabilities,
+        filetypes = { "html", "typescript", "javascript", "javascriptreact", "typescriptreact", "svelte", "vue", "go" }, -- Added "go" here
+        settings = {
+          tailwindCSS = {
+            experimental = {
+              classRegex = {
+                "Class\\(([^)]*)\\)",
+                '["`]([^"`]*)["`]', -- Class("...") or Class(`...`)
+                "Classes\\(([^)]*)\\)",
+                '["`]([^"`]*)["`]', -- Classes("...") or Classes(`...`)
+                "Class\\{([^)]*)\\}",
+                '["`]([^"`]*)["`]', -- Class{"..."} or Class{`...`}
+                "Classes\\{([^)]*)\\}",
+                '["`]([^"`]*)["`]', -- Classes{"..."} or Classes{`...`}
+                'Class:\\s*["`]([^"`]*)["`]', -- Class: "..." or Class: `...`
+                ':\\s*["`]([^"`]*)["`]', -- Classes: "..." or Classes: `...`
+              },
+            },
+          },
+        },
       })
 
       lspconfig.eslint.setup({
