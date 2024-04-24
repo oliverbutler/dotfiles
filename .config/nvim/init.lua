@@ -9,7 +9,10 @@ vim.opt.termguicolors = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
+-- make ctrl d and ctrl u re-center the screen
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
