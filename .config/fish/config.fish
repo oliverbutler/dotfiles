@@ -48,6 +48,27 @@ alias vom="say vom"
 alias c="clear"
 alias n="nvim"
 
+# Tmux Helpers
+# twerk will open tmux for work, "work" OR create session if missing
+# tome will open tmux for home, OR create session if missing
+
+function twerk
+	if test (tmux ls | grep work)
+		tmux a -t work
+	else
+		tmux new-session -s work
+		tmux send-keys -t work "zn col" C-m
+	end
+end
+
+function tome
+	if test (tmux ls | grep home)
+		tmux a -t home
+	else
+		tmux new-session -s home
+	end
+end
+
 alias pair="upterm host --force-command 'tmux a' -- tmux a"
 alias paircopy="upterm session current | grep '^SSH' | sed 's/^SSH Session: *//' | tr -d '\n' | pbcopy"
 
