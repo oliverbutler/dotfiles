@@ -6,6 +6,7 @@ return {
     "windwp/nvim-ts-autotag",
     "nvim-treesitter/nvim-treesitter-textobjects",
     "nvim-treesitter/nvim-treesitter-context",
+    "vrischmann/tree-sitter-templ",
   },
   config = function()
     local treesitter = require("nvim-treesitter.configs")
@@ -49,6 +50,7 @@ return {
         "c",
         "dart",
         "go",
+        "templ",
       },
       incremental_selection = {
         enable = true,

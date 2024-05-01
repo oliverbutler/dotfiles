@@ -23,9 +23,6 @@ return {
         "nvim-tree/nvim-web-devicons",
         enabled = vim.g.have_nerd_font,
       },
-      {
-        "nvim-telescope/telescope-media-files.nvim",
-      },
     },
     config = function()
       local builtin = require("telescope.builtin")
@@ -36,23 +33,26 @@ return {
             require("telescope.themes").get_dropdown(),
           },
           "project",
-          media_files = {
-            -- filetypes whitelist
-            -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
-            filetypes = { "png", "webp", "jpg", "jpeg" },
-            -- find command (defaults to `fd`)
-            find_cmd = "rg",
-          },
         },
         defaults = {
           vimgrep_arguments = {
             "rg",
             "--color=never",
+            "--hidden",
             "--no-heading",
             "--with-filename",
             "--line-number",
             "--column",
             "--smart-case",
+
+            -- Exclude some patterns from search
+            "--glob=!**/.git/*",
+            "--glob=!**/.idea/*",
+            "--glob=!**/.vscode/*",
+            "--glob=!**/build/*",
+            "--glob=!**/dist/*",
+            "--glob=!**/yarn.lock",
+            "--glob=!**/package-lock.json",
           },
           prompt_prefix = "  ",
           selection_caret = "  ",
@@ -70,7 +70,6 @@ return {
             },
           },
           file_sorter = require("telescope.sorters").get_fuzzy_file,
-          file_ignore_patterns = {},
           generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
           winblend = 0,
           border = {},
@@ -92,11 +91,29 @@ return {
           grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
           qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
         },
+        pickers = {
+          find_files = {
+            hidden = true,
+            -- needed to exclude some files & dirs from general search
+            -- when not included or specified in .gitignore
+            find_command = {
+              "rg",
+              "--files",
+              "--hidden",
+              "--glob=!**/.git/*",
+              "--glob=!**/.idea/*",
+              "--glob=!**/.vscode/*",
+              "--glob=!**/build/*",
+              "--glob=!**/dist/*",
+              "--glob=!**/yarn.lock",
+              "--glob=!**/package-lock.json",
+            },
+          },
+        },
       })
 
       pcall(require("telescope").load_extension, "fzf")
       pcall(require("telescope").load_extension, "ui-select")
-      require("telescope").load_extension("media_files")
       require("telescope").load_extension("project")
 
       vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]search [H]elp" })

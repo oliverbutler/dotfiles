@@ -30,6 +30,9 @@ return {
         "lua_ls",
         "prismals",
         "terraformls",
+        "templ",
+        "html",
+        "htmx-lsp",
       },
     })
 

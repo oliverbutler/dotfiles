@@ -86,10 +86,22 @@ return {
 
       lspconfig.tailwindcss.setup({
         capabilities = capabilities,
-        filetypes = { "html", "typescript", "javascript", "javascriptreact", "typescriptreact", "svelte", "vue", "go" }, -- Added "go" here
+        filetypes = {
+          "html",
+          "typescript",
+          "javascript",
+          "javascriptreact",
+          "typescriptreact",
+          "svelte",
+          "vue",
+          "go",
+          "templ",
+        }, -- Added "go" here
+        init_options = { userLanguages = { templ = "html" } },
         settings = {
           tailwindCSS = {
             experimental = {
+              -- Support gocomponents
               classRegex = {
                 "Class\\(([^)]*)\\)",
                 '["`]([^"`]*)["`]', -- Class("...") or Class(`...`)
@@ -105,6 +117,20 @@ return {
             },
           },
         },
+      })
+
+      lspconfig.html.setup({
+        capabilities = capabilities,
+        filetypes = { "html", "templ" },
+      })
+
+      lspconfig.htmx.setup({
+        capabilities = capabilities,
+        filetypes = { "html", "templ" },
+      })
+
+      lspconfig.templ.setup({
+        capabilities = capabilities,
       })
 
       lspconfig.eslint.setup({

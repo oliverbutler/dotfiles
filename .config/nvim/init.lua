@@ -85,6 +85,8 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 
+vim.filetype.add({ extension = { templ = "templ" } })
+
 vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
