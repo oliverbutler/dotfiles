@@ -15,9 +15,6 @@ vim.keymap.set("n", "<leader>w", function()
   vim.cmd("w")
 end)
 
--- Git
-vim.keymap.set("n", "<leader>gn", ":Neogit<CR>")
-
 -- ChatGPT
 vim.keymap.set("n", "<leader>co", ":ChatGPT<CR>")
 vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
