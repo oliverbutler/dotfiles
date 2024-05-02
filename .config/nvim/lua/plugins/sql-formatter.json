@@ -1,7 +1,4 @@
 {
-  "keywordCase": "upper",
-  "dataTypeCase": "upper",
-  "functionCase": "upper",
   "paramTypes": {
     "custom": [
       {
