@@ -9,15 +9,18 @@ return {
   },
   {
     "FabijanZulj/blame.nvim",
+    keys = {
+      { "<leader>gb", "<cmd>BlameToggle<CR>" },
+    },
     config = function()
       require("blame").setup()
-
-      vim.keymap.set("n", "<leader>gb", ":BlameToggle<CR>")
     end,
   },
   {
     "sindrets/diffview.nvim",
-    event = "BufReadPre",
+    keys = {
+      "<leader>h",
+    },
     config = function()
       require("diffview").setup({})
 

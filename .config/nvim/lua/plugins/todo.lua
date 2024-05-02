@@ -1,7 +1,8 @@
 return {
   "folke/todo-comments.nvim",
+  event = "BufReadPre",
   dependencies = { "nvim-lua/plenary.nvim" },
-  config = function ()
+  config = function()
     require("todo-comments").setup({
       signs = true, -- show icons in the signs column
       sign_priority = 8, -- sign priority
@@ -49,7 +50,7 @@ return {
         info = { "DiagnosticInfo", "#2563EB" },
         hint = { "DiagnosticHint", "#10B981" },
         default = { "Identifier", "#7C3AED" },
-        test = { "Identifier", "#FF00FF" }
+        test = { "Identifier", "#FF00FF" },
       },
       search = {
         command = "rg",
@@ -66,5 +67,5 @@ return {
         -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
       },
     })
-  end
+  end,
 }

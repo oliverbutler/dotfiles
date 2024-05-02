@@ -1,6 +1,15 @@
 return {
   {
     "mfussenegger/nvim-dap",
+    keys = {
+      {
+        "<leader>du",
+        "<cmd>lua require('dapui').toggle()<CR>",
+        noremap = true,
+        silent = true,
+        desc = "Toggle DAP UI",
+      },
+    },
     dependencies = {
       "rcarriga/nvim-dap-ui",
       "theHamsta/nvim-dap-virtual-text",
@@ -95,12 +104,6 @@ return {
         },
       })
 
-      vim.keymap.set(
-        "n",
-        "<leader>du",
-        "<cmd>lua require('dapui').toggle()<CR>",
-        { noremap = true, silent = true, desc = "Toggle DAP UI" }
-      )
       vim.keymap.set(
         "n",
         "<leader>db",

@@ -1,6 +1,7 @@
 return {
   {
     "pmizio/typescript-tools.nvim",
+    ft = { "typescript", "typescriptreact" },
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     config = function()
       require("typescript-tools").setup({
@@ -54,7 +55,7 @@ return {
             includeInlayParameterNameHints = "all",
             includeInlayEnumMemberValueHints = true,
             includeInlayFunctionLikeReturnTypeHints = false,
-            includeInlayFunctionParameterTypeHints = true,
+            includeInlayFunctionParameterTypeHints = false,
             includeInlayPropertyDeclarationTypeHints = true,
             includeInlayVariableTypeHints = false,
           },
@@ -63,18 +64,8 @@ return {
     end,
   },
   {
-    "antosha417/nvim-lsp-file-operations",
-    lazy = "VeryLazy",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-tree.lua",
-    },
-    config = function()
-      require("lsp-file-operations").setup()
-    end,
-  },
-  {
     "neovim/nvim-lspconfig",
+    event = "VeryLazy",
     config = function()
       local lspconfig = require("lspconfig")
 

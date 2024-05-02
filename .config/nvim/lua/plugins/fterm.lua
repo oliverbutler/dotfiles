@@ -1,5 +1,12 @@
 return {
   "numToStr/FTerm.nvim",
+  keys = {
+    "<leader>tt",
+    "<leader>gl",
+    "<leader>ld",
+    "<leader>gs",
+    "<leader>gd",
+  },
   config = function()
     local fterm = require("FTerm")
 

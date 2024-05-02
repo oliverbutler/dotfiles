@@ -1,7 +1,6 @@
 return {
-  "kyazdani42/nvim-web-devicons",
-  {
     "nvim-telescope/telescope.nvim",
+    event = "VeryLazy",
     dependencies = {
       "nvim-lua/plenary.nvim",
       {
@@ -145,5 +144,4 @@ return {
         }))
       end, { desc = "[/] Fuzzily search in current buffer" })
     end,
-  },
 }

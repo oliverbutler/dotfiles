@@ -5,6 +5,8 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     "jay-babu/mason-nvim-dap.nvim",
   },
+  cmd = "Mason",
+  event = "BufReadPre",
   config = function()
     local mason = require("mason")
     local mason_lspconfig = require("mason-lspconfig")
@@ -32,7 +34,7 @@ return {
         "terraformls",
         "templ",
         "html",
-        "htmx-lsp",
+        "htmx",
       },
     })
 
