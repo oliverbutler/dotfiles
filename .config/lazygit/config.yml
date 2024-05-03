@@ -6,6 +6,11 @@ git:
 os:
   editPreset: "nvim-remote"
 
+customCommands:
+  - key: "Y"
+    context: "global"
+    command: "git yolo"
+
 gui:
   theme:
     activeBorderColor:

@@ -112,6 +112,8 @@ git config --global merge.conflictstyle 'diff3'
 # Set diff configuration
 git config --global diff.colorMoved 'default'
 
+git config --global alias.yolo '!git commit -am "$(curl -sL http://whatthecommit.com/index.txt)"' 
+
 alias gpnv="git push --no-verify"
 alias gpsu="git push --set-upstream origin HEAD"
 alias gpsunv="git push --set-upstream origin HEAD --no-verify"
