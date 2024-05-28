@@ -10,6 +10,9 @@ customCommands:
   - key: "Y"
     context: "global"
     command: "git yolo"
+  - key: "I"
+    context: "global"
+    command: "aicommits --type conventional"
 
 gui:
   theme:
