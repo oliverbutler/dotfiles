@@ -4,24 +4,24 @@ return {
     name = "catppuccin",
     priority = 1000,
     opts = {
-      flavour = "mocha", -- latte, frappe, macchiato, mocha
-      background = {     -- :h background
+      flavour = "auto", -- latte, frappe, macchiato, mocha
+      background = { -- :h background
         light = "latte",
         dark = "mocha",
       },
       transparent_background = false, -- disables setting the background color.
-      show_end_of_buffer = false,     -- shows the '~' characters after the end of buffers
-      term_colors = false,            -- sets terminal colors (e.g. `g:terminal_color_0`)
+      show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
+      term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
       dim_inactive = {
-        enabled = false,              -- dims the background color of inactive window
+        enabled = false, -- dims the background color of inactive window
         shade = "dark",
-        percentage = 0.15,            -- percentage of the shade to apply to the inactive window
+        percentage = 0.15, -- percentage of the shade to apply to the inactive window
       },
-      no_italic = false,              -- Force no italic
-      no_bold = false,                -- Force no bold
-      no_underline = false,           -- Force no underline
-      styles = {                      -- Handles the styles of general hi groups (see `:h highlight-args`):
-        comments = { "italic" },      -- Change the style of comments
+      no_italic = false, -- Force no italic
+      no_bold = false, -- Force no bold
+      no_underline = false, -- Force no underline
+      styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+        comments = { "italic" }, -- Change the style of comments
         conditionals = { "italic" },
         loops = {},
         functions = {},
@@ -36,20 +36,14 @@ return {
         -- miscs = {}, -- Uncomment to turn off hard-coded styles
       },
       color_overrides = {},
-      custom_highlights = {
-        -- Highlight for the selected item in the completion menu
-        PmenuSel = { bg = "#4C566A", fg = "#ECEFF4" },
-        -- Highlight for the scrollbar in the completion menu
-        PmenuSbar = { bg = "#434C5E" },
-        -- Optional: Adjust the background of the completion menu, if needed
-        Pmenu = { bg = "#3B4252", fg = "#D8DEE9" },
-      },
+      custom_highlights = {},
+      default_integrations = true,
       integrations = {
         cmp = true,
         gitsigns = true,
         nvimtree = true,
         treesitter = true,
-        notify = true,
+        notify = false,
         mini = {
           enabled = true,
           indentscope_color = "",

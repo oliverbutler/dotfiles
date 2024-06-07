@@ -79,8 +79,6 @@ return {
         capabilities = capabilities,
         filetypes = {
           "html",
-          "typescript",
-          "javascript",
           "javascriptreact",
           "typescriptreact",
           "svelte",
