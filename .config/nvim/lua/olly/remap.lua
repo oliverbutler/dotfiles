@@ -19,6 +19,9 @@ end)
 vim.keymap.set("n", "<leader>co", ":ChatGPT<CR>")
 vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
 
+-- Helpers
+vim.keymap.set("n", "<leader>ra", ":LspRestart *<CR>", { noremap = true, desc = "Restart LSP" })
+
 -- Add this to your init.lua file
 vim.keymap.set("n", "<leader>-", function()
   local bufnr = vim.api.nvim_get_current_buf()
