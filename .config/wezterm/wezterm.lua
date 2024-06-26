@@ -26,7 +26,9 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- Fonts
 -- Emojis 🤣💀👻✅🐳
+--
 config.font_size = 12.0
+config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
 config.foreground_text_hsb = {
 	hue = 1.0,
 	saturation = 0.94, -- Was too saturated compared to iTerm as source of truth

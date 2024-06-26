@@ -19,8 +19,8 @@ return {
         require("neotest-go"),
         --			require("neotest-vitest"),
         require("neotest-jest")({
-          jestCommand = "pnpm jest --ci --runInBand",
-          env = { CI = true },
+          jestCommand = "pnpm jest --expand --runInBand",
+          env = {},
           jestConfigFile = function(path)
             local file = vim.fn.expand("%:p")
             local new_config = vim.fn.getcwd() .. "/jest.config.ts"
