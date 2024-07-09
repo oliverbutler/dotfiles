@@ -134,13 +134,15 @@ return {
       end
     end, { desc = "[S]search [W]ord" })
 
-    -- Slightly advanced example of overriding default behavior and theme
     vim.keymap.set("n", "<leader>/", function()
-      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-      builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+      local telescope_dropdown = require("telescope.themes").get_dropdown({
         winblend = 10,
-        previewer = false,
-      }))
+        previewer = true, -- Enable previewer
+        layout_config = {
+          width = 0.8, -- Set width to 80% of the editor's width
+        },
+      })
+      require("telescope.builtin").current_buffer_fuzzy_find(telescope_dropdown)
     end, { desc = "[/] Fuzzily search in current buffer" })
 
     -- Fuzzy searches across all files in the project

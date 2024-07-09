@@ -2,14 +2,9 @@ return {
   "kevinhwang91/nvim-bqf",
   keys = {
     {
-      "<leader>q",
+      "<leader>Q",
       ":copen<CR>",
       desc = "Open quickfix window",
-    },
-    {
-      "<leader>Q",
-      ":cclose<CR>",
-      desc = "Close quickfix window",
     },
   },
   config = function()

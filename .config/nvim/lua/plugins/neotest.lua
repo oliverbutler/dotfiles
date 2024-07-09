@@ -46,12 +46,32 @@ return {
       },
     })
 
+    -- Map the function to the desired key combination
+    vim.keymap.set("n", "<leader>tj", function()
+      require("neotest").output.open({
+        enter = true,
+        short = true,
+      })
+
+      local bufnr = vim.api.nvim_get_current_buf()
+      local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+      local test_output = table.concat(lines, "\n")
+
+      local output = require("olly.test_output").process_test_output(test_output)
+
+      vim.notify(output)
+
+      vim.fn.setreg("+", output)
+
+      require("neotest").output.close()
+    end, { noremap = true, silent = true })
+
     vim.keymap.set("n", "<leader>ts", ":Neotest summary<CR>", { desc = "Show Neotest summary" })
-    vim.keymap.set("n", "<leader>to", ":Neotest output<CR>", { desc = "Show Neotest output" })
 
     vim.keymap.set("n", "<leader>to", function()
       require("neotest").output.open({
         auto_close = true,
+        short = true,
       })
     end, { desc = "[T]est [O]utput" })
 

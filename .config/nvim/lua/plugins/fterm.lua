@@ -4,8 +4,6 @@ return {
     "<leader>tt",
     "<leader>gl",
     "<leader>ld",
-    "<leader>gs",
-    "<leader>gd",
   },
   config = function()
     local fterm = require("FTerm")
@@ -22,14 +20,6 @@ return {
       {
         cmd = "lazydocker",
         key = "<leader>ld",
-      },
-      {
-        cmd = "~/projects/gosuite/gosuite",
-        key = "<leader>gs",
-      },
-      {
-        cmd = "cd ~/projects/gosuite && go run main.go",
-        key = "<leader>gd",
       },
     }
 

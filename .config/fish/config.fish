@@ -120,6 +120,9 @@ alias gpsunv="git push --set-upstream origin HEAD --no-verify"
 alias gpr="git pull --rebase origin master"
 alias gprm="git pull --rebase origin main"
 
+# gpm regardless of branch we're on, pulls master from prod
+alias gpm="git pull origin master"
+
 alias dp1="~/projects/m1ddc/m1ddc display 1 set input 15"
 alias dp2="~/projects/m1ddc/m1ddc display 1 set input 16"
 

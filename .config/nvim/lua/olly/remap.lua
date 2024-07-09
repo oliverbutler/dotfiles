@@ -22,6 +22,70 @@ vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
 -- Helpers
 vim.keymap.set("n", "<leader>ra", ":LspRestart *<CR>", { noremap = true, desc = "Restart LSP" })
 
+function parseFilename(filename)
+  local name, suffix, extension
+
+  -- Find the last dot which should separate the file extension
+  local lastDotIndex = filename:match("^.*()%.")
+  if not lastDotIndex then
+    return nil, nil, nil -- No dot found
+  end
+  extension = filename:sub(lastDotIndex + 1)
+
+  -- Remove the extension part from the filename
+  local remaining = filename:sub(1, lastDotIndex - 1)
+
+  -- Find the second to last dot which should separate the suffix
+  local secondLastDotIndex = remaining:match("^.*()%.")
+  if secondLastDotIndex then
+    suffix = remaining:sub(secondLastDotIndex + 1)
+    name = remaining:sub(1, secondLastDotIndex - 1)
+    -- Check if the found suffix is either 'spec' or 'test'
+    if suffix ~= "spec" and suffix ~= "test" then
+      name = remaining -- If not, the whole remaining part is the name
+      suffix = nil
+    end
+  else
+    name = remaining
+  end
+
+  return name, suffix, extension
+end
+
+vim.keymap.set("n", "<leader>gs", function()
+  local current_file = vim.fn.expand("%:t") -- Get the current file name
+  local current_dir = vim.fn.expand("%:p:h") -- Get the current directory path
+
+  local name, suffix, extension = parseFilename(current_file)
+
+  local alternate_files = {}
+  if suffix then
+    -- If we have a suffix, create the alternate path without the suffix
+    table.insert(alternate_files, { suffix = nil, filename = string.format("%s.%s", name, extension) })
+  else
+    -- If we don't have a suffix, create alternate paths with both suffix possibilities
+    table.insert(alternate_files, { suffix = "spec", filename = string.format("%s.spec.%s", name, extension) })
+    table.insert(alternate_files, { suffix = "test", filename = string.format("%s.test.%s", name, extension) })
+  end
+
+  for _, alt in ipairs(alternate_files) do
+    if alt.suffix ~= suffix then
+      local path = current_dir .. "/" .. alt.filename
+      print("Checking path: " .. path) -- Debugging output
+
+      if vim.fn.filereadable(path) == 1 then
+        vim.cmd("edit " .. path)
+        return
+      end
+    end
+  end
+
+  vim.notify("No sibling file found", "warn", {
+    title = "Toggle Sibling File",
+    icon = "❌",
+  })
+end, { noremap = true, desc = "Toggle between sibling files" })
+
 -- Add this to your init.lua file
 vim.keymap.set("n", "<leader>-", function()
   local bufnr = vim.api.nvim_get_current_buf()

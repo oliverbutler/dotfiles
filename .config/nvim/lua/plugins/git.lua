@@ -1,10 +1,9 @@
 return {
   {
     "lewis6991/gitsigns.nvim",
-    event = "BufReadPre", -- Loads on buffer read, but you can adjust based on your use-case
+    event = "BufReadPre",
     config = function()
       require("gitsigns").setup()
-      vim.keymap.set("n", "<leader>gt", ":Gitsigns toggle_current_line_blame<CR>")
     end,
   },
   {
