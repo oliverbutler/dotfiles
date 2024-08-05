@@ -21,6 +21,10 @@ return {
       "nvim-tree/nvim-web-devicons",
       enabled = vim.g.have_nerd_font,
     },
+    {
+      "nvim-telescope/telescope-live-grep-args.nvim",
+      version = "^1.0.0",
+    },
   },
   config = function()
     local builtin = require("telescope.builtin")
@@ -31,6 +35,7 @@ return {
           require("telescope.themes").get_dropdown(),
         },
         "project",
+        "live_grep_args",
       },
       defaults = {
         vimgrep_arguments = {
@@ -113,6 +118,7 @@ return {
     pcall(require("telescope").load_extension, "fzf")
     pcall(require("telescope").load_extension, "ui-select")
     require("telescope").load_extension("project")
+    require("telescope").load_extension("live_grep_args")
 
     vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]search [H]elp" })
     vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]search [K]eymaps" })
