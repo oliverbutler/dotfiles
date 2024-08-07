@@ -24,8 +24,8 @@ local function process_test_output(output)
       goto continue
     end
 
-    -- Remove any " at " lines, as they're stack traces
-    if line:match(" at ") then
+    -- Remove any lines that start with any number of blank spaces followed by "at"
+    if line:match("^%s*at ") then
       goto continue
     end
 
