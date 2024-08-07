@@ -75,7 +75,7 @@ return {
     end
 
     M.paste_test_output = function()
-      local output = "{foo: 'bar'}"
+      local output = M.get_test_output()
 
       local bufnr = vim.api.nvim_get_current_buf()
       local cur_line = vim.api.nvim_get_current_line()
@@ -94,17 +94,16 @@ return {
 
         if paren_pos then
           -- Move the cursor to the right position
-          vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], toEqual_pos + paren_pos - 1 })
+          vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], toEqual_pos + paren_pos })
 
           -- Delete the text inside the parentheses
           vim.cmd("normal! di(")
 
+          -- Move cursor one position to the left to be inside the parentheses
+          vim.cmd("normal! h")
+
           -- Paste the new content
           vim.api.nvim_put(vim.fn.split(output, "\n"), "", true, true)
-
-          -- Join the modified line back together
-          local new_line = before_toEqual .. after_toEqual:sub(1, paren_pos) .. output .. "}"
-          vim.api.nvim_set_current_line(new_line)
 
           vim.notify("Replaced test expectation with actual output")
 
