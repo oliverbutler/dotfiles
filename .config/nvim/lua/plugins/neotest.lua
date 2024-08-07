@@ -46,12 +46,17 @@ return {
       },
     })
 
-    -- Map the function to the desired key combination
-    vim.keymap.set("n", "<leader>tj", function()
+    local M = {}
+
+    -- Function to extract the test output and store it in a variable
+    M.get_test_output = function()
       require("neotest").output.open({
         enter = true,
         short = true,
       })
+
+      -- Wait 100ms
+      vim.wait(100)
 
       local bufnr = vim.api.nvim_get_current_buf()
       local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
@@ -63,8 +68,63 @@ return {
 
       vim.fn.setreg("+", output)
 
-      require("neotest").output.close()
-    end, { noremap = true, silent = true })
+      -- Escape the output output_panel (:q)
+      vim.api.nvim_command("q")
+
+      return output
+    end
+
+    M.paste_test_output = function()
+      local output = "{foo: 'bar'}"
+
+      local bufnr = vim.api.nvim_get_current_buf()
+      local cur_line = vim.api.nvim_get_current_line()
+
+      local toEqual_pos = cur_line:find("toEqual%(") or cur_line:find("toStrictEqual%(")
+
+      if toEqual_pos then
+        -- Extract content before toEqual or toStrictEqual
+        local before_toEqual = cur_line:sub(1, toEqual_pos - 1)
+
+        -- The text after toEqual until end of line
+        local after_toEqual = cur_line:sub(toEqual_pos)
+
+        -- Find the opening parenthesis position after toEqual
+        local paren_pos = after_toEqual:find("%(")
+
+        if paren_pos then
+          -- Move the cursor to the right position
+          vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], toEqual_pos + paren_pos - 1 })
+
+          -- Delete the text inside the parentheses
+          vim.cmd("normal! di(")
+
+          -- Paste the new content
+          vim.api.nvim_put(vim.fn.split(output, "\n"), "", true, true)
+
+          -- Join the modified line back together
+          local new_line = before_toEqual .. after_toEqual:sub(1, paren_pos) .. output .. "}"
+          vim.api.nvim_set_current_line(new_line)
+
+          vim.notify("Replaced test expectation with actual output")
+
+          -- Save the file
+          vim.cmd("write")
+        else
+          vim.notify("Invalid format: couldn't find opening parenthesis", vim.log.levels.ERROR)
+        end
+      else
+        vim.notify("No toEqual or toStrictEqual found on the current line", vim.log.levels.WARN)
+      end
+    end
+
+    vim.keymap.set("n", "<leader>tj", function()
+      M.get_test_output()
+    end, { noremap = true, silent = true, desc = "Get test output and copy to clipboard" })
+
+    vim.keymap.set("n", "<leader>tJ", function()
+      M.paste_test_output()
+    end, { noremap = true, silent = true, desc = "Paste test output into toEqual/toStrictEqual" })
 
     vim.keymap.set("n", "<leader>ts", ":Neotest summary<CR>", { desc = "Show Neotest summary" })
 
