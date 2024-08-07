@@ -2,12 +2,40 @@ return {
   "nvim-lualine/lualine.nvim",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
+    local function get_git_branch()
+      local git_path = vim.fn.finddir(".git", ".;")
+      if git_path == "" then
+        return nil
+      end
+      local head_file = git_path .. "/HEAD"
+      local file = io.open(head_file)
+      if not file then
+        return nil
+      end
+      local head = file:read("*l")
+      file:close()
+      return head:match("ref: refs/heads/(.+)")
+    end
+
+    local function shortened_branch()
+      local branch = get_git_branch()
+      if not branch or branch == "" then
+        return ""
+      end
+      local max_length = 25
+      if #branch > max_length then
+        return string.sub(branch, 1, max_length) .. "..."
+      else
+        return branch
+      end
+    end
+
     require("lualine").setup({
-      theme = "catppuccin",
+      options = { theme = "catppuccin" },
       sections = {
         lualine_a = { "mode", "grapple" },
         lualine_b = {
-          "branch",
+          shortened_branch,
           "diff",
           "diagnostics",
           {
@@ -18,8 +46,6 @@ return {
         },
         lualine_c = { { "filename", path = 1 } },
         lualine_x = {
-          "encoding",
-          "fileformat",
           "filetype",
         },
         lualine_y = { "progress" },

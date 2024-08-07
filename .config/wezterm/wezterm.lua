@@ -37,6 +37,7 @@ config.foreground_text_hsb = {
 config.font = wezterm.font_with_fallback({
 	{
 		family = "JetBrains Mono",
+		weight = "Medium",
 	},
 	{ family = "Apple Color Emoji", assume_emoji_presentation = true, scale = 1.2 },
 })

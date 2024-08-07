@@ -73,7 +73,13 @@ return {
         auto_close = true,
         short = true,
       })
-    end, { desc = "[T]est [O]utput" })
+    end, { desc = "[T]est [O]utput (short)" })
+
+    vim.keymap.set("n", "<leader>tO", function()
+      require("neotest").output.open({
+        enter = true,
+      })
+    end, { desc = "[T]est [O]utput (full)" })
 
     vim.keymap.set("n", "<leader>tp", function()
       require("neotest").output_panel.toggle()
