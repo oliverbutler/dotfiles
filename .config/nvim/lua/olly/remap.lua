@@ -1,3 +1,12 @@
+vim.keymap.set("n", "<leader>ee", function()
+  local result = require("olly.core").call_typescript_function("add", { a = 1, b = 2 })
+
+  vim.notify("sum" .. result, "error", {
+    title = "TypeScript Function Result",
+    icon = "🚀",
+  })
+end)
+
 vim.keymap.set("n", "<leader>l", vim.cmd.Lazy)
 
 -- Map leader [ and ] to navigate cursor positions

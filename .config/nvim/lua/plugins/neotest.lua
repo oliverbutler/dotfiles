@@ -62,19 +62,20 @@ return {
       local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
       local test_output = table.concat(lines, "\n")
 
-      local output = require("olly.test_output").process_test_output(test_output)
-
       local result =
         require("olly.core").call_typescript_function("getTestExpectedObject", { testOutput = test_output })
 
-      vim.notify(result)
+      vim.notify(result, "info", {
+        title = "TypeScript Function Result",
+        icon = "🚀",
+      })
 
-      vim.fn.setreg("+", output)
+      vim.fn.setreg("+", result)
 
       -- Escape the output output_panel (:q)
       vim.api.nvim_command("q")
 
-      return output
+      return result
     end
 
     M.paste_test_output = function()
