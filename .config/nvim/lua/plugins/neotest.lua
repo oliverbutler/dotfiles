@@ -64,7 +64,10 @@ return {
 
       local output = require("olly.test_output").process_test_output(test_output)
 
-      vim.notify(output)
+      local result =
+        require("olly.core").call_typescript_function("getTestExpectedObject", { testOutput = test_output })
+
+      vim.notify(result)
 
       vim.fn.setreg("+", output)
 

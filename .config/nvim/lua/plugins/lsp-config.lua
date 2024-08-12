@@ -157,10 +157,6 @@ return {
         },
       })
 
-      -- local ft_to_parser = require("nvim-treesitter.parsers").filetype_to_parsername
-      -- ft_to_parser.mdx = "markdown"
-      -- FIXME: This started breaking so i disabled it :)
-
       vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
       vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
