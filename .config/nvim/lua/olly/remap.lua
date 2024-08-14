@@ -28,10 +28,40 @@ end)
 vim.keymap.set("n", "<leader>co", ":ChatGPT<CR>")
 vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
 
--- Helpers
-vim.keymap.set("n", "<leader>ra", ":LspRestart *<CR>", { noremap = true, desc = "Restart LSP" })
+local function restart_lsp_clients(server_name)
+  local active_clients = vim.lsp.get_clients()
 
-function parseFilename(filename)
+  local clients_to_restart = {}
+
+  for _, client in ipairs(active_clients) do
+    if not server_name or client.name == server_name then
+      table.insert(clients_to_restart, client)
+    end
+  end
+
+  vim.notify("Stopping " .. #clients_to_restart .. " LSP clients", "info", {
+    title = "Restart LSP",
+    icon = "🔌",
+  })
+
+  for _, client in ipairs(active_clients) do
+    vim.lsp.stop_client(client.id)
+  end
+
+  vim.defer_fn(function()
+    vim.cmd("e")
+  end, 100)
+end
+
+vim.keymap.set("n", "<leader>ra", function()
+  restart_lsp_clients()
+end, { noremap = true, desc = "Restart LSP" })
+
+vim.keymap.set("n", "<leader>rt", function()
+  restart_lsp_clients("typescript-tools")
+end, { noremap = true, desc = "Restart LSP" })
+
+local function parseFilename(filename)
   local name, suffix, extension
 
   -- Find the last dot which should separate the file extension

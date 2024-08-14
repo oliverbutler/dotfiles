@@ -28,6 +28,8 @@ return {
   },
   config = function()
     local builtin = require("telescope.builtin")
+    local lga_actions = require("telescope-live-grep-args.actions")
+    local actions = require("telescope.actions")
 
     require("telescope").setup({
       extensions = {
@@ -35,7 +37,16 @@ return {
           require("telescope.themes").get_dropdown(),
         },
         "project",
-        "live_grep_args",
+        live_grep_args = {
+          auto_quoting = true, -- enable/disable auto-quoting
+          -- define mappings, e.g.
+          mappings = { -- extend mappings
+            i = {
+              ["<C-k>"] = lga_actions.quote_prompt(),
+              ["<C-i>"] = lga_actions.quote_prompt({ postfix = " -i " }),
+            },
+          },
+        },
       },
       defaults = {
         vimgrep_arguments = {
@@ -126,7 +137,11 @@ return {
     vim.keymap.set("n", "<leader>;", builtin.find_files, { desc = "[S]search Files" })
     vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "[S]search [B]uffers" })
     vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]search [W]ord" })
-    vim.keymap.set("n", "<leader>'", builtin.live_grep, { desc = "[S]search [G]rep" })
+
+    vim.keymap.set("n", "<leader>'", function()
+      require("telescope").extensions.live_grep_args.live_grep_args()
+    end, { desc = "[S]search [G]rep" })
+
     vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]search [R]esume" })
     vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 
@@ -159,5 +174,49 @@ return {
         search = "",
       })
     end, { desc = "[.] Fuzzy search in project" })
+
+    -- Custom Lua function for spell suggestions
+    local function spell_suggestions()
+      -- Get the current word under the cursor
+      local word = vim.fn.expand("<cword>")
+
+      -- Get spell suggestions for the word
+      local suggestions = vim.fn.spellsuggest(word)
+
+      -- If there are no suggestions, add a default message
+      if vim.tbl_isempty(suggestions) then
+        suggestions = { "No suggestions found" }
+      end
+
+      -- Telescope configuration
+      require("telescope.pickers")
+        .new({}, {
+          prompt_title = "Spell Suggestions",
+          finder = require("telescope.finders").new_table({
+            results = suggestions,
+            entry_maker = function(entry)
+              return {
+                value = entry,
+                display = entry,
+                ordinal = entry,
+              }
+            end,
+          }),
+          sorter = require("telescope.config").values.generic_sorter({}),
+          attach_mappings = function(_, map)
+            map("i", "<CR>", function(prompt_bufnr)
+              local selection = require("telescope.actions.state").get_selected_entry()
+              require("telescope.actions").close(prompt_bufnr)
+              -- Replace the current word with the selected suggestion
+              vim.cmd("normal! ciw" .. selection.value)
+            end)
+            return true
+          end,
+        })
+        :find()
+    end
+
+    -- Map the custom command to <leader>ss
+    vim.keymap.set("n", "<leader>ss", spell_suggestions, { desc = "[S]search [S]pell" })
   end,
 }
