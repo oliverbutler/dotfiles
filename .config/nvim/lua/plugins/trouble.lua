@@ -33,15 +33,5 @@ return {
       "<cmd>Trouble qflist toggle<cr>",
       desc = "Quickfix List (Trouble)",
     },
-    {
-      "]e",
-      vim.diagnostic.goto_next,
-      desc = "Next Error",
-    },
-    {
-      "[e",
-      vim.diagnostic.goto_prev,
-      desc = "Previous Error",
-    },
   },
 }

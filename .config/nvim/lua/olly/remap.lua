@@ -13,6 +13,23 @@ vim.keymap.set("n", "<leader>l", vim.cmd.Lazy)
 vim.keymap.set("n", "<leader>[", "<C-o>", { noremap = true })
 vim.keymap.set("n", "<leader>]", "<C-i>", { noremap = true })
 
+-- Go to the next quickfix item
+vim.keymap.set("n", "]q", function()
+  vim.cmd("cnext")
+end, { desc = "Next Quickfix" })
+
+vim.keymap.set("n", "[q", function()
+  vim.cmd("cprev")
+end, { desc = "Previous Quickfix" })
+
+vim.keymap.set("n", "]e", function()
+  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Next Error" })
+
+vim.keymap.set("n", "[e", function()
+  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Previous Error" })
+
 -- Map leader [ and ] to navigate files
 vim.keymap.set("n", "<leader>{", ":bprevious<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>}", ":bnext<CR>", { noremap = true })
@@ -51,6 +68,8 @@ local function restart_lsp_clients(server_name)
   vim.defer_fn(function()
     vim.cmd("e")
   end, 100)
+
+  vim.cmd("Copilot attach")
 end
 
 vim.keymap.set("n", "<leader>ra", function()
