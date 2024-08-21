@@ -27,14 +27,7 @@ return {
             enable = true,
             filetypes = { "javascriptreact", "typescriptreact" },
           },
-          tsserver_file_preferences = {
-            includeInlayParameterNameHints = "all",
-            includeInlayEnumMemberValueHints = true,
-            includeInlayFunctionLikeReturnTypeHints = false,
-            includeInlayFunctionParameterTypeHints = false,
-            includeInlayPropertyDeclarationTypeHints = true,
-            includeInlayVariableTypeHints = false,
-          },
+          tsserver_file_preferences = {},
         },
       })
     end,
