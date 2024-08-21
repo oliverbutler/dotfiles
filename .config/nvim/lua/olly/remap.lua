@@ -66,6 +66,7 @@ local function restart_lsp_clients(server_name)
   end
 
   vim.defer_fn(function()
+    vim.cmd("w!")
     vim.cmd("e")
   end, 100)
 

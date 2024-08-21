@@ -13,10 +13,13 @@ return {
         settings = {
           separate_diagnostic_server = true,
           publish_diagnostic_on = "insert_leave",
-          expose_as_code_action = "all",
+          expose_as_code_action = {
+            "remove_unused_imports",
+            "add_missing_imports",
+          },
           tsserver_path = nil,
           tsserver_plugins = {},
-          tsserver_max_memory = "auto",
+          tsserver_max_memory = "10000",
           tsserver_format_options = {},
           tsserver_locale = "en",
           complete_function_calls = false,
