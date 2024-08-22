@@ -150,9 +150,9 @@ return {
       require("telescope").extensions.live_grep_args.live_grep_args()
     end, { desc = "[S]search [G]rep" })
 
-    vim.keymap.set("n", '<leader>"', function()
+    vim.keymap.set("n", "<leader>sa", function()
       require("olly.search-symbols").custom_symbol_search("all")
-    end, { desc = "[S]earch [S]ymbol" })
+    end, { desc = "[S]earch [A]ymbol" })
 
     vim.keymap.set("n", "<leader>sz", function()
       require("olly.search-symbols").custom_symbol_search("zod")
@@ -170,8 +170,7 @@ return {
       require("olly.search-symbols").custom_symbol_search("react")
     end, { desc = "[S]earch [R]eact" })
 
-    -- vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]search [R]esume" })
-    vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
+    vim.keymap.set("n", "<leader><leader>", builtin.resume, { desc = "[ ] reopen last" })
 
     -- Visual mode when <leader>sw search for selected text
     vim.keymap.set("v", "<leader>sw", function()

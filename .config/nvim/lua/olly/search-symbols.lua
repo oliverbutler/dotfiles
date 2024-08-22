@@ -28,6 +28,10 @@ local function get_first_symbol(input)
     "set",
   }
 
+  if not input then
+    return nil
+  end
+
   -- Remove leading whitespace
   input = input:match("^%s*(.-)%s*$")
 
@@ -62,7 +66,7 @@ local function custom_symbol_search(search_type)
     types = [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
     classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
     zod = [[const.*=\s*z\.]],
-    react = [[\bconst\s+(\w+)\s*=\s*(?:React\.)?(?:memo|forwardRef)?\(?(?:\s*\((?:[^()]*|\([^()]*\))*\)\s*=>|\s*[^\s]+\s*=>|.*?{)]],
+    react = [[\b(const|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|React\.memo\(|React\.forwardRef\(|\()|extends\s+React\.Component)]],
   }
 
   local keyword_pattern = patterns[search_type]
@@ -81,17 +85,24 @@ local function custom_symbol_search(search_type)
 
   local function grep_symbols()
     local results = {}
+    local args = {}
+
+    table.insert(args, "--no-heading")
+    table.insert(args, "--with-filename")
+    table.insert(args, "--line-number")
+    table.insert(args, "--column")
+    table.insert(args, "--smart-case")
+    if search_type == "react" then
+      table.insert(args, "--glob=*.tsx")
+    end
+    table.insert(args, keyword_pattern)
+    table.insert(args, ".")
+
+    vim.notify("Running rg with args: " .. table.concat(args, " "), vim.log.levels.INFO)
+
     Job:new({
       command = "rg",
-      args = {
-        "--no-heading",
-        "--with-filename",
-        "--line-number",
-        "--column",
-        "--smart-case",
-        keyword_pattern,
-        ".",
-      },
+      args = args,
       on_exit = function(j, return_val)
         for _, line in ipairs(j:result()) do
           table.insert(results, line)
