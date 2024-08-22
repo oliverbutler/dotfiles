@@ -42,6 +42,8 @@ const getTestExpectedObject = (params: { testOutput: string }): string => {
     // Remove leading spaces
     line = line.trim();
 
+    line = replaceDateWithExpectDate(line);
+
     jsonLines.push(line);
   }
 
@@ -52,6 +54,18 @@ const getTestExpectedObject = (params: { testOutput: string }): string => {
   jsonString = jsonString.replace(/"(\w+)":/g, "$1:");
 
   return jsonString;
+};
+
+/**
+ * input such as
+ *    "createdAt": 2024-08-22T15:38:03.190Z,
+ * to become
+ *    "createdAt": expect.any(Date),
+ */
+const replaceDateWithExpectDate = (row: string): string => {
+  const dateRegex = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/g;
+
+  return row.replace(dateRegex, "expect.any(Date)");
 };
 
 const add = (a: number, b: number) => {

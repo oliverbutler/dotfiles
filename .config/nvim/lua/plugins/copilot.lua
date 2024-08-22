@@ -1,6 +1,7 @@
 return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
+  event = "InsertEnter",
   config = function()
     require("copilot").setup({
       panel = {
@@ -21,7 +22,7 @@ return {
       suggestion = {
         enabled = true,
         auto_trigger = true,
-        debounce = 75,
+        debounce = 50,
         keymap = {
           accept = "<C-a>",
           accept_word = "<C-s>",
@@ -32,20 +33,9 @@ return {
         },
       },
       filetypes = {
-        yaml = true,
-        markdown = false,
-        help = false,
-        gitcommit = false,
-        gitrebase = false,
-        hgcommit = false,
-        svn = false,
-        cvs = false,
-        javascript = true,
-        typescript = true,
-        lua = true,
-        ["."] = false,
+        ["."] = true,
       },
-      copilot_node_command = "node", -- Node.js version must be > 18.x
+      copilot_node_command = "node",
       server_opts_overrides = {},
     })
 

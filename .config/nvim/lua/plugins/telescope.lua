@@ -33,6 +33,11 @@ return {
 
     require("telescope").setup({
       extensions = {
+        fzf = {
+          fuzzy = true, -- false will only do exact matching
+          override_generic_sorter = true, -- override the generic sorter
+          override_file_sorter = true, -- override the file sorter
+        },
         ["ui-select"] = {
           require("telescope.themes").get_cursor(),
         },
@@ -130,17 +135,105 @@ return {
     vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "[S]search [B]uffers" })
     vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]search [W]ord" })
 
+    -- Fast paste open
+    vim.keymap.set("n", "<leader>P", function()
+      builtin.find_files()
+
+      local clipboard = vim.fn.getreg("+")
+
+      if clipboard and #clipboard > 0 then
+        vim.cmd("normal! i" .. clipboard)
+      end
+    end)
+
     vim.keymap.set("n", "<leader>'", function()
       require("telescope").extensions.live_grep_args.live_grep_args()
     end, { desc = "[S]search [G]rep" })
 
     vim.keymap.set("n", '<leader>"', function()
-      local keywords = { "const", "let", "function", "async" }
+      local keyword_pattern = [[\b(const|let|async|function)\s+(\w+)]]
 
-      require("telescope").extensions.live_grep_args.live_grep_args({
-        prompt_title = "Search Symbol",
-        default_text = "(" .. table.concat(keywords, "|") .. ") ",
-      })
+      vim.notify("Starting symbol search...", vim.log.levels.INFO)
+
+      local Job = require("plenary.job")
+      local pickers = require("telescope.pickers")
+      local finders = require("telescope.finders")
+      local conf = require("telescope.config").values
+      local actions = require("telescope.actions")
+      local action_state = require("telescope.actions.state")
+      local previewers = require("telescope.previewers")
+
+      local fzf_lua = require("telescope").extensions.fzf
+
+      local function grep_symbols()
+        local results = {}
+        Job:new({
+          command = "rg",
+          args = {
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+            keyword_pattern,
+            ".",
+          },
+          on_exit = function(j, return_val)
+            for _, line in ipairs(j:result()) do
+              table.insert(results, line)
+            end
+          end,
+        }):sync()
+        vim.notify("Found " .. #results .. " symbols", vim.log.levels.INFO)
+        return results
+      end
+
+      local symbol_results = grep_symbols()
+
+      if #symbol_results == 0 then
+        vim.notify("No symbols found", vim.log.levels.WARN)
+        return
+      end
+
+      pickers
+        .new({}, {
+          prompt_title = "Search Symbol",
+          finder = finders.new_table({
+            results = symbol_results,
+            entry_maker = function(entry)
+              local file, lnum, col, text = string.match(entry, "([^:]+):([^:]+):([^:]+):(.+)")
+              local keyword, symbol = string.match(text, "(%w+)%s+(%w+)")
+
+              if not symbol then
+                symbol = text
+              end
+
+              return {
+                value = entry,
+                display = symbol .. " - " .. file .. ":" .. lnum,
+                ordinal = symbol,
+                path = file,
+                lnum = tonumber(lnum),
+                col = tonumber(col),
+              }
+            end,
+          }),
+          sorter = fzf_lua.native_fzf_sorter(),
+          previewer = previewers.vimgrep.new({}),
+          attach_mappings = function(prompt_bufnr, map)
+            actions.select_default:replace(function()
+              actions.close(prompt_bufnr)
+              local selection = action_state.get_selected_entry()
+              vim.notify("Opening " .. selection.path .. " at line " .. selection.lnum, vim.log.levels.INFO)
+              vim.cmd("edit " .. selection.path)
+              vim.api.nvim_win_set_cursor(0, { selection.lnum, selection.col - 1 })
+            end)
+            return true
+          end,
+        })
+        :find()
+
+      vim.notify("Symbol search completed", vim.log.levels.INFO)
     end, { desc = "[S]earch [S]ymbol" })
 
     vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]search [R]esume" })

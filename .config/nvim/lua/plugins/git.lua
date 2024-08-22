@@ -48,6 +48,14 @@ return {
         { noremap = true, silent = true, desc = "[H]istory [O]pen" }
       )
 
+      -- History for a PR/branch against origin/master
+      vim.keymap.set(
+        "n",
+        "<leader>hm",
+        ":DiffviewOpen origin/master...HEAD<CR>",
+        { noremap = true, silent = true, desc = "[H]istory [M]aster" }
+      )
+
       vim.keymap.set("n", "<leader>hs", function()
         -- should make a visual selection and then call the command '<,'>DiffviewFileHistory to get line history
         vim.cmd("normal! gv")

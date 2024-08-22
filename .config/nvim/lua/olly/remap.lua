@@ -41,6 +41,12 @@ vim.keymap.set("n", "<leader>w", function()
   vim.cmd("w")
 end)
 
+-- File helpers
+vim.keymap.set("n", "<leader>fo", function()
+  local file_path = vim.fn.expand("%:p")
+  vim.fn.system({ "open", "-R", file_path })
+end, { noremap = true, silent = true, desc = "Open current file in Finder" })
+
 -- ChatGPT
 vim.keymap.set("n", "<leader>co", ":ChatGPT<CR>")
 vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
