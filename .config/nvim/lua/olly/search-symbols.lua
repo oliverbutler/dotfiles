@@ -73,6 +73,8 @@ local function custom_symbol_search(search_type)
     react = [[\b(export\s+)?(const|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|React\.memo\(|React\.forwardRef\(|\()|extends\s+React\.Component|\()]],
   }
 
+  -- TODO: Build support for ts-rest search, finds all files which have c.router({}) then maps all the endpoints, allows searching by name or path
+
   local keyword_pattern = patterns[search_type]
 
   vim.notify("Starting symbol search for " .. search_type, vim.log.levels.INFO)
