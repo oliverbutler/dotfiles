@@ -196,7 +196,7 @@ return {
       end
 
       pickers
-        .new({}, {
+        .new(require("telescope.themes").get_dropdown(), {
           prompt_title = "Search Symbol",
           finder = finders.new_table({
             results = symbol_results,
@@ -212,20 +212,27 @@ return {
                 value = entry,
                 display = symbol .. " - " .. file .. ":" .. lnum,
                 ordinal = symbol,
-                path = file,
+                filename = file,
                 lnum = tonumber(lnum),
                 col = tonumber(col),
               }
             end,
           }),
           sorter = fzf_lua.native_fzf_sorter(),
-          previewer = previewers.vimgrep.new({}),
+          previewer = previewers.vim_buffer_vimgrep.new({}),
+          layout_config = {
+            horizontal = {
+              prompt_position = "top",
+              width = 0.60,
+              mirror = false,
+            },
+          },
           attach_mappings = function(prompt_bufnr, map)
             actions.select_default:replace(function()
               actions.close(prompt_bufnr)
               local selection = action_state.get_selected_entry()
-              vim.notify("Opening " .. selection.path .. " at line " .. selection.lnum, vim.log.levels.INFO)
-              vim.cmd("edit " .. selection.path)
+              vim.notify("Opening " .. selection.filename .. " at line " .. selection.lnum, vim.log.levels.INFO)
+              vim.cmd("edit " .. selection.filename)
               vim.api.nvim_win_set_cursor(0, { selection.lnum, selection.col - 1 })
             end)
             return true
