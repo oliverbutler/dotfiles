@@ -76,11 +76,14 @@ return {
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
         layout_config = {
-          width = 0.90,
           horizontal = {
+            prompt_position = "top",
+            width = 0.90,
             mirror = false,
           },
           vertical = {
+            prompt_position = "top",
+            width = 0.90,
             mirror = false,
           },
         },
@@ -130,6 +133,15 @@ return {
     vim.keymap.set("n", "<leader>'", function()
       require("telescope").extensions.live_grep_args.live_grep_args()
     end, { desc = "[S]search [G]rep" })
+
+    vim.keymap.set("n", '<leader>"', function()
+      local keywords = { "const", "let", "function", "async" }
+
+      require("telescope").extensions.live_grep_args.live_grep_args({
+        prompt_title = "Search Symbol",
+        default_text = "(" .. table.concat(keywords, "|") .. ") ",
+      })
+    end, { desc = "[S]earch [S]ymbol" })
 
     vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]search [R]esume" })
     vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
