@@ -58,6 +58,10 @@ local valid_search_types = {
   react = "React Components",
 }
 
+-- @oliverbutler's custom search!
+-- Honestly I miss webstorms incredible searching, it does turn my computer into a jet engine through
+-- I figured, f it, we can easily rg for the things we care about and then display them in a nice way
+-- For example, this lets you search any react component in your project and then open it in a new buffer
 local function custom_symbol_search(search_type)
   assert(valid_search_types[search_type], "Invalid search type")
 
