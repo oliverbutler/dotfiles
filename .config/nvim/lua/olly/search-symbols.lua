@@ -1,3 +1,5 @@
+local devicons = require("nvim-web-devicons")
+
 -- Function to get the first "symbol" from a line of text/code
 -- e.g. "const foo = 1" will return "foo"
 -- e.g. "function bar() {}" will return "bar"
@@ -103,13 +105,19 @@ local function custom_symbol_search()
             return nil -- Skip this entry if no symbol is found
           end
 
+          local file_extension = string.match(file, "%.(%w+)$")
+
+          local icon, icon_hl = devicons.get_icon(file, file_extension, { default = true })
+
           return {
             value = entry,
-            display = symbol .. " - " .. file .. ":" .. lnum,
-            ordinal = symbol .. " " .. file, -- allow searching by symbol OR file
+            display = icon .. "  " .. symbol .. " - " .. file .. ":" .. lnum,
+            ordinal = symbol .. " " .. file,
             filename = file,
             lnum = tonumber(lnum),
             col = tonumber(col),
+            icon = icon,
+            icon_hl = icon_hl,
           }
         end,
       }),
