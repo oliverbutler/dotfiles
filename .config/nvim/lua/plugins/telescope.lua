@@ -151,10 +151,26 @@ return {
     end, { desc = "[S]search [G]rep" })
 
     vim.keymap.set("n", '<leader>"', function()
-      require("olly.search-symbols").custom_symbol_search()
+      require("olly.search-symbols").custom_symbol_search("all")
     end, { desc = "[S]earch [S]ymbol" })
 
-    vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]search [R]esume" })
+    vim.keymap.set("n", "<leader>sz", function()
+      require("olly.search-symbols").custom_symbol_search("zod")
+    end, { desc = "[S]earch [Z]od" })
+
+    vim.keymap.set("n", "<leader>st", function()
+      require("olly.search-symbols").custom_symbol_search("types")
+    end, { desc = "[S]earch [T]ypes" })
+
+    vim.keymap.set("n", "<leader>sc", function()
+      require("olly.search-symbols").custom_symbol_search("classes")
+    end, { desc = "[S]earch [C]lasses" })
+
+    vim.keymap.set("n", "<leader>sr", function()
+      require("olly.search-symbols").custom_symbol_search("react")
+    end, { desc = "[S]earch [R]eact" })
+
+    -- vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]search [R]esume" })
     vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 
     -- Visual mode when <leader>sw search for selected text

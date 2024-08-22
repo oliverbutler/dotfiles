@@ -46,10 +46,28 @@ local function get_first_symbol(input)
   return nil -- Return nil if no valid symbol is found
 end
 
-local function custom_symbol_search()
-  local keyword_pattern = [[\b(const|async|function|type|class|interface)\s+(\w+)]]
+local valid_search_types = {
+  types = "Types",
+  all = "All",
+  zod = "Zod Schemas",
+  classes = "Classes",
+  react = "React Components",
+}
 
-  vim.notify("Starting symbol search...", vim.log.levels.INFO)
+local function custom_symbol_search(search_type)
+  assert(valid_search_types[search_type], "Invalid search type")
+
+  local patterns = {
+    all = [[\b(const|async|function|type|class|interface)\s+(\w+)]],
+    types = [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
+    classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
+    zod = [[const.*=\s*z\.]],
+    react = [[\bconst\s+(\w+)\s*=\s*(?:React\.)?(?:memo|forwardRef)?\(?(?:\s*\((?:[^()]*|\([^()]*\))*\)\s*=>|\s*[^\s]+\s*=>|.*?{)]],
+  }
+
+  local keyword_pattern = patterns[search_type]
+
+  vim.notify("Starting symbol search for " .. search_type, vim.log.levels.INFO)
 
   local Job = require("plenary.job")
   local pickers = require("telescope.pickers")
@@ -93,7 +111,7 @@ local function custom_symbol_search()
 
   pickers
     .new({}, {
-      prompt_title = "Search Symbol",
+      prompt_title = "Search " .. valid_search_types[search_type],
       finder = finders.new_table({
         results = symbol_results,
         entry_maker = function(entry)
