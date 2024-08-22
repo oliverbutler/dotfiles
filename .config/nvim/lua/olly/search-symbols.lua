@@ -47,7 +47,7 @@ local function get_first_symbol(input)
 end
 
 local function custom_symbol_search()
-  local keyword_pattern = [[\b(const|let|async|function|type)\s+(\w+)]]
+  local keyword_pattern = [[\b(const|async|function|type|class|interface)\s+(\w+)]]
 
   vim.notify("Starting symbol search...", vim.log.levels.INFO)
 

@@ -29,4 +29,8 @@ describe("getFirstSymbol", function()
     assert.are.equal("MyType", getFirstSymbol("type MyType = { foo: string }"))
     assert.are.equal("MyType2", getFirstSymbol("export type MyType2 = { foo: string }"))
   end)
+
+  it("should be able to search classes", function()
+    assert.are.equal("OnsiApiMembersController", getFirstSymbol("export class OnsiApiMembersController {"))
+  end)
 end)
