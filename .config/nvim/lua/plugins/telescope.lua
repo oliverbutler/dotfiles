@@ -196,16 +196,17 @@ return {
       end
 
       pickers
-        .new(require("telescope.themes").get_dropdown(), {
+        .new({}, {
           prompt_title = "Search Symbol",
           finder = finders.new_table({
             results = symbol_results,
             entry_maker = function(entry)
               local file, lnum, col, text = string.match(entry, "([^:]+):([^:]+):([^:]+):(.+)")
-              local keyword, symbol = string.match(text, "(%w+)%s+(%w+)")
+              local keyword, symbol = string.match(text, "\\b(const|let|async|function)\\s+(\\w+)")
 
               if not symbol then
-                symbol = text
+                vim.notify("No symbol found in " .. entry, vim.log.levels.WARN)
+                return nil -- Skip this entry if no symbol is found
               end
 
               return {
@@ -220,12 +221,11 @@ return {
           }),
           sorter = fzf_lua.native_fzf_sorter(),
           previewer = previewers.vim_buffer_vimgrep.new({}),
+          layout_strategy = "horizontal",
           layout_config = {
-            horizontal = {
-              prompt_position = "top",
-              width = 0.60,
-              mirror = false,
-            },
+            width = 0.8,
+            height = 0.8,
+            preview_width = 0.5,
           },
           attach_mappings = function(prompt_bufnr, map)
             actions.select_default:replace(function()
