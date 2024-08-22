@@ -27,7 +27,7 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- Fonts
 -- Emojis 🤣💀👻✅🐳
 --
-config.font_size = 12.0
+config.font_size = 12.5
 config.harfbuzz_features = { "calt=0", "clig=0", "liga=0" }
 config.foreground_text_hsb = {
 	hue = 1.0,
@@ -43,8 +43,8 @@ config.font = wezterm.font_with_fallback({
 })
 
 -- Window
-config.window_background_opacity = 0.95
-config.macos_window_background_blur = 50
+config.window_background_opacity = 1
+-- config.macos_window_background_blur = 50
 config.adjust_window_size_when_changing_font_size = false
 -- Fix opt+3 not giving # https://github.com/wez/wezterm/issues/4353#issuecomment-1759118679
 config.send_composed_key_when_left_alt_is_pressed = true

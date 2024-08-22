@@ -4,14 +4,14 @@ return {
     name = "catppuccin",
     priority = 1000,
     opts = {
-      flavour = "auto", -- latte, frappe, macchiato, mocha
+      flavour = "mocha", -- latte, frappe, macchiato, mocha
       background = { -- :h background
         light = "latte",
         dark = "mocha",
       },
       transparent_background = false, -- disables setting the background color.
       show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-      term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
+      term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
       dim_inactive = {
         enabled = false, -- dims the background color of inactive window
         shade = "dark",
@@ -43,25 +43,56 @@ return {
         gitsigns = true,
         nvimtree = true,
         treesitter = true,
-        notify = false,
+        notify = true,
         mini = {
           enabled = true,
           indentscope_color = "",
         },
-        -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+        diffview = true,
+        telescope = {
+          enabled = true,
+          style = "nvchad",
+        },
       },
     },
 
     config = function()
+      -- Apply the Catppuccin colorscheme
       vim.cmd.colorscheme("catppuccin")
 
-      -- Set highlight groups after colorscheme is applied
-      vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-      vim.api.nvim_set_hl(0, "PmenuSel", { bg = "#4C566A", fg = "#ECEFF4" })
-      vim.api.nvim_set_hl(0, "PmenuSbar", { bg = "#434C5E" })
-      vim.api.nvim_set_hl(0, "Pmenu", { bg = "#3B4252", fg = "#D8DEE9" })
+      -- Load Catppuccin color palette
+      local colors = require("catppuccin.palettes").get_palette()
 
+      -- Define all custom highlight groups
+      local CustomHighlights = {
+        -- General highlight groups
+        Normal = { bg = "none" },
+        NormalFloat = { bg = "none" },
+        PmenuSel = { bg = colors.surface2, fg = colors.text },
+        PmenuSbar = { bg = colors.surface1 },
+        Pmenu = { bg = colors.surface0, fg = colors.overlay2 },
+
+        -- Telescope highlight groups
+        TelescopeMatching = { fg = colors.flamingo },
+        TelescopeSelection = { fg = colors.text, bg = colors.surface0, bold = true },
+        TelescopePromptPrefix = { bg = colors.surface0 },
+        TelescopePromptNormal = { bg = colors.surface0 },
+        TelescopeResultsNormal = { bg = colors.mantle },
+        TelescopePreviewNormal = { bg = colors.mantle },
+        TelescopePromptBorder = { bg = colors.surface0, fg = colors.surface0 },
+        TelescopeResultsBorder = { bg = colors.mantle, fg = colors.mantle },
+        TelescopePreviewBorder = { bg = colors.mantle, fg = colors.mantle },
+        TelescopePromptTitle = { bg = colors.pink, fg = colors.mantle },
+        TelescopeResultsTitle = { fg = colors.mantle },
+        TelescopePreviewTitle = { bg = colors.green, fg = colors.mantle },
+      }
+
+      -- Apply all custom highlight groups
+      for hl, col in pairs(CustomHighlights) do
+        vim.api.nvim_set_hl(0, hl, col)
+      end
+
+      -- Apply Airline theme
       vim.g.airline_theme = "catppuccin"
     end,
   },

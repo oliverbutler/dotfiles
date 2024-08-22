@@ -34,7 +34,7 @@ return {
     require("telescope").setup({
       extensions = {
         ["ui-select"] = {
-          require("telescope.themes").get_dropdown(),
+          require("telescope.themes").get_cursor(),
         },
         "project",
         live_grep_args = {
@@ -76,6 +76,7 @@ return {
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
         layout_config = {
+          width = 0.90,
           horizontal = {
             mirror = false,
           },
@@ -85,18 +86,6 @@ return {
         },
         file_sorter = require("telescope.sorters").get_fuzzy_file,
         generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
-        winblend = 0,
-        border = {},
-        borderchars = {
-          "─",
-          "│",
-          "─",
-          "│",
-          "╭",
-          "╮",
-          "╯",
-          "╰",
-        },
         color_devicons = true, -- Enable color devicons
         use_less = true,
         path_display = {},
@@ -160,7 +149,7 @@ return {
         winblend = 10,
         previewer = true, -- Enable previewer
         layout_config = {
-          width = 0.8, -- Set width to 80% of the editor's width
+          width = 0.85,
         },
       })
       require("telescope.builtin").current_buffer_fuzzy_find(telescope_dropdown)
