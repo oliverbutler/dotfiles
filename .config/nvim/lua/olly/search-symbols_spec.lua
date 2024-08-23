@@ -18,7 +18,6 @@ package.loaded["nvim-web-devicons"] = mock_web_devicons()
 
 local getFirstSymbol = require("lua.olly.search-symbols").get_first_symbol
 local ripgrep_line_patterns = require("lua.olly.search-symbols").ripgrep_line_patterns
-local lfs = require("lfs") -- LuaFileSystem, for directory operations
 
 -- Helper function to run ripgrep on a string
 local function run_ripgrep_on_string(pattern, content)
