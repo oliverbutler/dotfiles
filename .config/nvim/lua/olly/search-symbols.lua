@@ -56,6 +56,7 @@ local valid_search_types = {
   zod = "Zod Schemas",
   classes = "Classes",
   react = "React Components",
+  functions = "Functions",
 }
 
 -- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
@@ -65,6 +66,7 @@ local ripgrep_line_patterns = {
   classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
   zod = [[const.*=\s*z\.]],
   react = [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+  functions = [[\b(export\s+)?(default\s+)?(async\s+)?(function\s*\*?\s*\w*|\w+\s*=\s*(\(.*\)\s*=>|\(?.*\)?\s*{)|\w+\s*\(.*\)\s*(:\s*\w+\s*)?\{?|const\s+\w+\s*=\s*(async\s*)?\(?.*\)?\s*=>)]],
 }
 
 -- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control

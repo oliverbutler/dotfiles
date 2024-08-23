@@ -150,6 +150,57 @@ describe("ripgrep_line_patterns", function()
       assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.react, "function helperFunction() {"))
     end)
   end)
+
+  describe("functions", function()
+    it("should match traditional function declarations", function()
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function myFunction() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function myFunction(param1, param2) {"))
+    end)
+
+    it("should match arrow function declarations", function()
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myArrowFunc = () => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myArrowFunc = (param) => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myArrowFunc = () => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myArrowFunc = () => {"))
+    end)
+
+    it("should match async function declarations", function()
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async function myAsyncFunc() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myAsyncArrowFunc = async () => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myAsyncArrowFunc = async () => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myAsyncArrowFunc = async () => {"))
+    end)
+
+    it("should match exported function declarations", function()
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "export function myExportedFunc() {"))
+      assert.is_true(
+        run_ripgrep_on_string(ripgrep_line_patterns.functions, "export async function myExportedAsyncFunc() {")
+      )
+    end)
+
+    it("should match functions that are over a few lines", function()
+      assert.is_true(
+        run_ripgrep_on_string(ripgrep_line_patterns.functions, "export const createFooFunction = async ({")
+      )
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async createFoo({"))
+    end)
+
+    it("should not match non-function declarations", function()
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myVar = 5;"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myObject = {};"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.functions, "class MyClass {}"))
+    end)
+
+    it("should work for class methods", function()
+      assert.is_true(
+        run_ripgrep_on_string(
+          ripgrep_line_patterns.functions,
+          "async getFooByEmailPartner(email: string, partnerId: number) {"
+        )
+      )
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async createFoo(data: {"))
+    end)
+  end)
 end)
 
 describe("getFirstSymbol", function()

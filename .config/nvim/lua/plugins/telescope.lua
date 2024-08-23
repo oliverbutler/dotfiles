@@ -158,6 +158,7 @@ return {
       t = "types",
       c = "classes",
       r = "react",
+      f = "functions",
     }
 
     for key, value in pairs(search_key_map) do
