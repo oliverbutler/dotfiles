@@ -58,6 +58,15 @@ local valid_search_types = {
   react = "React Components",
 }
 
+-- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
+local ripgrep_line_patterns = {
+  all = [[\b(const|async|function|type|class|interface)\s+(\w+)]],
+  types = [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
+  classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
+  zod = [[const.*=\s*z\.]],
+  react = [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|React\.memo\(|React\.forwardRef\(|forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+}
+
 -- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control
 local function custom_symbol_search(params)
   local search_type = params.type
@@ -65,15 +74,7 @@ local function custom_symbol_search(params)
 
   assert(valid_search_types[search_type], "Invalid search type")
 
-  local patterns = {
-    all = [[\b(const|async|function|type|class|interface)\s+(\w+)]],
-    types = [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
-    classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
-    zod = [[const.*=\s*z\.]],
-    react = [[\b(export\s+)?(const|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|React\.memo\(|React\.forwardRef\(|\()|extends\s+React\.Component|\()]],
-  }
-
-  local keyword_pattern = patterns[search_type]
+  local keyword_pattern = ripgrep_line_patterns[search_type]
 
   vim.notify(string.format("Searching for %s symbols", valid_search_types[search_type]), vim.log.levels.INFO)
 
@@ -183,4 +184,5 @@ end
 return {
   custom_symbol_search = custom_symbol_search,
   get_first_symbol = get_first_symbol,
+  ripgrep_line_patterns = ripgrep_line_patterns,
 }
