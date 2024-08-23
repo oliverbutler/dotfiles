@@ -158,55 +158,6 @@ describe("ripgrep_line_patterns", function()
       assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.react, "function helperFunction() {"))
     end)
   end)
-
-  describe("functions", function()
-    it("should match standard function", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async function myFunction() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function myFunction(data: {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function myFunction('hi',"))
-    end)
-
-    it("should match arrow function declarations", function()
-      -- consts
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myFunction = ("))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myFunction = async ("))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myFunction = async () => {"))
-
-      -- lets
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myFunction = ("))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myFunction = async ("))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myFunction = async () => {"))
-
-      -- vars
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myFunction = ("))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myFunction = async ("))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myFunction = async () => {"))
-    end)
-
-    it("should not match non-function declarations", function()
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myVar = 5;"))
-    end)
-
-    it("should match additional function patterns", function()
-      -- Generator functions
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function* generatorFunction() {"))
-
-      -- Arrow functions with implicit return
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const implicitReturn = () => 42"))
-
-      -- Method definitions in classes
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "myMethod() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async myAsyncMethod() {"))
-    end)
-
-    it("should match additional class method patterns", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "static myStaticMethod() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "*myGeneratorMethod() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async *myAsyncGeneratorMethod() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "get myGetter() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "set mySetter(value) {"))
-    end)
-  end)
 end)
 
 describe("getFirstSymbol", function()

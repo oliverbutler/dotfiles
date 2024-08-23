@@ -56,7 +56,6 @@ local valid_search_types = {
   zod = "Zod Schemas",
   classes = "Classes",
   react = "React Components",
-  functions = "Functions",
 }
 
 -- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
@@ -85,14 +84,6 @@ local ripgrep_line_patterns = {
     -- Covers functional components, class components, and components wrapped in higher-order functions
     -- Examples: "const MyComponent = (" or "class MyComponent extends React.Component"
     [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
-  },
-  functions = {
-    -- Matches various function declarations:
-    -- 1. Standard functions (including async and generator)
-    -- 2. Arrow functions (const, let, or var declarations)
-    -- 3. Class methods (including static, async, generator, getters, and setters)
-    -- Examples: "function myFunc(", "const myArrowFunc = (", "async *myGeneratorMethod("
-    [[\b((async\s+)?function(\s*\*)?(\s+\w+)?|((const|let|var)\s+(\w+)\s*=\s*(async\s+)?\(?)|((static\s+)?(async\s+)?(\*\s*)?(\w+|get\s+\w+|set\s+\w+)))\s*\(]],
   },
 }
 
