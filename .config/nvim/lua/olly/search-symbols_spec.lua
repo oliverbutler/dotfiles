@@ -127,6 +127,7 @@ describe("ripgrep_line_patterns", function()
 
     it("should match memoized component declarations", function()
       assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "const MyComponent = React.memo(() => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "const AppRouter = memo((props) => {"))
     end)
 
     it("should match forwardRef component declarations", function()

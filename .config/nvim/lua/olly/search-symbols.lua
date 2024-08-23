@@ -64,7 +64,7 @@ local ripgrep_line_patterns = {
   types = [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
   classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
   zod = [[const.*=\s*z\.]],
-  react = [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|React\.memo\(|React\.forwardRef\(|forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+  react = [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
 }
 
 -- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control
@@ -103,6 +103,8 @@ local function custom_symbol_search(params)
     table.insert(args, keyword_pattern)
     table.insert(args, ".")
 
+    local start_time = vim.loop.hrtime()
+
     Job:new({
       command = "rg",
       args = args,
@@ -110,9 +112,14 @@ local function custom_symbol_search(params)
         for _, line in ipairs(j:result()) do
           table.insert(results, line)
         end
+
+        local end_time = vim.loop.hrtime()
+        local duration_ms = (end_time - start_time) / 1e6
+
+        vim.notify(string.format("Found %d symbols in %.2f ms", #results, duration_ms), vim.log.levels.INFO)
       end,
     }):sync()
-    vim.notify("Found " .. #results .. " symbols", vim.log.levels.INFO)
+
     return results
   end
 
