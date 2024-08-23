@@ -150,25 +150,35 @@ return {
       require("telescope").extensions.live_grep_args.live_grep_args()
     end, { desc = "[S]search [G]rep" })
 
-    vim.keymap.set("n", "<leader>sa", function()
-      require("olly.search-symbols").custom_symbol_search("all")
-    end, { desc = "[S]earch [A]ymbol" })
+    --#region
+    -- Custom search functions
+    local search_key_map = {
+      a = "all",
+      z = "zod",
+      t = "types",
+      c = "classes",
+      r = "react",
+    }
 
-    vim.keymap.set("n", "<leader>sz", function()
-      require("olly.search-symbols").custom_symbol_search("zod")
-    end, { desc = "[S]earch [Z]od" })
+    for key, value in pairs(search_key_map) do
+      local upper_key = key:upper()
 
-    vim.keymap.set("n", "<leader>st", function()
-      require("olly.search-symbols").custom_symbol_search("types")
-    end, { desc = "[S]earch [T]ypes" })
+      vim.keymap.set("n", "<leader>s" .. key, function()
+        require("olly.search-symbols").custom_symbol_search({
+          type = value,
+          also_search_file_name = false,
+        })
+      end, { desc = "[S]earch [" .. upper_key .. "]" })
 
-    vim.keymap.set("n", "<leader>sc", function()
-      require("olly.search-symbols").custom_symbol_search("classes")
-    end, { desc = "[S]earch [C]lasses" })
+      vim.keymap.set("n", "<leader>s" .. upper_key, function()
+        require("olly.search-symbols").custom_symbol_search({
+          type = value,
+          also_search_file_name = true,
+        })
+      end, { desc = "[S]earch [" .. upper_key .. "] (include file name)" })
+    end
 
-    vim.keymap.set("n", "<leader>sr", function()
-      require("olly.search-symbols").custom_symbol_search("react")
-    end, { desc = "[S]earch [R]eact" })
+    --#endregion
 
     vim.keymap.set("n", "<leader><leader>", builtin.resume, { desc = "[ ] reopen last" })
 

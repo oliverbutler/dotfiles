@@ -58,11 +58,11 @@ local valid_search_types = {
   react = "React Components",
 }
 
--- @oliverbutler's custom search!
--- Honestly I miss webstorms incredible searching, it does turn my computer into a jet engine through
--- I figured, f it, we can easily rg for the things we care about and then display them in a nice way
--- For example, this lets you search any react component in your project and then open it in a new buffer
-local function custom_symbol_search(search_type)
+-- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control
+local function custom_symbol_search(params)
+  local search_type = params.type
+  local include_file_name_in_search = params.also_search_file_name
+
   assert(valid_search_types[search_type], "Invalid search type")
 
   local patterns = {
@@ -73,11 +73,9 @@ local function custom_symbol_search(search_type)
     react = [[\b(export\s+)?(const|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|React\.memo\(|React\.forwardRef\(|\()|extends\s+React\.Component|\()]],
   }
 
-  -- TODO: Build support for ts-rest search, finds all files which have c.router({}) then maps all the endpoints, allows searching by name or path
-
   local keyword_pattern = patterns[search_type]
 
-  vim.notify("Starting symbol search for " .. search_type, vim.log.levels.INFO)
+  vim.notify(string.format("Searching for %s symbols", valid_search_types[search_type]), vim.log.levels.INFO)
 
   local Job = require("plenary.job")
   local pickers = require("telescope.pickers")
@@ -104,8 +102,6 @@ local function custom_symbol_search(search_type)
     table.insert(args, keyword_pattern)
     table.insert(args, ".")
 
-    vim.notify("Running rg with args: " .. table.concat(args, " "), vim.log.levels.INFO)
-
     Job:new({
       command = "rg",
       args = args,
@@ -126,9 +122,15 @@ local function custom_symbol_search(search_type)
     return
   end
 
+  local title = string.format(
+    "Search %s symbols %s",
+    valid_search_types[search_type],
+    include_file_name_in_search and " (include file name)" or ""
+  )
+
   pickers
     .new({}, {
-      prompt_title = "Search " .. valid_search_types[search_type],
+      prompt_title = title,
       finder = finders.new_table({
         results = symbol_results,
         entry_maker = function(entry)
@@ -147,7 +149,7 @@ local function custom_symbol_search(search_type)
           return {
             value = entry,
             display = icon .. "  " .. symbol .. " - " .. file .. ":" .. lnum,
-            ordinal = symbol .. " " .. file,
+            ordinal = include_file_name_in_search and symbol .. "" .. file or symbol,
             filename = file,
             lnum = tonumber(lnum),
             col = tonumber(col),
