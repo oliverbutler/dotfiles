@@ -62,7 +62,7 @@ local valid_search_types = {
 -- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
 local ripgrep_line_patterns = {
   all = {
-    [[\b(const|async|function|type|class|interface)\s+(\w+)]],
+    [[\b(const|static|async|function|type|class|interface)\s+(\w+)]],
   },
   types = {
     [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
@@ -77,11 +77,9 @@ local ripgrep_line_patterns = {
     [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
   },
   functions = {
-    [[\b(async\s+)?function(\s+\*?)?\s+(\$?\w+|\[[\w\s]+\])\s*\(]],
-    [[\b(export\s+)?(const|let|var)\s+(\$?\w+)\s*=\s*(async\s+)?\(.*\)\s*=>\s*\{?]],
-    [[\b(async\s+)?(\$?\w+)\s*=\s*(async\s+)?\(.*\)\s*=>\s*\{?]],
-    [[\b(static\s+)?(async\s+)?(\$?\w+)\s*\(.*\)\s*\{]],
-    [[\b(get|set)\s+(\$?\w+)\s*\(]],
+    [[\b(async\s+)?function(\s*\*)?(\s+\w+)?\s*\(]], -- Matches standard and generator functions
+    [[\b(const|let|var)\s+(\w+)\s*=\s*(async\s+)?\(?\s*(\(|=>)]], -- Matches arrow function declarations
+    [[\b(static\s+)?(async\s+)?(\*\s*)?(\w+\s*\(|get\s+\w+\s*\(|set\s+\w+\s*\()]], -- Matches class methods, getters, and setters
   },
 }
 

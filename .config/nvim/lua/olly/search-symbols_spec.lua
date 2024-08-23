@@ -20,7 +20,7 @@ local getFirstSymbol = require("lua.olly.search-symbols").get_first_symbol
 local ripgrep_line_patterns = require("lua.olly.search-symbols").ripgrep_line_patterns
 
 -- Helper function to run ripgrep on a string
-local function run_ripgrep_on_string(pattern, content)
+local function run_ripgrep_on_string(patterns, content)
   -- Create a temporary file
   local temp_file = os.tmpname()
 
@@ -29,127 +29,182 @@ local function run_ripgrep_on_string(pattern, content)
   file:write(content)
   file:close()
 
-  -- Run ripgrep
-  local handle = io.popen(string.format("rg -e '%s' %s", pattern, temp_file))
-  local result = handle:read("*a")
-  handle:close()
+  -- Run ripgrep for each pattern
+  for _, pattern in ipairs(patterns) do
+    local handle = io.popen(string.format("rg -e '%s' %s", pattern, temp_file))
+    local result = handle:read("*a")
+    handle:close()
+
+    if result ~= "" then
+      -- Remove the temporary file
+      os.remove(temp_file)
+      return true
+    end
+  end
 
   -- Remove the temporary file
   os.remove(temp_file)
 
-  return result ~= ""
+  return false
 end
 
 describe("ripgrep_line_patterns", function()
   describe("all", function()
     it("should match variable declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "const foo = 'bar';"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "async myFunc = () => {};"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "const foo = 'bar';"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "async myFunc = () => {};"))
     end)
 
     it("should match function declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "function myFunction() {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "async function asyncFunc() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "function myFunction() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "async function asyncFunc() {"))
     end)
 
     it("should match class declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "class MyClass {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "class MyClass {"))
     end)
 
     it("should match type and interface declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "type MyType = {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "interface MyInterface {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "type MyType = {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.all, "interface MyInterface {"))
     end)
 
     it("should not match regular assignments or function calls", function()
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "x = 5;"))
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.all[1], "myFunction();"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.all, "x = 5;"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.all, "myFunction();"))
     end)
   end)
 
   describe("types", function()
     it("should match interface declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types[1], "interface MyInterface {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types[1], "interface AnotherInterface{"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types, "interface MyInterface {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types, "interface AnotherInterface{"))
     end)
 
     it("should match type declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types[1], "type MyType = {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types[1], "type AnotherType="))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types, "type MyType = {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.types, "type AnotherType="))
     end)
 
     it("should not match class or function declarations", function()
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.types[1], "class MyClass {"))
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.types[1], "function myFunc() {"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.types, "class MyClass {"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.types, "function myFunc() {"))
     end)
   end)
 
   describe("classes", function()
     it("should match simple class declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.classes[1], "class MyClass {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.classes, "class MyClass {"))
     end)
 
     it("should match class declarations with extends", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.classes[1], "class ChildClass extends ParentClass {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.classes, "class ChildClass extends ParentClass {"))
     end)
 
     it("should match class declarations with implements", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.classes[1], "class MyClass implements MyInterface {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.classes, "class MyClass implements MyInterface {"))
     end)
 
     it("should not match function or interface declarations", function()
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.classes[1], "function myFunction() {"))
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.classes[1], "interface MyInterface {"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.classes, "function myFunction() {"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.classes, "interface MyInterface {"))
     end)
   end)
 
   describe("zod", function()
     it("should match zod schema declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.zod[1], "const mySchema = z.object({"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.zod[1], "const anotherSchema = z.string()"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.zod, "const mySchema = z.object({"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.zod, "const anotherSchema = z.string()"))
     end)
 
     it("should not match non-zod constant declarations", function()
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.zod[1], "const myVar = 5;"))
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.zod[1], "const obj = {z: 5};"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.zod, "const myVar = 5;"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.zod, "const obj = {z: 5};"))
     end)
   end)
 
   describe("react", function()
     it("should match functional component declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react[1], "const MyComponent = () => {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react[1], "function MyComponent() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "const MyComponent = () => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "function MyComponent() {"))
     end)
 
     it("should match class component declarations", function()
-      assert.is_true(
-        run_ripgrep_on_string(ripgrep_line_patterns.react[1], "class MyComponent extends React.Component {")
-      )
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "class MyComponent extends React.Component {"))
     end)
 
     it("should match memoized component declarations", function()
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react[1], "const MyComponent = React.memo(() => {"))
-      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react[1], "const AppRouter = memo((props) => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "const MyComponent = React.memo(() => {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.react, "const AppRouter = memo((props) => {"))
     end)
 
     it("should match forwardRef component declarations", function()
       assert.is_true(
-        run_ripgrep_on_string(ripgrep_line_patterns.react[1], "const MyComponent = React.forwardRef((props, ref) => {")
+        run_ripgrep_on_string(ripgrep_line_patterns.react, "const MyComponent = React.forwardRef((props, ref) => {")
       )
       assert.is_true(
-        run_ripgrep_on_string(ripgrep_line_patterns.react[1], "const MyComponent = forwardRef((props, ref) => {")
+        run_ripgrep_on_string(ripgrep_line_patterns.react, "const MyComponent = forwardRef((props, ref) => {")
       )
       assert.is_true(
         run_ripgrep_on_string(
-          ripgrep_line_patterns.react[1],
+          ripgrep_line_patterns.react,
           "export const TextInput = forwardRef<HTMLInputElement, TextInputProps>("
         )
       )
     end)
 
     it("should not match non-component declarations", function()
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.react[1], "const myVar = 5;"))
-      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.react[1], "function helperFunction() {"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.react, "const myVar = 5;"))
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.react, "function helperFunction() {"))
+    end)
+  end)
+
+  describe("functions", function()
+    it("should match standard function", function()
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async function myFunction() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function myFunction(data: {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function myFunction('hi',"))
+    end)
+
+    it("should match arrow function declarations", function()
+      -- consts
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myFunction = ("))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myFunction = async ("))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myFunction = async () => {"))
+
+      -- lets
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myFunction = ("))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myFunction = async ("))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "let myFunction = async () => {"))
+
+      -- vars
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myFunction = ("))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myFunction = async ("))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "var myFunction = async () => {"))
+    end)
+
+    it("should not match non-function declarations", function()
+      assert.is_false(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const myVar = 5;"))
+    end)
+
+    it("should match additional function patterns", function()
+      -- Generator functions
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "function* generatorFunction() {"))
+
+      -- Arrow functions with implicit return
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "const implicitReturn = () => 42"))
+
+      -- Method definitions in classes
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "myMethod() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async myAsyncMethod() {"))
+    end)
+
+    it("should match additional class method patterns", function()
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "static myStaticMethod() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "*myGeneratorMethod() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "async *myAsyncGeneratorMethod() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "get myGetter() {"))
+      assert.is_true(run_ripgrep_on_string(ripgrep_line_patterns.functions, "set mySetter(value) {"))
     end)
   end)
 end)
