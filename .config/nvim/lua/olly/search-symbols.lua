@@ -62,24 +62,37 @@ local valid_search_types = {
 -- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
 local ripgrep_line_patterns = {
   all = {
+    -- Matches declarations of constants, static members, async functions, regular functions, types, classes, and interfaces
     [[\b(const|static|async|function|type|class|interface)\s+(\w+)]],
   },
   types = {
+    -- Matches interface and type declarations
+    -- Examples: "interface MyInterface {" or "type MyType ="
     [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
   },
   classes = {
+    -- Matches class declarations, including those with extends or implements
+    -- Example: "class MyClass extends BaseClass {"
     [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
   },
   zod = {
+    -- Matches Zod schema declarations
+    -- Example: "const mySchema = z."
     [[const.*=\s*z\.]],
   },
   react = {
+    -- Matches React component declarations
+    -- Covers functional components, class components, and components wrapped in higher-order functions
+    -- Examples: "const MyComponent = (" or "class MyComponent extends React.Component"
     [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
   },
   functions = {
-    [[\b(async\s+)?function(\s*\*)?(\s+\w+)?\s*\(]], -- Matches standard and generator functions
-    [[\b(const|let|var)\s+(\w+)\s*=\s*(async\s+)?\(?\s*(\(|=>)]], -- Matches arrow function declarations
-    [[\b(static\s+)?(async\s+)?(\*\s*)?(\w+\s*\(|get\s+\w+\s*\(|set\s+\w+\s*\()]], -- Matches class methods, getters, and setters
+    -- Matches various function declarations:
+    -- 1. Standard functions (including async and generator)
+    -- 2. Arrow functions (const, let, or var declarations)
+    -- 3. Class methods (including static, async, generator, getters, and setters)
+    -- Examples: "function myFunc(", "const myArrowFunc = (", "async *myGeneratorMethod("
+    [[\b((async\s+)?function(\s*\*)?(\s+\w+)?|((const|let|var)\s+(\w+)\s*=\s*(async\s+)?\(?)|((static\s+)?(async\s+)?(\*\s*)?(\w+|get\s+\w+|set\s+\w+)))\s*\(]],
   },
 }
 
