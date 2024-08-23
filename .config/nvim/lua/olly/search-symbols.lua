@@ -61,13 +61,78 @@ local valid_search_types = {
 
 -- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
 local ripgrep_line_patterns = {
-  all = [[\b(const|async|function|type|class|interface)\s+(\w+)]],
-  types = [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
-  classes = [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
-  zod = [[const.*=\s*z\.]],
-  react = [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
-  functions = [[\b(export\s+)?(default\s+)?(async\s+)?(function\s*\*?\s*\w*|\w+\s*=\s*(\(.*\)\s*=>|\(?.*\)?\s*{)|\w+\s*\(.*\)\s*(:\s*\w+\s*)?\{?|const\s+\w+\s*=\s*(async\s*)?\(?.*\)?\s*=>)]],
+  all = {
+    [[\b(const|async|function|type|class|interface)\s+(\w+)]],
+  },
+  types = {
+    [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
+  },
+  classes = {
+    [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
+  },
+  zod = {
+    [[const.*=\s*z\.]],
+  },
+  react = {
+    [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+  },
+  functions = {
+    [[\b(async\s+)?function(\s+\*?)?\s+(\$?\w+|\[[\w\s]+\])\s*\(]],
+    [[\b(export\s+)?(const|let|var)\s+(\$?\w+)\s*=\s*(async\s+)?\(.*\)\s*=>\s*\{?]],
+    [[\b(async\s+)?(\$?\w+)\s*=\s*(async\s+)?\(.*\)\s*=>\s*\{?]],
+    [[\b(static\s+)?(async\s+)?(\$?\w+)\s*\(.*\)\s*\{]],
+    [[\b(get|set)\s+(\$?\w+)\s*\(]],
+  },
 }
+
+local function run_ripgrep(pattern, directory)
+  local Job = require("plenary.job")
+  local results = {}
+
+  local start_time = vim.loop.hrtime()
+
+  Job:new({
+    command = "rg",
+    args = {
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      pattern,
+      directory or ".",
+    },
+    on_exit = function(j, return_val)
+      for _, line in ipairs(j:result()) do
+        table.insert(results, line)
+      end
+
+      local end_time = vim.loop.hrtime()
+      local duration_ms = (end_time - start_time) / 1e6
+
+      vim.notify(
+        string.format("Found %d results for pattern '%s' in %.2f ms", #results, pattern, duration_ms),
+        vim.log.levels.INFO
+      )
+    end,
+  }):sync()
+
+  return results
+end
+
+local function remove_duplicates(results)
+  local seen = {}
+  local unique_results = {}
+
+  for _, result in ipairs(results) do
+    if not seen[result] then
+      seen[result] = true
+      table.insert(unique_results, result)
+    end
+  end
+
+  return unique_results
+end
 
 -- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control
 local function custom_symbol_search(params)
@@ -76,56 +141,18 @@ local function custom_symbol_search(params)
 
   assert(valid_search_types[search_type], "Invalid search type")
 
-  local keyword_pattern = ripgrep_line_patterns[search_type]
+  local patterns = ripgrep_line_patterns[search_type]
 
-  vim.notify(string.format("Searching for %s symbols", valid_search_types[search_type]), vim.log.levels.INFO)
+  local raw_results = {}
 
-  local Job = require("plenary.job")
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
-  local conf = require("telescope.config").values
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
-  local previewers = require("telescope.previewers")
-
-  local fzf_lua = require("telescope").extensions.fzf
-
-  local function grep_symbols()
-    local results = {}
-    local args = {}
-
-    table.insert(args, "--no-heading")
-    table.insert(args, "--with-filename")
-    table.insert(args, "--line-number")
-    table.insert(args, "--column")
-    table.insert(args, "--smart-case")
-    if search_type == "react" then
-      table.insert(args, "--glob=*.tsx")
+  for _, pattern in ipairs(patterns) do
+    local results = run_ripgrep(pattern, params.directory)
+    for _, result in ipairs(results) do
+      table.insert(raw_results, result)
     end
-    table.insert(args, keyword_pattern)
-    table.insert(args, ".")
-
-    local start_time = vim.loop.hrtime()
-
-    Job:new({
-      command = "rg",
-      args = args,
-      on_exit = function(j, return_val)
-        for _, line in ipairs(j:result()) do
-          table.insert(results, line)
-        end
-
-        local end_time = vim.loop.hrtime()
-        local duration_ms = (end_time - start_time) / 1e6
-
-        vim.notify(string.format("Found %d symbols in %.2f ms", #results, duration_ms), vim.log.levels.INFO)
-      end,
-    }):sync()
-
-    return results
   end
 
-  local symbol_results = grep_symbols()
+  local symbol_results = remove_duplicates(raw_results)
 
   if #symbol_results == 0 then
     vim.notify("No symbols found", vim.log.levels.WARN)
@@ -137,6 +164,16 @@ local function custom_symbol_search(params)
     valid_search_types[search_type],
     include_file_name_in_search and " (include file name)" or ""
   )
+
+  local Job = require("plenary.job")
+  local pickers = require("telescope.pickers")
+  local finders = require("telescope.finders")
+  local conf = require("telescope.config").values
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  local previewers = require("telescope.previewers")
+
+  local fzf_lua = require("telescope").extensions.fzf
 
   pickers
     .new({}, {
