@@ -49,12 +49,23 @@ return {
       )
 
       -- History for a PR/branch against origin/master
-      vim.keymap.set(
-        "n",
-        "<leader>hm",
-        ":DiffviewOpen origin/master...HEAD<CR>",
-        { noremap = true, silent = true, desc = "[H]istory [M]aster" }
-      )
+      vim.keymap.set("n", "<leader>hm", function()
+        local mainOrMaster = "master"
+
+        if vim.fn.executable("git") == 1 then
+          local branch = vim.fn.systemlist("git branch --show-current")[1]
+          if branch == nil then
+            vim.notify("No branch found", vim.log.levels.ERROR)
+            return
+          end
+
+          if branch == "main" then
+            mainOrMaster = "main"
+          end
+        end
+
+        vim.cmd("DiffviewOpen origin/" .. mainOrMaster .. "...HEAD")
+      end, { noremap = true, silent = true, desc = "[H]istory [M]aster" })
 
       vim.keymap.set("n", "<leader>hs", function()
         -- should make a visual selection and then call the command '<,'>DiffviewFileHistory to get line history
