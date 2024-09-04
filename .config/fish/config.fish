@@ -48,6 +48,10 @@ alias vom="say vom"
 alias c="clear"
 alias n="nvim"
 
+
+# Kubes
+alias k="kubectl"
+
 # Tmux Helpers
 # twerk will open tmux for work, "work" OR create session if missing
 # tome will open tmux for home, OR create session if missing
