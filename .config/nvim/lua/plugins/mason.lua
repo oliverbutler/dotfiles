@@ -44,6 +44,8 @@ return {
         "prettierd",
         "stylua",
         "sql-formatter",
+        "gofumpt",
+        "gofumports",
       },
     })
 
