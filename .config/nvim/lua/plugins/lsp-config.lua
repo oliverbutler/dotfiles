@@ -57,6 +57,7 @@ return {
           "vue",
           "go",
           "templ",
+          "css",
         }, -- Added "go" here
         init_options = { userLanguages = { templ = "html" } },
         settings = {
