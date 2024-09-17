@@ -2,7 +2,6 @@ return {
   "numToStr/FTerm.nvim",
   keys = {
     "<leader>tt",
-    "<leader>gl",
     "<leader>ld",
   },
   config = function()
@@ -12,10 +11,6 @@ return {
       {
         cmd = nil,
         key = "<leader>tt",
-      },
-      {
-        cmd = "lazygit",
-        key = "<leader>gl",
       },
       {
         cmd = "lazydocker",

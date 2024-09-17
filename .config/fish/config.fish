@@ -1,6 +1,7 @@
 # ~/.config/fish/config.fish
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx LG_CONFIG_FILE $XDG_CONFIG_HOME/lazygit/config.yml
+set -gx KUBECONFIG $HOME/projects/homelab/kubeconfig
 
 set PATH /Users/olly/bin $PATH
 set PATH /opt/homebrew/bin $PATH
@@ -14,6 +15,7 @@ set PATH /Users/olly/projects/oimage $PATH
 set PATH ~/.pub-cache/bin $PATH
 set PATH ~/.local/share/bob/nvim-bin $PATH
 set PATH ~/development/flutter/bin $PATH
+
 
 set -x nvm_default_version 18
 
