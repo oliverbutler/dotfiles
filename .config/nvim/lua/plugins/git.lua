@@ -2,8 +2,25 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     event = "BufReadPre",
+    keys = {
+      { "n", "<leader>g" },
+    },
     config = function()
       require("gitsigns").setup()
+
+      vim.keymap.set(
+        "n",
+        "<leader>gp",
+        "<cmd>lua require('gitsigns').preview_hunk()<CR>",
+        { noremap = true, silent = true, desc = "Preview hunk" }
+      )
+
+      vim.keymap.set(
+        "n",
+        "<leader>gi",
+        "<cmd>lua require('gitsigns').preview_hunk_inline()<CR>",
+        { noremap = true, silent = true, desc = "Preview hunk inline" }
+      )
     end,
   },
   {
@@ -17,9 +34,6 @@ return {
   },
   {
     "sindrets/diffview.nvim",
-    keys = {
-      "<leader>h",
-    },
     config = function()
       require("diffview").setup({})
 
@@ -74,32 +88,15 @@ return {
       end, { noremap = true, silent = true, desc = "[H]istory [S]election" })
 
       vim.keymap.set("v", "<leader>hs", function()
-        -- Save the current position of the cursor
-        local cursor_pos = vim.api.nvim_win_get_cursor(0)
-
         -- Get the position of the start and end of the visual selection
-        local start_pos = vim.api.nvim_buf_get_mark(0, "<")
-        local end_pos = vim.api.nvim_buf_get_mark(0, ">")
+        local start_pos = vim.fn.getpos("'<")
+        local end_pos = vim.fn.getpos("'>")
 
-        -- Construct the command with the proper range
-        local command = start_pos[1] .. "," .. end_pos[1] .. "DiffviewFileHistory"
+        -- Construct the command with the proper range and options
+        local command = string.format("%d,%dDiffviewFileHistory --follow %%", start_pos[2], end_pos[2])
 
         -- Execute the command
         vim.cmd(command)
-
-        -- Get the number of lines in the current buffer
-        local line_count = vim.api.nvim_buf_line_count(0)
-
-        -- Check if the cursor's original position is within the current buffer's bounds
-        if cursor_pos[1] > line_count then
-          cursor_pos[1] = line_count
-        end
-
-        -- Optionally, you can also ensure the column is within bounds, but typically,
-        -- setting the line is sufficient for this use case.
-
-        -- Restore the cursor position within bounds
-        vim.api.nvim_win_set_cursor(0, cursor_pos)
       end, { noremap = true, silent = true, desc = "[H]istory [S]election" })
 
       vim.keymap.set("n", "<leader>gp", function()

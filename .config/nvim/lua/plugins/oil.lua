@@ -20,6 +20,7 @@ return {
       view_options = {
         show_hidden = true,
       },
+      watch_for_changes = true,
     })
   end,
 }
