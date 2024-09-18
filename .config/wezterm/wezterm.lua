@@ -2,8 +2,6 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-config.window_background_image = wezterm.home_dir .. "/bg-blurred-darker.png"
-
 -- Theme
 config.colors = require("cyberdream")
 config.enable_tab_bar = false
@@ -45,5 +43,17 @@ config.window_padding = {
 }
 config.initial_rows = 50
 config.initial_cols = 180
+
+config.window_background_image = "/Users/olly/.config/wezterm/bg-blurred.png"
+
+config.window_background_image_hsb = {
+  -- Darken the background image by reducing it to 1/3rd
+  brightness = 1.0,
+  -- You can adjust the hue by scaling its value.
+  -- a multiplier of 1.0 leaves the value unchanged.
+  hue = 1.0,
+
+  saturation = 1.0,
+}
 
 return config

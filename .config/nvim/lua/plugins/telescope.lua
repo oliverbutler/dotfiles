@@ -72,6 +72,7 @@ return {
           "--glob=!**/dist/*",
           "--glob=!**/yarn.lock",
           "--glob=!**/package-lock.json",
+          "--glob=!**/.env*", -- Include .env files
         },
         prompt_prefix = "  ",
         selection_caret = "  ",
@@ -118,6 +119,7 @@ return {
             "--glob=!**/dist/*",
             "--glob=!**/yarn.lock",
             "--glob=!**/package-lock.json",
+            "--glob=!**/.env*", -- Include .env files
           },
         },
       },
