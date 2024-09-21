@@ -191,3 +191,5 @@ function prmake
 	# Open the newly created PR in the web browser
 	gh pr view --web
 end
+
+zoxide init fish | source
