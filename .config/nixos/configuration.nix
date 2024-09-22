@@ -22,12 +22,12 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "olly-desktop"; # Define your hostname.
-  # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
+  # Bluetooth
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
-  # Configure network proxy if necessary networking.proxy.default = 
-  # "http://user:password@proxy:port/"; networking.proxy.noProxy = 
-  # "127.0.0.1,localhost,internal.domain";
+  # Hostname
+  networking.hostName = "olly-desktop"; 
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -138,7 +138,6 @@ in
   environment.systemPackages = with pkgs; [
     kitty
     gh
-    vim 
 
     # Build stuff
     gnumake
@@ -152,15 +151,25 @@ in
     zoxide
     delta
 
+    # Neovim
+    vim 
+    # TODO: Move to a way to pin versions easier
+    unstable.neovim
+    stylua
+
+
     nodejs_22
+
+    # Go
     go
     air
+    gopls
+    gofumpt
+
 
     lsof
     wget
     ethtool
-    # TODO: Move to a way to pin versions easier
-    unstable.neovim
     spotify
     _1password-gui
     _1password
