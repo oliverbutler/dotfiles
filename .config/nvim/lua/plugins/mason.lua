@@ -1,3 +1,14 @@
+local function is_nixos()
+    local os_release = io.open("/etc/os-release", "r")
+    if os_release then
+        local content = os_release:read("*all")
+        os_release:close()
+        return content:match("ID=nixos")
+    end
+    return false
+end
+
+
 return {
   "williamboman/mason.nvim",
   dependencies = {
@@ -8,52 +19,56 @@ return {
   cmd = "Mason",
   event = "BufReadPre",
   config = function()
-    local mason = require("mason")
-    local mason_lspconfig = require("mason-lspconfig")
-    local mason_tool_installer = require("mason-tool-installer")
-    local mason_dap = require("mason-nvim-dap")
+    if not is_nixos() then
+      local mason = require("mason")
+      local mason_lspconfig = require("mason-lspconfig")
+      local mason_tool_installer = require("mason-tool-installer")
+      local mason_dap = require("mason-nvim-dap")
 
-    mason.setup({
-      ui = {
-        icons = {
-          package_installed = "✓",
-          package_pending = "➜",
-          package_uninstalled = "✗",
+      mason.setup({
+        ui = {
+          icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗",
+          },
         },
-      },
-    })
+      })
 
-    mason_lspconfig.setup({
-      ensure_installed = {
-        "tsserver",
-        "html",
-        "cssls",
-        "tailwindcss",
-        "lua_ls",
-        "prismals",
-        "terraformls",
-        "templ",
-        "html",
-        "htmx",
-      },
-    })
+      mason_lspconfig.setup({
+        ensure_installed = {
+          "tsserver",
+          "html",
+          "cssls",
+          "tailwindcss",
+          "lua_ls",
+          "prismals",
+          "terraformls",
+          "templ",
+          "html",
+          "htmx",
+        },
+      })
 
-    mason_tool_installer.setup({
-      ensure_installed = {
-        "eslint",
-        "prettierd",
-        "stylua",
-        "sql-formatter",
-        "gofumpt",
-        "gofumports",
-      },
-    })
+      mason_tool_installer.setup({
+        ensure_installed = {
+          "eslint",
+          "prettierd",
+          "stylua",
+          "sql-formatter",
+          "gofumpt",
+          "gofumports",
+        },
+      })
 
-    mason_dap.setup({
-      ensure_installed = {
-        "js",
-        "delve",
-      },
-    })
+      mason_dap.setup({
+        ensure_installed = {
+          "js",
+          "delve",
+        },
+      })
+    else 
+      print("Skipping mason setup on NixOS")
+    end
   end,
 }
