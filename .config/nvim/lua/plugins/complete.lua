@@ -138,7 +138,6 @@ return {
         },
         ["<CR>"] = cmp.mapping.confirm({ cmp.ConfirmBehavior.Replace, select = true }),
         ["<TAB>"] = cmp.mapping.select_next_item(),
-        ["<S-TAB>"] = cmp.mapping.select_prev_item(),
       }),
       sources = cmp.config.sources({
         { name = "nvim_lsp" },
