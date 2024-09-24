@@ -19,7 +19,7 @@ config.foreground_text_hsb = {
 }
 config.font = wezterm.font_with_fallback({
   {
-    family = "JetBrainsMono Nerd Font",
+    family = "JetBrains Mono",
     weight = "Regular",
   },
   { family = "Apple Color Emoji", assume_emoji_presentation = true, scale = 1.2 },
@@ -43,17 +43,5 @@ config.window_padding = {
 }
 config.initial_rows = 50
 config.initial_cols = 180
-
-config.window_background_image = "/Users/olly/.config/wezterm/bg-blurred.png"
-
-config.window_background_image_hsb = {
-  -- Darken the background image by reducing it to 1/3rd
-  brightness = 1.0,
-  -- You can adjust the hue by scaling its value.
-  -- a multiplier of 1.0 leaves the value unchanged.
-  hue = 1.0,
-
-  saturation = 1.0,
-}
 
 return config
