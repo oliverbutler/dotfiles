@@ -151,6 +151,10 @@ in
     tmux
     ripgrep
     obsidian
+    kubectl
+    talosctl
+    k9s
+    lens
   ];
 
   programs._1password.enable = true;

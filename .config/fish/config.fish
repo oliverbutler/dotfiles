@@ -81,7 +81,7 @@ function zn
         return 1
     end
 
-    set dir (z -e $argv[1])
+    set dir (z $argv[1])
 
     if test -n "$dir"
         cd "$dir"
