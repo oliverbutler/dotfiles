@@ -16,6 +16,7 @@ in
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./nvidia.nix
+      ./vms.nix
     ];
 
   # Bootloader.
@@ -51,6 +52,11 @@ in
     LC_PAPER = "en_GB.UTF-8";
     LC_TELEPHONE = "en_GB.UTF-8";
     LC_TIME = "en_GB.UTF-8";
+  };
+
+  # Tailscale
+  services.tailscale = {
+    enable = true;
   };
 
   # Enable the X11 windowing system.
@@ -167,6 +173,10 @@ in
     gofumpt
 
 
+    gparted 
+    ansel
+    darktable
+    caligula
     lsof
     wget
     ethtool
