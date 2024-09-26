@@ -118,6 +118,7 @@ in
     openssl
     gccgo
     unzip
+    nvtop
     vulkan-tools
     starship
     zoxide
@@ -139,8 +140,6 @@ in
     wget
     ethtool
     spotify
-    _1password-gui
-    _1password
     neofetch
     wezterm
     lazygit
@@ -153,6 +152,14 @@ in
     ripgrep
     obsidian
   ];
+
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    # Certain features, including CLI integration and system authentication support,
+    # require enabling PolKit integration on some desktop environments (e.g. Plasma).
+    polkitPolicyOwners = [ "olly" ];
+  };
 
 
   programs.steam.enable = true;
