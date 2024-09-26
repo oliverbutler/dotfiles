@@ -1,8 +1,5 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, lib, ... }:
+
 
 let
   unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {
@@ -10,14 +7,7 @@ let
   };
 in
 
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./nvidia.nix
-      ./vms.nix
-    ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -27,14 +17,21 @@ in
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
-  # Hostname
-  networking.hostName = "olly-desktop"; 
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Setup WOL on enp3s0
-  networking.interfaces.enp3s0.wakeOnLan.enable = true;
+  users.users.olly = {
+    isNormalUser = true;
+    description = "Oliver Butler";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+      kdePackages.kate
+    ];
+    openssh = {
+      authorizedKeys = {
+        keys = [
+           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEu6Iqvohxzm8FBBXznE/ZmHkry9nHHHM8PrtbNeXg0X" # Olly Key
+	];
+      };
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/London";
@@ -54,10 +51,9 @@ in
     LC_TIME = "en_GB.UTF-8";
   };
 
-  # Tailscale
-  services.tailscale = {
-    enable = true;
-  };
+
+  # Enable networking
+  networking.networkmanager.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -77,16 +73,8 @@ in
       fi
     '';
   };
-
-
-  # worked fine, just dont have a need
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;
-  };
-
+  
+  
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -108,27 +96,6 @@ in
       ${pkgs.pulseaudio}/etc/pulse/default.pa > $out
   '';
 
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.olly = {
-    isNormalUser = true;
-    description = "Oliver Butler";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      kdePackages.kate
-    ];
-    openssh = {
-      authorizedKeys = {
-        keys = [
-           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEu6Iqvohxzm8FBBXznE/ZmHkry9nHHHM8PrtbNeXg0X" # Olly Key
-	];
-      };
-    };
-  };
-
   # Install firefox.
   programs.firefox.enable = true;
 
@@ -144,35 +111,23 @@ in
   environment.systemPackages = with pkgs; [
     kitty
     gh
-
     # Build stuff
     gnumake
     openssl
     gccgo
     unzip
     vulkan-tools
-
-    # Fish shell stuff
     starship
     zoxide
     delta
-
-    # Neovim
     vim 
-    # TODO: Move to a way to pin versions easier
     unstable.neovim
     stylua
-
-
     nodejs_22
-
-    # Go
     go
     air
     gopls
     gofumpt
-
-
     gparted 
     ansel
     darktable
@@ -197,35 +152,16 @@ in
   ];
 
 
-  # Gaming
-
-
   programs.steam.enable = true;
   programs.steam.gamescopeSession.enable = true;
   programs.gamemode.enable = true;
 
-  # this is so we can run "protonup" and not need to specify a path
+
   environment.sessionVariables = {
+    # this is so we can run "protonup" and not need to specify a path
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/olly/.steam/root/compatibilitytools.d";
-    WLR_NO_HARDWARE_CURSORS = "1";
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
 
-  # end gaming
-
-
-  
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
 
   services.openssh = {
     enable = true;
@@ -235,18 +171,6 @@ in
     };
   };
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
-
+  system.stateVersion = "24.05"; 
 }

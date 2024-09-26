@@ -32,12 +32,6 @@ function nvim
     end
 end
 
-# function lazygit
-# 	command lazygit --use-config-file="$HOME/.config/lazygit/config.yml" $argv
-# end
-
-alias wakeomega="wakeonlan -i 255.255.255.255 -p 7 d8:bb:c1:9a:de:d1"
-alias sleepomega="ssh omega 'date && winsleep'"
 # alias ll="exa -l --icons"
 # alias llo="ll --octal-permissions"
 # alias ls="exa --icons"
@@ -50,6 +44,9 @@ alias vom="say vom"
 alias c="clear"
 alias n="nvim"
 
+# nix
+alias rebuildfw="sudo nixos-rebuild switch -I nixos-config=/home/olly/.config/nixos/olly-fw.nix"
+alias rebuilddesktop="sudo nixos-rebuild switch -I nixos-config=/home/olly/.config/nixos/olly-desktop.nix"
 
 # Kubes
 alias k="kubectl"
