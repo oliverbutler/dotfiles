@@ -81,15 +81,9 @@ function zn
         return 1
     end
 
-    set dir (z $argv[1])
+    z $argv[1]
+    nvim
 
-    if test -n "$dir"
-        cd "$dir"
-	nvim
-    else
-        echo "Directory not found in z database"
-        return 1
-    end
 end
 alias confish="vim ~/.config/fish/config.fish"
 alias sourcefish="source ~/.config/fish/config.fish"

@@ -158,6 +158,7 @@ in
     k9s
     lens
     flux
+    sshfs
   ];
 
   programs._1password.enable = true;
