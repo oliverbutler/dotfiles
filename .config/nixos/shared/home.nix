@@ -7,6 +7,8 @@ in
     (import "${home-manager}/nixos")
   ];
 
+  home-manager.backupFileExtension = "bk";
+
   home-manager.users.olly = {
     home.stateVersion = "18.09";
 
@@ -15,10 +17,5 @@ in
       userName  = "oliverbutler";
       userEmail = "dev@oliverbutler.uk";
     };
-
-    programs.kitty.enable = true;
   };
-
-  home-manager.backupFileExtension = "backup";
-   
 }
