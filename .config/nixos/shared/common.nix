@@ -143,6 +143,7 @@ in
     neofetch
     wezterm
     lazygit
+    discord
     git
     htop
     mangohud
@@ -155,6 +156,7 @@ in
     talosctl
     k9s
     lens
+    flux
   ];
 
   programs._1password.enable = true;
