@@ -118,6 +118,7 @@ in
     openssl
     gccgo
     unzip
+    influxdb
     nvtop
     vulkan-tools
     starship
