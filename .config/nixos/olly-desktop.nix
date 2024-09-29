@@ -8,6 +8,7 @@
       ./shared/common.nix
       ./shared/tailscale.nix
       ./shared/vms.nix
+      ./shared/home.nix
     ];
 
 
