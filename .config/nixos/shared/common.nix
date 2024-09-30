@@ -143,6 +143,7 @@ in
     spotify
     neofetch
     wezterm
+    cura
     lazygit
     discord
     git
