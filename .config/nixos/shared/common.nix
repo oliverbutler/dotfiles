@@ -141,8 +141,11 @@ in
     wget
     ethtool
     spotify
+    pkgs.kdePackages.merkuro
     neofetch
     wezterm
+    nmap
+    nextcloud-client
     prusa-slicer
     lazygit
     discord
