@@ -141,6 +141,7 @@ in
     wget
     ethtool
     spotify
+    kdePackages.kimageformats
     pkgs.kdePackages.merkuro
     neofetch
     wezterm
@@ -163,6 +164,9 @@ in
     lens
     flux
     sshfs
+    beekeeper-studio
+    unstable.immich-cli
+    bun
   ];
 
   programs._1password.enable = true;
@@ -192,6 +196,28 @@ in
       PasswordAuthentication = false;
     };
   };
+
+  fileSystems."/mnt/unraid-photos" = {
+    device = "10.0.0.40:/mnt/user/Photos";
+    fsType = "nfs";
+    options = [ "x-systemd.automount" "noauto" "x-systemd.idle-timeout=600" ];
+  };
+
+
+  fileSystems."/mnt/unraid" = {
+    device = "root@10.0.0.40:/mnt/user";
+    fsType = "fuse.sshfs";
+    options = [
+      "identityfile=/home/olly/.ssh/id_ed25519"
+      "idmap=user"
+      "x-systemd.automount"
+      "allow_other"
+      "user"
+      "_netdev"
+    ];  
+  };
+
+  boot.supportedFilesystems = [ "fuse" "sshfs" ];
 
 
   system.stateVersion = "24.05"; 
