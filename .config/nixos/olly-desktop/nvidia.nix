@@ -61,6 +61,8 @@
 #   persistencedSha256 = lib.fakeSha256;
 # };
 
+  };
+
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
@@ -69,6 +71,5 @@
   };
 
 
-  };
 
 }

@@ -13,6 +13,13 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    useOSProber = true;
+  };
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/e8abb4d8-0220-4621-8a3e-b5deba0a0508";
       fsType = "btrfs";
