@@ -20,7 +20,7 @@ in
   users.users.olly = {
     isNormalUser = true;
     description = "Oliver Butler";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       kdePackages.kate
     ];
@@ -110,6 +110,8 @@ in
 
   services.blueman.enable = true;
 
+  virtualisation.docker.enable = true;
+
   environment.systemPackages = with pkgs; [
     kitty
     gh
@@ -143,12 +145,14 @@ in
     spotify
     kdePackages.kimageformats
     pkgs.kdePackages.merkuro
+    audacity
     neofetch
     wezterm
     nmap
     nextcloud-client
     prusa-slicer
     lazygit
+    lazydocker
     discord
     git
     htop
@@ -167,7 +171,19 @@ in
     beekeeper-studio
     unstable.immich-cli
     bun
+    wakeonlan
+    remmina
   ];
+
+  services.flatpak.enable = true;
+
+  systemd.services.flatpak-repo = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.flatpak ];
+    script = ''
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    '';
+  };
 
   programs._1password.enable = true;
   programs._1password-gui = {

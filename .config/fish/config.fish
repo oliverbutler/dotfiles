@@ -48,6 +48,8 @@ alias n="nvim"
 alias rebuildfw="sudo nixos-rebuild switch -I nixos-config=/home/olly/.config/nixos/olly-fw.nix"
 alias rebuilddesktop="sudo nixos-rebuild switch -I nixos-config=/home/olly/.config/nixos/olly-desktop.nix"
 
+alias parsec="wakeonlan d8:bb:c1:9a:de:d1 && flatpak run com.parsecgaming.parsec"
+
 # Kubes
 alias k="kubectl"
 
@@ -148,6 +150,8 @@ set -gx PATH "$PNPM_HOME" $PATH
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+
+alias lightroomsync="ssh root@10.0.0.40 '/mnt/user/backups/backup-scripts/do-immich-lightroom-sync.sh'"
 
 function prmake
 	# Get the current branch name as the default PR title
