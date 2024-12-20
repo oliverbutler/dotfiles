@@ -1,7 +1,9 @@
 # ~/.config/fish/config.fish
 set -gx XDG_CONFIG_HOME $HOME/.config
 set -gx LG_CONFIG_FILE $XDG_CONFIG_HOME/lazygit/config.yml
-set -gx KUBECONFIG $HOME/projects/homelab/kubeconfig
+set -gx KUBECONFIG $HOME/.kube/config
+
+set -gx EDITOR nvim
 
 set PATH /Users/olly/bin $PATH
 set PATH /opt/homebrew/bin $PATH
