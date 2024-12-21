@@ -33,6 +33,9 @@ return {
         },
       },
       filetypes = {
+        yaml = true,
+        lua = true,
+        go = true,
         ["."] = true,
       },
       copilot_node_command = "node",
