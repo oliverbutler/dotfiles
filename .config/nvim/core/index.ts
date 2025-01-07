@@ -69,30 +69,9 @@ export const getTestExpectedObject = (params: {
       // Add opening brace/bracket with proper indentation
       jsonLines.push(line);
     } else if (line.includes("}") || line.includes("]")) {
-      // Handle closing brace/bracket
-      if (line.endsWith(",")) {
-        line = line.slice(0, -1); // Remove trailing comma
-      }
       jsonLines.push(line);
-
-      // Add comma after object in array, but not after the last object
-      const nextLine = lines.find(
-        (l, i) =>
-          i > lines.indexOf(line) && l.trim() && !l.trim().startsWith("-"),
-      );
-      if (
-        line.includes("}") &&
-        objectDepth === 1 &&
-        nextLine &&
-        !nextLine.includes("]")
-      ) {
-        jsonLines.push(",");
-      }
     } else if (line) {
-      // Handle regular properties
-      if (!jsonLines.includes(line)) {
-        jsonLines.push(line);
-      }
+      jsonLines.push(line);
     }
 
     // Only break if we're at depth 0 and we see a closing bracket for an array

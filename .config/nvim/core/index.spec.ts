@@ -299,4 +299,94 @@ Error: expect(received).toEqual(expected) // deep equality
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
+
+  it("should work for arrays in arays", async () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+      should return MISSING_EMAIL error when the email is either not provided or is just spaces: failed
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 0
++ Received  + 8
+
+  Array [
+    Object {
+      "foo": "bar",
+    },
+    Object {
++     "array": Array [
++       1,
++       2,
++       3,
++     ],
+      "foo": "baz",
++     "object": Object {
++       "maple": true,
++     },
+    },
+  ]
+    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/bmo/feature-member-actions/src/lib/member-actions.utils.spec.ts:98:24)
+`,
+    });
+
+    const expectedOutput = `[
+  {
+    foo: "bar",
+  },
+  {
+    array: [
+      1,
+      2,
+      3,
+    ],
+    foo: "baz",
+    object: {
+      maple: true,
+    },
+  },
+]`;
+
+    expect(
+      await objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should support the same key in multiple objects", async () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+
+should return MISSING_EMAIL error when the email is either not provided or is just spaces: failed
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 1
++ Received  + 1
+
+  Array [
+    Object {
+      "foo": "bar",
+    },
+    Object {
+-     "foo": "baz",
++     "foo": "bar",
+    },
+  ]
+    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/bmo/feature-member-actions/src/lib/member-actions.utils.spec.ts:96:24)
+    `,
+    });
+
+    const expectedOutput = `[
+     {
+        foo: "bar",
+      },
+      {
+        foo: "bar",
+     }
+     ]`;
+
+    expect(
+      await objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
 });
