@@ -17,19 +17,7 @@ Error: expect(received).toEqual(expected) // deep equality
 +   "amount": 19,
     "currency": "GBP",
   }
-    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/shared/util-money/src/lib/shared-util-money.spec.ts:173:17)
-    at Promise.then.completed (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:316:40)
-    at async _runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:252:3)
-    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:126:9)
-    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:121:9)
-    at async run (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:71:3)
-    at async runAndTransformResultsToJestFormat (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at async jestAdapter (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at async runTestInternal (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:367:16)
-    at async runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.<anonymous> ()
 `,
     });
 
@@ -58,19 +46,7 @@ Error: expect(received).toEqual(expected) // deep equality
 -   "mydate": 2021-12-12T00:00:00.000Z,
 +   "mydate": 2025-01-07T11:41:07.258Z,
   }
-    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/shared/util-money/src/lib/shared-util-money.spec.ts:175:36)
-    at Promise.then.completed (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:316:40)
-    at async _runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:252:3)
-    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:126:9)
-    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:121:9)
-    at async run (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:71:3)
-    at async runAndTransformResultsToJestFormat (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at async jestAdapter (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at async runTestInternal (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:367:16)
-    at async runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.<anonymous> ()
 [Terminal closed]
 
 `,
@@ -88,35 +64,177 @@ Error: expect(received).toEqual(expected) // deep equality
     ).toBe(true);
   });
 
-  it("should work for non-object output", () => {
+  it("should work for boolean output", () => {
     const result = getTestExpectedObject({
       testOutput: `
-      should get the tax and remainder for a withdrawal fee: failed
 Error: expect(received).toEqual(expected) // deep equality
 
 Expected: true
-Received: {"foo": "bar"}
-    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/shared/util-money/src/lib/shared-util-money.spec.ts:175:28)
-    at Promise.then.completed (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:298:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:231:10)
-    at _callCircusTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:316:40)
-    at async _runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:252:3)
-    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:126:9)
-    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:121:9)
-    at async run (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:71:3)
-    at async runAndTransformResultsToJestFormat (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
-    at async jestAdapter (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
-    at async runTestInternal (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:367:16)
-    at async runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:444:34)
+Received: false
+    at Object.<anonymous> ()
+`,
+    });
 
+    const expectedOutput = "\n     true\n      ";
+    expect(
+      objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for string output", () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+Error: expect(received).toEqual(expected) // deep equality
+
+Expected: "hello world"
+Received: "goodbye world"
+    at Object.<anonymous> ()
+`,
+    });
+
+    const expectedOutput = `"hello world"`;
+    expect(
+      objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for number output", () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+Error: expect(received).toEqual(expected) // deep equality
+
+Expected: 42
+Received: 24
+    at Object.<anonymous> ()
+`,
+    });
+
+    const expectedOutput = "42";
+    expect(
+      objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for nested object with arrays", () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 2
++ Received  + 2
+
+  Object {
+    "items": Array [
+      Object {
+-       "id": 1,
++       "id": 2,
+        "name": "test",
+-       "values": Array [1, 2, 3],
++       "values": Array [4, 5, 6],
+      },
+    ],
+  }
+    at Object.<anonymous> ()
 `,
     });
 
     const expectedOutput = `
-     true
-      `;
+{
+  items: [
+    {
+      id: 2,
+      name: "test",
+      values: [4, 5, 6]
+    }
+  ]
+}`;
 
+    expect(
+      objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for object with multiple dates", () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 2
++ Received  + 2
+
+  Object {
+-   "createdAt": 2023-01-01T00:00:00.000Z,
++   "createdAt": 2024-01-01T00:00:00.000Z,
+    "user": Object {
+-     "lastLogin": 2023-12-31T23:59:59.999Z,
++     "lastLogin": 2024-01-01T00:00:00.000Z,
+    },
+  }
+    at Object.<anonymous> ()
+`,
+    });
+
+    const expectedOutput = `
+{
+  createdAt: expect.any(Date),
+  user: {
+    lastLogin: expect.any(Date)
+  }
+}`;
+
+    expect(
+      objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for array output", () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 1
++ Received  + 1
+
+  Array [
+-   1,
++   2,
+    3,
+    4,
+  ]
+    at Object.<anonymous> ()
+`,
+    });
+
+    const expectedOutput = `
+[
+  2,
+  3,
+  4
+]`;
+
+    expect(
+      objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for null output", () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+Error: expect(received).toEqual(expected) // deep equality
+
+Expected: null
+Received: undefined
+    at Object.<anonymous> ()
+`,
+    });
+
+    const expectedOutput = "null";
     expect(
       objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,

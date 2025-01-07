@@ -11,49 +11,96 @@ function logMessage(level: LogLevel, message: string) {
 export const getTestExpectedObject = (params: {
   testOutput: string;
 }): string => {
-  let lines = params.testOutput.split("\n");
+  const lines = params.testOutput.split("\n");
+
+  // Check for simple Expected: value pattern first
+  const simpleExpectedMatch = params.testOutput.match(
+    /Expected: (.*)\nReceived:/,
+  );
+  if (simpleExpectedMatch) {
+    const expectedValue = simpleExpectedMatch[1].trim();
+    return expectedValue;
+  }
+
   let jsonLines: string[] = [];
+  let isCollecting = false;
+  let objectDepth = 0;
 
   for (let line of lines) {
-    // Check for "+ Received" pattern
-    if (/^\+ Received/.test(line)) {
-      // Clear jsonLines array
-      jsonLines = [];
+    // Start collecting after we see the diff header
+    if (line.includes("- Expected") || line.includes("+ Received")) {
+      isCollecting = true;
       continue;
     }
 
-    // Skip lines starting with "-"
-    if (/^-/.test(line)) {
-      continue;
-    }
+    if (!isCollecting) continue;
 
-    // Skip lines that start with any number of blank spaces followed by "at"
+    // Skip stack traces
     if (/^\s*at /.test(line)) {
       break;
     }
 
-    // Replace "Array [" with "["
-    line = line.replace(/Array \[/g, "[");
+    // Track object depth
+    const openBraces = (line.match(/{/g) || []).length;
+    const closeBraces = (line.match(/}/g) || []).length;
+    objectDepth += openBraces - closeBraces;
 
-    // Replace "Object {" with "{"
-    line = line.replace(/Object {/g, "{");
+    // Skip lines that start with - (removed lines)
+    if (line.trim().startsWith("-")) {
+      continue;
+    }
 
-    // Remove leading "+"
-    line = line.replace(/^\+\s?/, "");
+    // Clean up the line
+    line = line
+      .replace(/^[\s+-]*/, "") // Remove leading spaces, +, and -
+      .replace(/Array \[/g, "[")
+      .replace(/Object \{/g, "{") // Replace 'Object {' with '{' everywhere
+      .trim();
 
-    // Remove leading spaces
-    line = line.trim();
+    // Skip empty lines
+    if (!line) {
+      continue;
+    }
 
     line = replaceDateWithExpectDate(line);
 
-    jsonLines.push(line);
+    // Handle nested object/array formatting
+    if (line.includes("{") || line.includes("[")) {
+      // Add opening brace/bracket with proper indentation
+      jsonLines.push(line);
+    } else if (line.includes("}") || line.includes("]")) {
+      // Handle closing brace/bracket
+      if (line.endsWith(",")) {
+        line = line.slice(0, -1); // Remove trailing comma
+      }
+      jsonLines.push(line);
+    } else if (line) {
+      // Handle regular properties
+      if (!jsonLines.includes(line)) {
+        jsonLines.push(line);
+      }
+    }
+
+    // If we're back at depth 0 and had some content, we're done
+    if (objectDepth === 0 && line.includes("}")) {
+      break;
+    }
   }
 
   // Convert parsed lines into single JSON string
   let jsonString = jsonLines.join("\n");
 
   // Remove quotes from object keys
-  jsonString = jsonString.replace(/"(\w+)":/g, "$1:");
+  jsonString = jsonString
+    .replace(/"(\w+)":/g, "$1:")
+    // Fix nested object/array formatting
+    .replace(/\{(\s*)\n\s*/g, "{\n    ") // Format after opening brace
+    .replace(/\[(\s*)\n\s*/g, "[\n    ") // Format after opening bracket
+    .replace(/,\s*\n\s*/g, ",\n    ") // Format properties
+    .replace(/\s*\}\s*,?\s*\n/g, "\n  }") // Format closing brace
+    .replace(/\s*\]\s*,?\s*\n/g, "\n  ]") // Format closing bracket
+    .replace(/\s*\}\s*$/g, "\n}") // Format final closing brace
+    .replace(/\s*\]\s*$/g, "\n]"); // Format final closing bracket
 
   return jsonString;
 };
