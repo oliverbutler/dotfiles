@@ -1,3 +1,5 @@
+import { formatObjectWithPrettier } from "./format";
+
 type LogLevel = "debug" | "info" | "warn" | "error";
 const LOG_PREFIX = "NVIM_LOG::";
 
@@ -8,9 +10,9 @@ function logMessage(level: LogLevel, message: string) {
 /**
  * Used to get the real received object from a jest test output.
  */
-export const getTestExpectedObject = (params: {
+export const getTestExpectedObject = async (params: {
   testOutput: string;
-}): string => {
+}): Promise<string> => {
   const lines = params.testOutput.split("\n");
 
   // Check for simple Expected: value pattern first
@@ -78,6 +80,8 @@ export const getTestExpectedObject = (params: {
   // First, join all lines
   let jsonString = jsonLines.join("\n");
 
+  jsonString = await formatObjectWithPrettier(jsonString);
+
   return jsonString;
 };
 
@@ -93,19 +97,11 @@ const replaceDateWithExpectDate = (row: string): string => {
   return row.replace(dateRegex, "expect.any(Date)");
 };
 
-const add = (a: number, b: number) => {
-  logMessage("error", "Test of error log");
-
-  return a + b;
-};
-
-export function handleRequest(action: string, params: any) {
+export async function handleRequest(action: string, params: any) {
   try {
     switch (action) {
       case "getTestExpectedObject":
-        return getTestExpectedObject(params);
-      case "add":
-        return add(params.a, params.b);
+        return await getTestExpectedObject(params);
       default:
         throw new Error(`No such function: ${action}`);
     }
@@ -118,7 +114,7 @@ if (require.main === module) {
   const [action, paramsString] = process.argv.slice(2);
   const params = JSON.parse(paramsString);
 
-  const result = handleRequest(action, params);
+  const result = await handleRequest(action, params);
 
   console.log(JSON.stringify(result));
 }

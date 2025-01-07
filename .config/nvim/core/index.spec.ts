@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { getTestExpectedObject } from "./index";
-import { formatWithPrettier } from "./format";
+import { formatObjectWithPrettier } from "./format";
 
 /**
  * Compares two object strings using prettier for normalization
@@ -9,15 +9,15 @@ export async function objectStringsAreEqual(
   actual: string,
   expected: string,
 ): Promise<boolean> {
-  const formattedActual = await formatWithPrettier("return" + actual);
-  const formattedExpected = await formatWithPrettier("return" + expected);
+  const formattedActual = await formatObjectWithPrettier(actual);
+  const formattedExpected = await formatObjectWithPrettier(expected);
 
   return formattedActual === formattedExpected;
 }
 
 describe("getTestExpectedObject", () => {
   it("should for a basic jest output", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 should get the tax and remainder for a withdrawal fee: failed
 Error: expect(received).toEqual(expected) // deep equality
@@ -46,7 +46,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should work for output with dates", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 should get the tax and remainder for a withdrawal fee: failed
 Error: expect(received).toEqual(expected) // deep equality
@@ -76,7 +76,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should work for boolean output", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -94,7 +94,7 @@ Received: false
   });
 
   it("should work for string output", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -112,7 +112,7 @@ Received: "goodbye world"
   });
 
   it("should work for number output", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -130,7 +130,7 @@ Received: 24
   });
 
   it("should work for nested object with arrays", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -169,7 +169,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should work for object with multiple dates", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -202,7 +202,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should work for array output", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -232,7 +232,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should work for null output", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
 
@@ -250,7 +250,7 @@ Received: undefined
   });
 
   it("should work for multiple objects in a top level array", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
       should return MISSING_EMAIL error when the email is either not provided or is just spaces: failed
 Error: expect(received).toEqual(expected) // deep equality
@@ -301,7 +301,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should work for arrays in arays", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
       should return MISSING_EMAIL error when the email is either not provided or is just spaces: failed
 Error: expect(received).toEqual(expected) // deep equality
@@ -353,7 +353,7 @@ Error: expect(received).toEqual(expected) // deep equality
   });
 
   it("should support the same key in multiple objects", async () => {
-    const result = getTestExpectedObject({
+    const result = await getTestExpectedObject({
       testOutput: `
 
 should return MISSING_EMAIL error when the email is either not provided or is just spaces: failed
