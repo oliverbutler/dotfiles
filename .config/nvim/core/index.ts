@@ -8,7 +8,9 @@ function logMessage(level: LogLevel, message: string) {
 /**
  * Used to get the real received object from a jest test output.
  */
-const getTestExpectedObject = (params: { testOutput: string }): string => {
+export const getTestExpectedObject = (params: {
+  testOutput: string;
+}): string => {
   let lines = params.testOutput.split("\n");
   let jsonLines: string[] = [];
 
