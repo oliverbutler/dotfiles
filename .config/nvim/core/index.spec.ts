@@ -1,9 +1,40 @@
 import { describe, expect, it } from "bun:test";
 import { getTestExpectedObject } from "./index";
-import { objectStringsAreEqual } from "./test-helpers";
+
+import * as prettier from "prettier";
+
+/**
+ * Format a string using prettier
+ */
+async function formatWithPrettier(str: string): Promise<string> {
+  try {
+    return await prettier.format(str, {
+      parser: "babel",
+      semi: true,
+      singleQuote: false,
+    });
+  } catch (error) {
+    // If prettier fails, return the original string
+    console.warn("Prettier formatting failed:", error);
+    return str;
+  }
+}
+
+/**
+ * Compares two object strings using prettier for normalization
+ */
+export async function objectStringsAreEqual(
+  actual: string,
+  expected: string,
+): Promise<boolean> {
+  const formattedActual = await formatWithPrettier("return" + actual);
+  const formattedExpected = await formatWithPrettier("return" + expected);
+
+  return formattedActual === formattedExpected;
+}
 
 describe("getTestExpectedObject", () => {
-  it("should for a basic jest output", () => {
+  it("should for a basic jest output", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 should get the tax and remainder for a withdrawal fee: failed
@@ -21,19 +52,18 @@ Error: expect(received).toEqual(expected) // deep equality
 `,
     });
 
-    const expectedOutput = `
-{
+    const expectedOutput = `{
   amount: 19,
-  currency: "GBP"
+  currency: "GBP",
 }`;
 
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for output with dates", () => {
+  it("should work for output with dates", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 should get the tax and remainder for a withdrawal fee: failed
@@ -52,19 +82,18 @@ Error: expect(received).toEqual(expected) // deep equality
 `,
     });
 
-    const expectedOutput = `
-{
-     mydate: expect.any(Date)
+    const expectedOutput = `{
+     mydate: expect.any(Date),
 } 
     `;
 
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for boolean output", () => {
+  it("should work for boolean output", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -75,14 +104,14 @@ Received: false
 `,
     });
 
-    const expectedOutput = "\n     true\n      ";
+    const expectedOutput = "true";
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for string output", () => {
+  it("should work for string output", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -95,12 +124,12 @@ Received: "goodbye world"
 
     const expectedOutput = `"hello world"`;
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for number output", () => {
+  it("should work for number output", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -113,12 +142,12 @@ Received: 24
 
     const expectedOutput = "42";
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for nested object with arrays", () => {
+  it("should work for nested object with arrays", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -141,8 +170,7 @@ Error: expect(received).toEqual(expected) // deep equality
 `,
     });
 
-    const expectedOutput = `
-{
+    const expectedOutput = `{
   items: [
     {
       id: 2,
@@ -153,12 +181,12 @@ Error: expect(received).toEqual(expected) // deep equality
 }`;
 
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for object with multiple dates", () => {
+  it("should work for object with multiple dates", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -178,21 +206,20 @@ Error: expect(received).toEqual(expected) // deep equality
 `,
     });
 
-    const expectedOutput = `
-{
+    const expectedOutput = `{
   createdAt: expect.any(Date),
   user: {
-    lastLogin: expect.any(Date)
-  }
+    lastLogin: expect.any(Date),
+  },
 }`;
 
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for array output", () => {
+  it("should work for array output", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -210,20 +237,19 @@ Error: expect(received).toEqual(expected) // deep equality
 `,
     });
 
-    const expectedOutput = `
-[
+    const expectedOutput = `[
   2,
   3,
-  4
+  4,
 ]`;
 
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });
 
-  it("should work for null output", () => {
+  it("should work for null output", async () => {
     const result = getTestExpectedObject({
       testOutput: `
 Error: expect(received).toEqual(expected) // deep equality
@@ -236,7 +262,58 @@ Received: undefined
 
     const expectedOutput = "null";
     expect(
-      objectStringsAreEqual(result, expectedOutput),
+      await objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("should work for multiple objects in a top level array", async () => {
+    const result = getTestExpectedObject({
+      testOutput: `
+      should return MISSING_EMAIL error when the email is either not provided or is just spaces: failed
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 1
++ Received  + 1
+
+  Array [
+    Object {
+      "foo": "bar",
+    },
+    Object {
+-     "foo": "bazWRONG",
++     "foo": "baz",
+    },
+  ]
+    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/bmo/feature-member-actions/src/lib/member-actions.utils.spec.ts:96:24)
+    at Promise.then.completed (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:121:9)
+    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:121:9)
+    at async _runTestsForDescribeBlock (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-circus@29.6.4/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/Users/olly/projects/collective-application/node_modules/.pnpm/jest-runner@29.6.4/node_modules/jest-runner/build/runTest.js:444:34)
+`,
+    });
+
+    const expectedOutput = `[
+      {
+        foo: "bar",
+      },
+      {
+        foo: "baz",
+      }
+    ]`;
+
+    expect(
+      await objectStringsAreEqual(result, expectedOutput),
       `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
     ).toBe(true);
   });

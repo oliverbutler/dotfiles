@@ -74,6 +74,20 @@ export const getTestExpectedObject = (params: {
         line = line.slice(0, -1); // Remove trailing comma
       }
       jsonLines.push(line);
+
+      // Add comma after object in array, but not after the last object
+      const nextLine = lines.find(
+        (l, i) =>
+          i > lines.indexOf(line) && l.trim() && !l.trim().startsWith("-"),
+      );
+      if (
+        line.includes("}") &&
+        objectDepth === 1 &&
+        nextLine &&
+        !nextLine.includes("]")
+      ) {
+        jsonLines.push(",");
+      }
     } else if (line) {
       // Handle regular properties
       if (!jsonLines.includes(line)) {
@@ -81,26 +95,29 @@ export const getTestExpectedObject = (params: {
       }
     }
 
-    // If we're back at depth 0 and had some content, we're done
-    if (objectDepth === 0 && line.includes("}")) {
+    // Only break if we're at depth 0 and we see a closing bracket for an array
+    if (objectDepth === 0 && line.includes("]")) {
       break;
     }
   }
 
-  // Convert parsed lines into single JSON string
+  // Remove empty lines
+  jsonLines = jsonLines.filter((line) => line.trim());
+
+  // First, join all lines
   let jsonString = jsonLines.join("\n");
 
   // Remove quotes from object keys
   jsonString = jsonString
     .replace(/"(\w+)":/g, "$1:")
-    // Fix nested object/array formatting
-    .replace(/\{(\s*)\n\s*/g, "{\n    ") // Format after opening brace
-    .replace(/\[(\s*)\n\s*/g, "[\n    ") // Format after opening bracket
-    .replace(/,\s*\n\s*/g, ",\n    ") // Format properties
-    .replace(/\s*\}\s*,?\s*\n/g, "\n  }") // Format closing brace
-    .replace(/\s*\]\s*,?\s*\n/g, "\n  ]") // Format closing bracket
-    .replace(/\s*\}\s*$/g, "\n}") // Format final closing brace
-    .replace(/\s*\]\s*$/g, "\n]"); // Format final closing bracket
+    // Handle array formatting
+    .replace(/\[\s*{/g, "[\n      {") // Start of array
+    .replace(/}\s*{/g, "},\n      {") // Between array items
+    .replace(/}\s*]/g, "}\n    ]") // End of array
+    // Handle object formatting
+    .replace(/{\s*(\w+):/g, "{\n        $1:") // Start of object
+    .replace(/,\s*(\w+):/g, ",\n        $1:") // Between object properties
+    .replace(/([^,])\s*}/g, "$1\n      }"); // End of object
 
   return jsonString;
 };
