@@ -72,7 +72,6 @@ return {
   config = function()
     vim.notify("Configuring Avante", "info", { title = "Avante" })
     local api_key = get_anthropic_api_key()
-    vim.notify("API Key: " .. api_key)
     if api_key then
       vim.env.ANTHROPIC_API_KEY = api_key
     end

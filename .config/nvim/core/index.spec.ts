@@ -15,6 +15,14 @@ export async function objectStringsAreEqual(
   return formattedActual === formattedExpected;
 }
 
+describe("formatObjectWithPrettier", () => {
+  it("should format a simple object", async () => {
+    const res = await formatObjectWithPrettier(`{foo: "bar"}`);
+
+    expect(res).toBe(`{ foo: "bar" }`);
+  });
+});
+
 describe("getTestExpectedObject", () => {
   it("should for a basic jest output", async () => {
     const result = await getTestExpectedObject({
@@ -383,6 +391,53 @@ Error: expect(received).toEqual(expected) // deep equality
         foo: "bar",
      }
      ]`;
+
+    expect(
+      await objectStringsAreEqual(result, expectedOutput),
+      `Expected normalized strings to match.\nGot: ${result}\nExpected: ${expectedOutput}`,
+    ).toBe(true);
+  });
+
+  it("another test", async () => {
+    const result = await getTestExpectedObject({
+      testOutput: `
+      should not reonboard a member if they're inactive: failed
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  - 2
++ Received  + 2
+
+  Object {
+    "body": Object {
+      "issues": Array [
+        Object {
+-         "code": "InvalidAddMemberPayload",
+-         "email": "david_altenwerth_bh1fs4nv@onsi.com",
++         "code": "MemberAlreadyInvited",
++         "memberId": "mem_u8q9upjjnt7de3o1f3qj",
+          "message": "Member already exists",
+        },
+      ],
+    },
+    "status": 400,
+  }
+    at Object.<anonymous> (/Users/olly/projects/collective-application/libs/bmo/integrations/feature-api/src/lib/interface/onsi-api-members.controller
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    `,
+    });
+
+    const expectedOutput = `{
+  body: {
+    issues: [
+      {
+        code: "MemberAlreadyInvited",
+        memberId: "mem_u8q9upjjnt7de3o1f3qj",
+        message: "Member already exists"
+      }
+    ]
+  },
+status: 400
+    }`;
 
     expect(
       await objectStringsAreEqual(result, expectedOutput),

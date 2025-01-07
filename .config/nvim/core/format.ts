@@ -12,7 +12,8 @@ export async function formatObjectWithPrettier(str: string): Promise<string> {
       singleQuote: false,
     });
 
-    return res.slice(7);
+    // Remove "return " prefix and trailing semicolon
+    return res.slice(7).replace(/;\n$/, "");
   } catch (error) {
     // If prettier fails, return the original string
     console.warn("Prettier formatting failed:", error);
