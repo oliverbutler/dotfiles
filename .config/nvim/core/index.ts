@@ -64,15 +64,7 @@ export const getTestExpectedObject = (params: {
 
     line = replaceDateWithExpectDate(line);
 
-    // Handle nested object/array formatting
-    if (line.includes("{") || line.includes("[")) {
-      // Add opening brace/bracket with proper indentation
-      jsonLines.push(line);
-    } else if (line.includes("}") || line.includes("]")) {
-      jsonLines.push(line);
-    } else if (line) {
-      jsonLines.push(line);
-    }
+    jsonLines.push(line);
 
     // Only break if we're at depth 0 and we see a closing bracket for an array
     if (objectDepth === 0 && line.includes("]")) {
@@ -85,18 +77,6 @@ export const getTestExpectedObject = (params: {
 
   // First, join all lines
   let jsonString = jsonLines.join("\n");
-
-  // Remove quotes from object keys
-  jsonString = jsonString
-    .replace(/"(\w+)":/g, "$1:")
-    // Handle array formatting
-    .replace(/\[\s*{/g, "[\n      {") // Start of array
-    .replace(/}\s*{/g, "},\n      {") // Between array items
-    .replace(/}\s*]/g, "}\n    ]") // End of array
-    // Handle object formatting
-    .replace(/{\s*(\w+):/g, "{\n        $1:") // Start of object
-    .replace(/,\s*(\w+):/g, ",\n        $1:") // Between object properties
-    .replace(/([^,])\s*}/g, "$1\n      }"); // End of object
 
   return jsonString;
 };
