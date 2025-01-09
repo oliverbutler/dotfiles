@@ -1,14 +1,24 @@
 return {
   "folke/which-key.nvim",
   event = "VimEnter",
-  opts = function(_, opts)
-    require("which-key").setup()
-
-    require("which-key").register({
-      ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-      ["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-      ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-      ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
+  dependencies = {
+    { "echasnovski/mini.icons", version = false },
+  },
+  config = function(_, opts)
+    local wk = require("which-key")
+    wk.setup(opts)
+    wk.register({
+      { "<leader>c", group = "[C]ode" },
+      { "<leader>c_", hidden = true },
+      { "<leader>d", group = "[D]ocument" },
+      { "<leader>d_", hidden = true },
+      { "<leader>r", group = "[R]ename" },
+      { "<leader>r_", hidden = true },
+      { "<leader>s", group = "[S]earch" },
+      { "<leader>s_", hidden = true },
     })
   end,
+  opts = {
+    -- Add any which-key configuration options here
+  },
 }

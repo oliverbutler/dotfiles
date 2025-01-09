@@ -27,10 +27,20 @@ alias fishr="source ~/.config/fish/config.fish"
 fish_vi_key_bindings
 
 function nvim
-    if string match -q "$HOME/.config*" (pwd)
-        GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim $argv
+    if test (count $argv) -eq 0
+        # No arguments provided, open current directory
+        if string match -q "$HOME/.config*" (pwd)
+            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim .
+        else
+            command nvim .
+        end
     else
-        command nvim $argv
+        # Arguments provided, behave as before
+        if string match -q "$HOME/.config*" (pwd)
+            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim $argv
+        else
+            command nvim $argv
+        end
     end
 end
 
@@ -86,7 +96,7 @@ function zn
     end
 
     z $argv[1]
-    nvim
+    nvim .
 
 end
 alias confish="vim ~/.config/fish/config.fish"

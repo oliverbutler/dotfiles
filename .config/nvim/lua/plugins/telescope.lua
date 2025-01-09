@@ -63,16 +63,20 @@ return {
           "--line-number",
           "--column",
           "--smart-case",
+          "--no-ignore",
 
           -- Exclude some patterns from search
           "--glob=!**/.git/*",
           "--glob=!**/.idea/*",
+          "--glob=!**/.run/*",
+          "--glob=!**/.storybook/*",
+          "--glob=!**/.nx/*",
           "--glob=!**/.vscode/*",
           "--glob=!**/build/*",
           "--glob=!**/dist/*",
           "--glob=!**/yarn.lock",
           "--glob=!**/package-lock.json",
-          "--glob=!**/.env*", -- Include .env files
+          "--glob=!**/node_modules/*",
         },
         prompt_prefix = "  ",
         selection_caret = "  ",
@@ -106,20 +110,25 @@ return {
       pickers = {
         find_files = {
           hidden = true,
+          no_ignore = true, -- This will show files that are in .gitignore
           -- needed to exclude some files & dirs from general search
           -- when not included or specified in .gitignore
           find_command = {
             "rg",
             "--files",
             "--hidden",
+            "--no-ignore",
             "--glob=!**/.git/*",
             "--glob=!**/.idea/*",
+            "--glob=!**/.run/*",
+            "--glob=!**/.storybook/*",
+            "--glob=!**/.nx/*",
             "--glob=!**/.vscode/*",
             "--glob=!**/build/*",
             "--glob=!**/dist/*",
             "--glob=!**/yarn.lock",
             "--glob=!**/package-lock.json",
-            "--glob=!**/.env*", -- Include .env files
+            "--glob=!**/node_modules/*",
           },
         },
       },
