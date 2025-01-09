@@ -144,7 +144,10 @@ return {
     -- vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = "[S]search [F]iles" })
     vim.keymap.set("n", "<leader>;", builtin.find_files, { desc = "[S]search Files" })
     vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "[S]search [B]uffers" })
-    vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]search [W]ord" })
+    vim.keymap.set("n", "<leader>sw", function()
+      local word = vim.fn.expand("<cword>")
+      require("telescope").extensions.live_grep_args.live_grep_args({ default_text = word })
+    end, { desc = "[S]search [W]ord" })
 
     -- Fast paste open
     vim.keymap.set("n", "<leader>P", function()
@@ -193,6 +196,15 @@ return {
 
     vim.keymap.set("n", "<leader><leader>", builtin.resume, { desc = "[ ] reopen last" })
 
+    -- Visual mode when <leader>sw search for selected text
+    vim.keymap.set("v", "<leader>sw", function()
+      local selected_text = vim.fn.getreg('"')
+      if selected_text and #selected_text > 0 then
+        require("telescope").extensions.live_grep_args.live_grep_args({ default_text = selected_text })
+      else
+        require("telescope").extensions.live_grep_args.live_grep_args()
+      end
+    end, { desc = "[S]search [W]ord" })
     -- Visual mode when <leader>sw search for selected text
     vim.keymap.set("v", "<leader>sw", function()
       local selected_text = vim.fn.getreg('"')
