@@ -123,7 +123,8 @@ in
     gccgo
     unzip
     influxdb
-    nvtop
+    nvtopPackages.full
+    btop
     vulkan-tools
     starship
     zoxide
@@ -147,6 +148,8 @@ in
     ethtool
     spotify
     kdePackages.kimageformats
+    # Lua
+    pkgs.luajitPackages.luarocks
     pkgs.kdePackages.merkuro
     audacity
     neofetch
@@ -239,5 +242,5 @@ in
   boot.supportedFilesystems = [ "fuse" "sshfs" ];
 
 
-  system.stateVersion = "24.05"; 
+  system.stateVersion = "24.11"; 
 }
