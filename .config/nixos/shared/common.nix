@@ -117,7 +117,9 @@ in
     gh
     # Build stuff
     gnumake
+    bruno
     openssl
+    parted
     gccgo
     unzip
     influxdb
@@ -130,6 +132,7 @@ in
     unstable.neovim
     easyeffects
     stylua
+    prismlauncher
     nodejs_22
     go
     air
