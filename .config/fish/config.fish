@@ -30,9 +30,9 @@ function nvim
     if test (count $argv) -eq 0
         # No arguments provided, open current directory
         if string match -q "$HOME/.config*" (pwd)
-            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim .
+            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim
         else
-            command nvim .
+            command nvim
         end
     else
         # Arguments provided, behave as before
@@ -96,7 +96,7 @@ function zn
     end
 
     z $argv[1]
-    nvim .
+    nvim
 
 end
 alias confish="vim ~/.config/fish/config.fish"

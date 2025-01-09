@@ -62,6 +62,13 @@ return {
         { noremap = true, silent = true, desc = "[H]istory [O]pen" }
       )
 
+      vim.keymap.set(
+        "v",
+        "<leader>hs",
+        ":DiffviewFileHistory<CR>",
+        { noremap = true, silent = true, desc = "[H]istory [S]election" }
+      )
+
       -- History for a PR/branch against origin/master
       vim.keymap.set("n", "<leader>hm", function()
         local mainOrMaster = "master"
@@ -80,24 +87,6 @@ return {
 
         vim.cmd("DiffviewOpen origin/" .. mainOrMaster .. "...HEAD")
       end, { noremap = true, silent = true, desc = "[H]istory [M]aster" })
-
-      vim.keymap.set("n", "<leader>hs", function()
-        -- should make a visual selection and then call the command '<,'>DiffviewFileHistory to get line history
-        vim.cmd("normal! gv")
-        vim.cmd("'<,'>DiffviewFileHistory<CR>")
-      end, { noremap = true, silent = true, desc = "[H]istory [S]election" })
-
-      vim.keymap.set("v", "<leader>hs", function()
-        -- Get the position of the start and end of the visual selection
-        local start_pos = vim.fn.getpos("'<")
-        local end_pos = vim.fn.getpos("'>")
-
-        -- Construct the command with the proper range and options
-        local command = string.format("%d,%dDiffviewFileHistory --follow %%", start_pos[2], end_pos[2])
-
-        -- Execute the command
-        vim.cmd(command)
-      end, { noremap = true, silent = true, desc = "[H]istory [S]election" })
 
       vim.keymap.set("n", "<leader>gp", function()
         -- Get the word under the cursor, which is presumed to be a SHA

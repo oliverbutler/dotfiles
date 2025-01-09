@@ -50,14 +50,5 @@ return {
       },
       use_default_keymaps = false,
     })
-
-    -- -- Open oil at startup
-    -- vim.api.nvim_create_autocmd("VimEnter", {
-    --   callback = function()
-    --     if vim.fn.argc() == 0 then
-    --       vim.cmd("Oil")
-    --     end
-    --   end,
-    -- })
   end,
 }
