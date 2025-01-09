@@ -151,8 +151,11 @@ in
     # Lua
     lua54Packages.busted
     lua
+
+    # LSPs
     lua-language-server
     stylua
+    prettierd
 
     audacity
     neofetch
