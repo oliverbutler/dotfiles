@@ -1,5 +1,6 @@
+
 import { describe, expect, it } from "bun:test";
-import { getTestExpectedObject } from "./index";
+import { getTestExpectedObject } from "./jest-parser";
 import { formatObjectWithPrettier } from "./format";
 
 /**

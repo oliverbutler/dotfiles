@@ -1,13 +1,12 @@
 local function is_nixos()
-    local os_release = io.open("/etc/os-release", "r")
-    if os_release then
-        local content = os_release:read("*all")
-        os_release:close()
-        return content:match("ID=nixos")
-    end
-    return false
+  local os_release = io.open("/etc/os-release", "r")
+  if os_release then
+    local content = os_release:read("*all")
+    os_release:close()
+    return content:match("ID=nixos")
+  end
+  return false
 end
-
 
 return {
   "williamboman/mason.nvim",
@@ -67,8 +66,8 @@ return {
           "delve",
         },
       })
-    else 
-      print("Skipping mason setup on NixOS")
+    else
+      vim.notify("Mason is not supported on NixOS", "warn")
     end
   end,
 }

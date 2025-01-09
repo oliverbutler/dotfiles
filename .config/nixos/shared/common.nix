@@ -149,8 +149,11 @@ in
     spotify
     kdePackages.kimageformats
     # Lua
-    pkgs.luajitPackages.luarocks
-    pkgs.kdePackages.merkuro
+    lua54Packages.busted
+    lua
+    lua-language-server
+    stylua
+
     audacity
     neofetch
     wezterm
