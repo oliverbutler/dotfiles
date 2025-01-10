@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<leader>l", vim.cmd.Lazy)
+vim.keymap.set("n", "<leader>ol", vim.cmd.Lazy)
 
 -- Map leader [ and ] to navigate cursor positions
 vim.keymap.set("n", "<leader>[", "<C-o>", { noremap = true })
