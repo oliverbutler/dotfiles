@@ -38,10 +38,6 @@ vim.keymap.set("n", "<leader>fo", function()
   vim.fn.system({ "open", "-R", file_path })
 end, { noremap = true, silent = true, desc = "Open current file in Finder" })
 
--- ChatGPT
-vim.keymap.set("n", "<leader>co", ":ChatGPT<CR>")
-vim.keymap.set("v", "<leader>ce", ":ChatGPTEditWithInstructions<CR>")
-
 local function restart_lsp_clients(server_name)
   local active_clients = vim.lsp.get_clients()
 
