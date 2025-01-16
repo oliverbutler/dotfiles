@@ -200,34 +200,53 @@ function prmake
 end
 
 function qmk-flash
-    set build_dir "/home/olly/projects/qmk_firmware/.build"
-    set mount_point "/tmp/keyboard_mount"
+    # Set build directory based on OS
+    switch (uname)
+        case Darwin
+            set build_dir "$HOME/projects/qmk_firmware/.build"
+        case Linux
+            set build_dir "/home/olly/projects/qmk_firmware/.build"
+    end
 
     # Compile
-    qmk compile -km oliverbutler -e CONVERT_TO=elite_pi
+    qmk compile -kb sofle/rev1 -km oliverbutler -e CONVERT_TO=elite_pi
     
-    # Try to find and mount the device for up to 10 seconds
-    for i in (seq 10)
-        # Find the device path using the label
-        set device_path (lsblk -o NAME,LABEL -nr | grep "RPI-RP2" | cut -d' ' -f1)
-        
-        if test -n "$device_path"
-            echo "Found device: /dev/$device_path"
-            
-            # Create mount point if it doesn't exist
-            mkdir -p $mount_point
-            
-            # Mount, copy, unmount in one go
-            if sudo mount /dev/$device_path $mount_point && \
-               sudo cp $build_dir/sofle_rev1_oliverbutler_elite_pi.uf2 $mount_point/ && \
-               sudo umount $mount_point
-                echo "Successfully flashed keyboard!"
-                return 0
-            end
+    for i in (seq 20)
+        switch (uname)
+            case Darwin
+                # macOS: Find the mounted RPI-RP2 volume
+                # Check if RPI-RP2 volume is mounted
+                if test -d "/Volumes/RPI-RP2"
+                    echo "Found device at: /Volumes/RPI-RP2"
+                    if cp $build_dir/sofle_rev1_oliverbutler_elite_pi.uf2 "/Volumes/RPI-RP2/"
+                        echo "Successfully flashed keyboard!"
+                        return 0
+                    end
+                end
+
+            case Linux
+                # Linux: Use lsblk to find and mount the device
+                set mount_point "/tmp/keyboard_mount"
+                set device_path (lsblk -o NAME,LABEL -nr | grep "RPI-RP2" | cut -d' ' -f1)
+                
+                if test -n "$device_path"
+                    echo "Found device: /dev/$device_path"
+                    
+                    # Create mount point if it doesn't exist
+                    mkdir -p $mount_point
+                    
+                    # Mount, copy, unmount in one go
+                    if sudo mount /dev/$device_path $mount_point && \
+                       sudo cp $build_dir/sofle_rev1_oliverbutler_elite_pi.uf2 $mount_point/ && \
+                       sudo umount $mount_point
+                        echo "Successfully flashed keyboard!"
+                        return 0
+                    end
+                end
         end
         
         echo "Attempt $i: Device not found, retrying in 1 second..."
-        sleep 1000
+        sleep 1
     end
     
     echo "Error: Failed to find or flash RPI-RP2 device after 10 attempts"
