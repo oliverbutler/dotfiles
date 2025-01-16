@@ -3,6 +3,7 @@ return {
   keys = {
     "<leader>tt",
     "<leader>ld",
+    "<leader>kf",
   },
   config = function()
     local fterm = require("FTerm")
@@ -15,6 +16,10 @@ return {
       {
         cmd = "lazydocker",
         key = "<leader>ld",
+      },
+      {
+        cmd = "qmk-flash",
+        key = "<leader>kf",
       },
     }
 

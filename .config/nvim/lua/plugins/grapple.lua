@@ -12,16 +12,6 @@ return {
       desc = "Grapple toggle tag",
     },
     {
-      "<leader>k",
-      "<cmd>Grapple toggle_tags<cr>",
-      desc = "Grapple toggle tags",
-    },
-    {
-      "<leader>K",
-      "<cmd>Grapple toggle_scopes<cr>",
-      desc = "Grapple toggle scopes",
-    },
-    {
       "<leader>j",
       "<cmd>Grapple cycle forward<cr>",
       desc = "Grapple cycle forward",

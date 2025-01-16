@@ -141,7 +141,6 @@ alias dp2="~/projects/m1ddc/m1ddc display 1 set input 16"
 alias smac="dp2"
 alias swin="dp1"
 
-# Reccomended for NX
 alias nx="pnpm nx"
 
 # LazyGit/Git
@@ -208,8 +207,8 @@ function qmk-flash
             set build_dir "/home/olly/projects/qmk_firmware/.build"
     end
 
-    # Compile
-    qmk compile -kb sofle/rev1 -km oliverbutler -e CONVERT_TO=elite_pi
+    set -x SOFLE_VAR_1 (op item get "sofle-1" --account "5S2IFKBEWJARZAMDT64SKMOSVA" --fields password --reveal)
+    qmk compile -kb sofle/rev1 -km oliverbutler -e CONVERT_TO=elite_pi -e "SOFLE_VAR_1=$SOFLE_VAR_1"
     
     for i in (seq 20)
         switch (uname)
