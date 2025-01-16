@@ -103,6 +103,10 @@ return {
         capabilities = capabilities,
       })
 
+      lspconfig.typos_lsp.setup({
+        capabilities = capabilities,
+      })
+
       lspconfig.gopls.setup({
         capabilities = capabilities,
         cmd = { "gopls" },

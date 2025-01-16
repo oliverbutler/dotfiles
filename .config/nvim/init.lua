@@ -18,10 +18,10 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
--- Spell
-vim.opt.spelllang = "en_gb"
-vim.opt.spell = true
-vim.opt.spelloptions = "camel"
+-- -- Spell
+-- vim.opt.spelllang = "en_gb"
+-- vim.opt.spell = true
+-- vim.opt.spelloptions = "camel"
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.

@@ -235,48 +235,48 @@ return {
       })
     end, { desc = "[.] Fuzzy search in project" })
 
-    -- Custom Lua function for spell suggestions
-    local function spell_suggestions()
-      -- Get the current word under the cursor
-      local word = vim.fn.expand("<cword>")
-
-      -- Get spell suggestions for the word
-      local suggestions = vim.fn.spellsuggest(word)
-
-      -- If there are no suggestions, add a default message
-      if vim.tbl_isempty(suggestions) then
-        suggestions = { "No suggestions found" }
-      end
-
-      -- Telescope configuration
-      require("telescope.pickers")
-        .new({}, {
-          prompt_title = "Spell Suggestions",
-          finder = require("telescope.finders").new_table({
-            results = suggestions,
-            entry_maker = function(entry)
-              return {
-                value = entry,
-                display = entry,
-                ordinal = entry,
-              }
-            end,
-          }),
-          sorter = require("telescope.config").values.generic_sorter({}),
-          attach_mappings = function(_, map)
-            map("i", "<CR>", function(prompt_bufnr)
-              local selection = require("telescope.actions.state").get_selected_entry()
-              require("telescope.actions").close(prompt_bufnr)
-              -- Replace the current word with the selected suggestion
-              vim.cmd("normal! ciw" .. selection.value)
-            end)
-            return true
-          end,
-        })
-        :find()
-    end
-
-    -- Map the custom command to <leader>ss
-    vim.keymap.set("n", "<leader>ss", spell_suggestions, { desc = "[S]search [S]pell" })
+    -- -- Custom Lua function for spell suggestions
+    -- local function spell_suggestions()
+    --   -- Get the current word under the cursor
+    --   local word = vim.fn.expand("<cword>")
+    --
+    --   -- Get spell suggestions for the word
+    --   local suggestions = vim.fn.spellsuggest(word)
+    --
+    --   -- If there are no suggestions, add a default message
+    --   if vim.tbl_isempty(suggestions) then
+    --     suggestions = { "No suggestions found" }
+    --   end
+    --
+    --   -- Telescope configuration
+    --   require("telescope.pickers")
+    --     .new({}, {
+    --       prompt_title = "Spell Suggestions",
+    --       finder = require("telescope.finders").new_table({
+    --         results = suggestions,
+    --         entry_maker = function(entry)
+    --           return {
+    --             value = entry,
+    --             display = entry,
+    --             ordinal = entry,
+    --           }
+    --         end,
+    --       }),
+    --       sorter = require("telescope.config").values.generic_sorter({}),
+    --       attach_mappings = function(_, map)
+    --         map("i", "<CR>", function(prompt_bufnr)
+    --           local selection = require("telescope.actions.state").get_selected_entry()
+    --           require("telescope.actions").close(prompt_bufnr)
+    --           -- Replace the current word with the selected suggestion
+    --           vim.cmd("normal! ciw" .. selection.value)
+    --         end)
+    --         return true
+    --       end,
+    --     })
+    --     :find()
+    -- end
+    --
+    -- -- Map the custom command to <leader>ss
+    -- vim.keymap.set("n", "<leader>ss", spell_suggestions, { desc = "[S]search [S]pell" })
   end,
 }

@@ -46,6 +46,7 @@ return {
           "templ",
           "html",
           "htmx",
+          "typos-lsp",
         },
       })
 
@@ -53,10 +54,10 @@ return {
         ensure_installed = {
           "eslint",
           "prettierd",
-          "stylua",
           "sql-formatter",
           "gofumpt",
           "gofumports",
+          "typos-lsp",
         },
       })
 
