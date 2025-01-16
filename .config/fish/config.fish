@@ -199,4 +199,38 @@ function prmake
 	gh pr view --web
 end
 
+function qmk-flash
+    set build_dir "/home/olly/projects/qmk_firmware/.build"
+    set mount_point "/tmp/keyboard_mount"
+
+    # Compile
+    qmk compile -km oliverbutler -e CONVERT_TO=elite_pi
+    
+    # Try to find and mount the device for up to 10 seconds
+    for i in (seq 10)
+        # Find the device path using the label
+        set device_path (lsblk -o NAME,LABEL -nr | grep "RPI-RP2" | cut -d' ' -f1)
+        
+        if test -n "$device_path"
+            echo "Found device: /dev/$device_path"
+            
+            # Create mount point if it doesn't exist
+            mkdir -p $mount_point
+            
+            # Mount, copy, unmount in one go
+            if sudo mount /dev/$device_path $mount_point && \
+               sudo cp $build_dir/sofle_rev1_oliverbutler_elite_pi.uf2 $mount_point/ && \
+               sudo umount $mount_point
+                echo "Successfully flashed keyboard!"
+                return 0
+            end
+        end
+        
+        echo "Attempt $i: Device not found, retrying in 1 second..."
+        sleep 1000
+    end
+    
+    echo "Error: Failed to find or flash RPI-RP2 device after 10 attempts"
+    return 1
+end
 zoxide init fish | source

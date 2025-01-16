@@ -142,15 +142,24 @@ in
     gparted 
     ansel
     darktable
+    sqlite
     caligula
     lsof
     wget
     ethtool
     spotify
     kdePackages.kimageformats
+
+    # Keyboard
+    qmk
+
     # Lua
     lua54Packages.busted
     lua
+
+    # Python
+    python312Full
+    python312Packages.pip
 
     # LSPs
     lua-language-server
