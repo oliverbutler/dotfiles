@@ -169,7 +169,6 @@ in
     prettierd
     tailwindcss-language-server
 
-    tableplus
     audacity
     neofetch
     wezterm
