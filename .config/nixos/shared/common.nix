@@ -167,7 +167,9 @@ in
     lua-language-server
     stylua
     prettierd
+    tailwindcss-language-server
 
+    tableplus
     audacity
     neofetch
     wezterm
