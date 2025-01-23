@@ -114,6 +114,11 @@ in
 
   virtualisation.docker.enable = true;
 
+  services.mullvad-vpn = {
+    enable = true;
+    package = pkgs.mullvad-vpn;
+  };
+
   environment.systemPackages = with pkgs; [
     kitty
     gh
@@ -170,6 +175,7 @@ in
     tailwindcss-language-server
 
     audacity
+    mullvad-vpn
     neofetch
     wezterm
     nmap
