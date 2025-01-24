@@ -26,6 +26,8 @@ alias fishr="source ~/.config/fish/config.fish"
 # enable vim mode
 fish_vi_key_bindings
 
+alias git-ai="bun ~/.config/git-ai/index.ts"
+
 function nvim
     if test (count $argv) -eq 0
         # No arguments provided, open current directory

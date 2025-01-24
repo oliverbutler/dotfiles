@@ -8,12 +8,10 @@ os:
   editPreset: "nvim-remote"
 
 customCommands:
-  - key: "Y"
-    context: "global"
-    command: "git yolo"
   - key: "I"
+    command: "bun ~/.config/git-ai/index.ts"
     context: "global"
-    command: "aicommits --type conventional"
+    description: "Create PR with AI-generated description"
 
 gui:
   border: rounded
