@@ -33,10 +33,7 @@ return {
         },
       },
       filetypes = {
-        yaml = true,
-        lua = true,
-        go = true,
-        ["."] = true,
+        ["*"] = true,
       },
       copilot_node_command = "node",
       server_opts_overrides = {},

@@ -12,14 +12,9 @@ return {
       desc = "Grapple toggle tag",
     },
     {
-      "<leader>j",
-      "<cmd>Grapple cycle forward<cr>",
-      desc = "Grapple cycle forward",
-    },
-    {
-      "<leader>J",
-      "<cmd>Grapple cycle backward<cr>",
-      desc = "Grapple cycle backward",
+      "<leader>k",
+      "<cmd>Grapple open_tags<cr>",
+      desc = "Grapple open tags",
     },
     {
       "<leader>1",
