@@ -50,42 +50,66 @@ local function get_first_symbol(input)
   return nil -- Return nil if no valid symbol is found
 end
 
+-- Search types per filetype
 local valid_search_types = {
-  types = "Types",
-  all = "All",
-  zod = "Zod Schemas",
-  classes = "Classes",
-  react = "React Components",
+  typescript = {
+    types = "Types",
+    all = "All",
+    zod = "Zod Schemas",
+    classes = "Classes",
+    react = "React Components",
+  },
+  javascript = {
+    types = "Types",
+    all = "All",
+    zod = "Zod Schemas",
+    classes = "Classes",
+    react = "React Components",
+  },
+  go = {
+    all = "All",
+  },
 }
 
 -- Used to filter down the codebase using rg to just these lines, cuts out a lot of noise + optimizes search
 local ripgrep_line_patterns = {
-  all = {
-    -- Matches declarations of constants, static members, async functions, regular functions, types, classes, and interfaces
-    [[\b(const|static|async|function|type|class|interface)\s+(\w+)]],
+  typescript = {
+    all = {
+      -- Matches declarations of constants, static members, async functions, regular functions, types, classes, and interfaces
+      [[\b(const|static|async|function|type|class|interface)\s+(\w+)]],
+    },
+    types = {
+      -- Matches interface and type declarations
+      -- Examples: "interface MyInterface {" or "type MyType ="
+      [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
+    },
+    classes = {
+      -- Matches class declarations, including those with extends or implements
+      -- Example: "class MyClass extends BaseClass {"
+      [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
+    },
+    zod = {
+      -- Matches Zod schema declarations
+      -- Example: "const mySchema = z."
+      [[const.*=\s*z\.]],
+    },
+    react = {
+      -- Matches React component declarations
+      -- Covers functional components, class components, and components wrapped in higher-order functions
+      -- Examples: "const MyComponent = (" or "class MyComponent extends React.Component"
+      [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+    },
   },
-  types = {
-    -- Matches interface and type declarations
-    -- Examples: "interface MyInterface {" or "type MyType ="
-    [[\b(interface\s+(\w+)\s*\{|type\s+(\w+)\s*=)]],
-  },
-  classes = {
-    -- Matches class declarations, including those with extends or implements
-    -- Example: "class MyClass extends BaseClass {"
-    [[\bclass\s+(\w+)(?:\s+(?:extends|implements)\s+\w+)?\s*\{?]],
-  },
-  zod = {
-    -- Matches Zod schema declarations
-    -- Example: "const mySchema = z."
-    [[const.*=\s*z\.]],
-  },
-  react = {
-    -- Matches React component declarations
-    -- Covers functional components, class components, and components wrapped in higher-order functions
-    -- Examples: "const MyComponent = (" or "class MyComponent extends React.Component"
-    [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+  go = {
+    all = {
+      -- Match Go functions, types, and structs
+      [[\b(func\s+(\w+)|type\s+(\w+)\s+struct|type\s+(\w+)\s+interface|type\s+(\w+)\s+)]],
+    },
   },
 }
+
+-- JavaScript uses the same patterns as TypeScript
+ripgrep_line_patterns.javascript = ripgrep_line_patterns.typescript
 
 local function run_ripgrep(pattern, directory)
   local Job = require("plenary.job")
@@ -141,9 +165,21 @@ local function custom_symbol_search(params)
   local search_type = params.type
   local include_file_name_in_search = params.also_search_file_name
 
-  assert(valid_search_types[search_type], "Invalid search type")
+  -- Detect current filetype
+  local current_filetype = vim.bo.filetype
+  -- Default to typescript if filetype not supported
+  local filetype = valid_search_types[current_filetype] and current_filetype or "typescript"
 
-  local patterns = ripgrep_line_patterns[search_type]
+  -- Validate search type for the current filetype
+  assert(
+    valid_search_types[filetype] and valid_search_types[filetype][search_type],
+    string.format("Invalid search type '%s' for filetype '%s'", search_type, filetype)
+  )
+
+  -- Get patterns for current filetype
+  local current_filetype = vim.bo.filetype
+  local filetype = ripgrep_line_patterns[current_filetype] and current_filetype or "typescript"
+  local patterns = ripgrep_line_patterns[filetype][search_type]
 
   local raw_results = {}
 
@@ -162,9 +198,10 @@ local function custom_symbol_search(params)
   end
 
   local title = string.format(
-    "Search %s symbols %s",
-    valid_search_types[search_type],
-    include_file_name_in_search and " (include file name)" or ""
+    "Search %s symbols %s in %s",
+    valid_search_types[filetype][search_type],
+    include_file_name_in_search and " (include file name)" or "",
+    filetype
   )
 
   local Job = require("plenary.job")
