@@ -124,6 +124,8 @@ return {
               unreachable = true,
               unusedvariable = true,
             },
+            templateExtensions = { ".html", ".tmpl", ".js" },
+            experimentalTemplateSupport = true,
           },
         },
       })

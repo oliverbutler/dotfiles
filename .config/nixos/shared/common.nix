@@ -113,6 +113,7 @@ in
   services.blueman.enable = true;
 
   virtualisation.docker.enable = true;
+  virtualisation.docker.logDriver = "json-file";
 
   services.mullvad-vpn = {
     enable = true;

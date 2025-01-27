@@ -9,13 +9,26 @@ return {
     "vrischmann/tree-sitter-templ",
   },
   config = function()
+    vim.opt.runtimepath:append("~/.config/nvim/queries")
+
     local treesitter = require("nvim-treesitter.configs")
 
     treesitter.setup({ -- enable syntax highlighting
       highlight = {
         enable = true,
+        additional_vim_regex_highlighting = false,
       },
       indent = { enable = true },
+      injections = {
+        enable = true,
+        disable = {}, -- disable specific languages if needed
+      },
+      -- Configure parser settings
+      parser_config = {
+        javascript = {
+          template_string = true, -- Enable template string parsing
+        },
+      },
       autotag = {
         enable = true,
         enable_rename = true,

@@ -102,8 +102,8 @@ local ripgrep_line_patterns = {
   },
   go = {
     all = {
-      -- Match Go functions, types, and structs
-      [[\b(func\s+(\w+)|type\s+(\w+)\s+struct|type\s+(\w+)\s+interface|type\s+(\w+)\s+)]],
+      -- Match Go functions, methods, types, and structs
+      [[\b(func\s+(\w+)|func\s+\([^)]+\)\s+(\w+)|type\s+(\w+)\s+struct|type\s+(\w+)\s+interface|type\s+(\w+)\s+)]],
     },
   },
 }
