@@ -83,7 +83,7 @@ async function generatePRDescription(): Promise<PRContent> {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-3-5-sonnet-20240620",
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 300,
       messages: [{ role: "user", content: prompt }],
     }),
