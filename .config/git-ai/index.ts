@@ -63,6 +63,7 @@ async function generatePRDescription(): Promise<PRContent> {
 
     Then a brief description with 2-4 bullet points that:
     - Focus on high-level changes only
+    - Use casual tech terms (e.g. 'postgres' not 'PostgreSQL')
     - Are short and to the point
     - Avoid implementation details unless crucial
     - Start with "Relates to BLB-XXX" if branch has ticket number
