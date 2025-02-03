@@ -68,10 +68,12 @@ end
 
 vim.keymap.set("n", "<leader>ra", function()
   restart_lsp_clients()
+  vim.cmd("Copilot enable")
 end, { noremap = true, desc = "Restart LSP" })
 
 vim.keymap.set("n", "<leader>rt", function()
   restart_lsp_clients("typescript-tools")
+  vim.cmd("Copilot enable")
 end, { noremap = true, desc = "Restart LSP" })
 
 local function parseFilename(filename)
