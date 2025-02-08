@@ -9,8 +9,9 @@ set PATH /Users/olly/bin $PATH
 set PATH /opt/homebrew/bin $PATH
 set PATH ~/go/bin $PATH
 set PATH /opt/homebrew/opt/openvpn/sbin $PATH
-set PATH /Users/olly/.cargo/bin $PATH
-set PATH /Users/olly/flutter/bin $PATH
+set PATH /home/olly/.cargo/bin $PATH
+set PATH /Users/olly/.cargo/bin $PATH # TODO: Only do on mac
+set PATH /Users/olly/flutter/bin $PATH # TODO: Only do on mac
 set PATH /Users/olly/Library/Application\ Support/JetBrains/Toolbox/scripts $PATH
 set PATH /usr/local/bin $PATH
 set PATH /Users/olly/projects/oimage $PATH
