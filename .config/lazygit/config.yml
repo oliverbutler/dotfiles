@@ -15,7 +15,7 @@ customCommands:
 
 gui:
   border: rounded
-  showIcons: true
+  nerdFontsVersion: "3"
   theme:
     activeBorderColor:
       - "#5ef1ff"
