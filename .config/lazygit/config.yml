@@ -15,6 +15,7 @@ customCommands:
 
 gui:
   border: rounded
+  showIcons: true
   theme:
     activeBorderColor:
       - "#5ef1ff"
