@@ -32,6 +32,22 @@ vim.keymap.set("n", "<leader>w", function()
   vim.cmd("w")
 end)
 
+-- lazygit
+vim.keymap.set("n", "<leader>gl", function()
+    local lazygit_dir = vim.fn.getcwd()
+
+    if (vim.env.GIT_DIR) then
+      lazygit_dir = vim.env.GIT_DIR
+    end
+
+    vim.notify("Opening lazygit" .. lazygit_dir, "info", {
+      title = "Lazygit",
+      icon = "🚀",
+    })
+
+    vim.fn.system([[tmux display-popup -E -w 95% -h 95% -x C -y C "GIT_DIR=]] .. lazygit_dir .. [[ exec lazygit"]])
+end)
+
 -- File helpers
 vim.keymap.set("n", "<leader>fo", function()
   local file_path = vim.fn.expand("%:p")

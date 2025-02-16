@@ -4,13 +4,6 @@ return {
   lazy = false,
   keys = {
     {
-      "<leader>gl",
-      function()
-        Snacks.lazygit.open()
-      end,
-      desc = "Open LazyGit",
-    },
-    {
       "<leader>gf",
       function()
         Snacks.lazygit.log_file()

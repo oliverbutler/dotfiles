@@ -69,18 +69,14 @@ return {
         { noremap = true, silent = true, desc = "[H]istory [S]election" }
       )
 
-      -- History for a PR/branch against origin/master
+      -- History for a PR/branch against origin/main or origin/master
       vim.keymap.set("n", "<leader>hm", function()
         local mainOrMaster = "master"
 
         if vim.fn.executable("git") == 1 then
-          local branch = vim.fn.systemlist("git branch --show-current")[1]
-          if branch == nil then
-            vim.notify("No branch found", vim.log.levels.ERROR)
-            return
-          end
-
-          if branch == "main" then
+          -- Check if origin/main exists
+          local result = vim.fn.system("git rev-parse --verify origin/main 2>/dev/null")
+          if vim.v.shell_error == 0 then
             mainOrMaster = "main"
           end
         end

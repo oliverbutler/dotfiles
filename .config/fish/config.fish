@@ -9,7 +9,8 @@ set PATH /Users/olly/bin $PATH
 set PATH /opt/homebrew/bin $PATH
 set PATH ~/go/bin $PATH
 set PATH /opt/homebrew/opt/openvpn/sbin $PATH
-set PATH /home/olly/.cargo/bin $PATH
+set PATH $HOME/.cargo/bin $PATH
+set PATH $HOME/.local/bin $PATH
 set PATH /Users/olly/.cargo/bin $PATH # TODO: Only do on mac
 set PATH /Users/olly/flutter/bin $PATH # TODO: Only do on mac
 set PATH /Users/olly/Library/Application\ Support/JetBrains/Toolbox/scripts $PATH
@@ -29,20 +30,108 @@ fish_vi_key_bindings
 
 alias git-ai="bun ~/.config/git-ai/index.ts"
 
+function fv
+    set file (fd \
+        --type f \
+        --hidden \
+        --follow \
+        --exclude .git \
+        --exclude node_modules \
+        --exclude .npm \
+        --exclude .cargo \
+        --exclude .rustup \
+        --exclude .cache \
+        --exclude .local \
+        --exclude .mozilla \
+        --exclude .nvm \
+        --exclude .yarn \
+        --exclude .vscode \
+        --exclude .steam \
+        --exclude "*.pyc" \
+        --exclude __pycache__ \
+        --exclude .DS_Store \
+        --exclude "*.class" \
+        --exclude target \
+        --exclude dist \
+        --exclude build \
+        . ~/ | fzf)
+    if test -n "$file"
+        nvim $file
+    end
+end
+
+
 function nvim
     if test (count $argv) -eq 0
         # No arguments provided, open current directory
         if string match -q "$HOME/.config*" (pwd)
-            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim
+            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim --listen /tmp/nvim-server.pipe
         else
-            command nvim
+            command nvim --listen /tmp/nvim-server.pipe
         end
     else
         # Arguments provided, behave as before
         if string match -q "$HOME/.config*" (pwd)
-            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim $argv
+            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim --listen /tmp/nvim-server.pipe $argv
         else
-            command nvim $argv
+            command nvim --listen /tmp/nvim-server.pipe $argv
+        end
+    end
+end
+
+
+# will be used by kitty so that "ctrl+g" lets you pick a path to open in nvim
+# runs the command against nvim-remote
+# then changes the focussed tmux pane to the nvim pane (first one)
+function open_file_in_nvim
+    set -l file_path $argv[1]
+    
+    # Debug logging
+    echo "DEBUG: Received argument: $file_path" >> /tmp/nvim-debug.log
+    
+    # If we have a line number (format: file:line)
+    if string match -q '*:*' -- $file_path
+        set -l parts (string split ':' $file_path)
+        set file_path $parts[1]
+        set line_num $parts[2]
+        echo "DEBUG: Split into file: $file_path and line: $line_num" >> /tmp/nvim-debug.log
+    end
+
+    # Get the tmux window number where Neovim is running
+    set -l nvim_window (tmux list-windows -F '#{window_index} #{window_name}' | grep -i nvim | head -n1 | cut -d' ' -f1)
+    if test -z "$nvim_window"
+        # Try finding window by checking for nvim in the active processes
+        set nvim_window (tmux list-windows -F '#{window_index} #{pane_current_command}' | grep -i nvim | head -n1 | cut -d' ' -f1)
+    end
+    echo "DEBUG: Found Neovim window: $nvim_window" >> /tmp/nvim-debug.log
+    
+    # Debug tmux windows
+    echo "DEBUG: All tmux windows:" >> /tmp/nvim-debug.log
+    tmux list-windows -F '#{window_index} #{window_name}' >> /tmp/nvim-debug.log
+
+    if test -n "$nvim_window"
+        echo "DEBUG: Attempting to open in existing Neovim instance" >> /tmp/nvim-debug.log
+        # If line number exists, open file at that line
+        if set -q line_num
+            set -l cmd ":edit +$line_num $file_path<CR>"
+            echo "DEBUG: Sending command: $cmd" >> /tmp/nvim-debug.log
+            nvim --server /tmp/nvim-server.pipe --remote-send $cmd
+        else
+            set -l cmd ":edit $file_path<CR>"
+            echo "DEBUG: Sending command: $cmd" >> /tmp/nvim-debug.log
+            nvim --server /tmp/nvim-server.pipe --remote-send $cmd
+        end
+
+        # Switch to the tmux window containing Neovim
+        echo "DEBUG: Switching to tmux window: $nvim_window" >> /tmp/nvim-debug.log
+        tmux select-window -t $nvim_window
+    else
+        echo "DEBUG: No existing Neovim instance found, opening new one" >> /tmp/nvim-debug.log
+        # If no Neovim instance is found, open a new one
+        if set -q line_num
+            nvim +$line_num $file_path
+        else
+            nvim $file_path
         end
     end
 end
@@ -151,9 +240,10 @@ alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/
 
 starship init fish | source
 
-# If .nvmrc exists, use it
-if test -e .nvmrc	
+if test -e .nvmrc && type -q nvm
     nvm use
+else if test -e .fvm/fvm_config.json && type -q fvm
+    fvm use
 end
 
 
