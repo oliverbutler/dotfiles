@@ -6,22 +6,12 @@ return {
   },
   keys = {
     {
-      "<C-w>z",
+      "<C-w>m",
       "<cmd>WindowsMaximize<cr>",
       desc = "Maximize window",
     },
     {
-      "<C-w>_",
-      "<cmd>WindowsMaximizeVertically<cr>",
-      desc = "Maximize window vertically",
-    },
-    {
-      "<C-w>|",
-      "<cmd>WindowsMaximizeHorizontally<cr>",
-      desc = "Maximize window horizontally",
-    },
-    {
-      "<C-w>=",
+      "<C-w>e",
       "<cmd>WindowsEqualize<cr>",
       desc = "Equalize window",
     },
