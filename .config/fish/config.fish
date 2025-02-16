@@ -54,6 +54,7 @@ function fv
         --exclude target \
         --exclude dist \
         --exclude build \
+        --exclude pkg \
         . ~/ | fzf)
     if test -n "$file"
         nvim $file
