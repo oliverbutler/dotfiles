@@ -17,6 +17,7 @@ return {
         width = 0.90,
         preview = {
           default = "builtin",
+          horizontal = "right:50%",
         },
       },
     })
