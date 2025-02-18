@@ -111,13 +111,12 @@ local ripgrep_line_patterns = {
 -- JavaScript uses the same patterns as TypeScript
 ripgrep_line_patterns.javascript = ripgrep_line_patterns.typescript
 
-local function run_ripgrep(pattern, directory)
+local function stream_ripgrep(pattern, directory, callback)
   local Job = require("plenary.job")
-  local results = {}
-
   local start_time = vim.loop.hrtime()
+  local count = 0
 
-  Job:new({
+  return Job:new({
     command = "rg",
     args = {
       "--no-heading",
@@ -125,25 +124,24 @@ local function run_ripgrep(pattern, directory)
       "--line-number",
       "--column",
       "--smart-case",
+      "--max-filesize=1M",
       pattern,
       directory or ".",
     },
-    on_exit = function(j, return_val)
-      for _, line in ipairs(j:result()) do
-        table.insert(results, line)
-      end
-
+    on_stdout = function(_, line)
+      count = count + 1
+      callback(line)
+    end,
+    on_exit = function()
       local end_time = vim.loop.hrtime()
       local duration_ms = (end_time - start_time) / 1e6
-
-      vim.notify(
-        string.format("Found %d results for pattern '%s' in %.2f ms", #results, pattern, duration_ms),
+      pcall(
+        vim.notify,
+        string.format("Found %d results for pattern '%s' in %.2f ms", count, pattern, duration_ms),
         vim.log.levels.INFO
       )
     end,
-  }):sync()
-
-  return results
+  })
 end
 
 local function remove_duplicates(results)
@@ -194,41 +192,14 @@ local function custom_symbol_search(params)
   -- Get patterns for current filetype
   local patterns = ripgrep_line_patterns[filetype][search_type]
 
-  local raw_results = {}
-
-  for _, pattern in ipairs(patterns) do
-    local results = run_ripgrep(pattern, params.directory)
-    for _, result in ipairs(results) do
-      table.insert(raw_results, result)
-    end
-  end
-
-  local symbol_results = remove_duplicates(raw_results)
-
-  if #symbol_results == 0 then
-    vim.notify("No symbols found", vim.log.levels.WARN)
-    return
-  end
-
   local title = string.format(
     "Search %s symbols %s",
     valid_search_types[filetype][search_type],
     include_file_name_in_search and " (include file name)" or ""
   )
 
-  local formatted_entries = {}
-  local lookup = {} -- Add lookup table for easy access to entry data
-
-  for _, result in ipairs(symbol_results) do
-    local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
-    local symbol = get_first_symbol(text)
-
-    if symbol then
-      local entry = format_entry(file, lnum, col, symbol)
-      table.insert(formatted_entries, entry)
-      lookup[entry.display] = entry -- Store in lookup table
-    end
-  end
+  local seen = {}
+  local lookup = {}
 
   -- Add this before the fzf.fzf_exec call
   local builtin = require("fzf-lua.previewer.builtin")
@@ -257,42 +228,62 @@ local function custom_symbol_search(params)
 
   local fzf = require("fzf-lua")
 
-  fzf.fzf_exec(
-    -- Generate display strings for fzf
-    function(cb)
-      for _, entry in ipairs(formatted_entries) do
-        cb(entry.display)
-      end
-      cb(nil)
-    end,
-    {
-      prompt = title,
-      actions = {
-        ["default"] = function(selected)
-          local entry = lookup[selected[1]]
-          if entry then
-            vim.cmd("edit " .. entry.file)
-            vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
-          end
-        end,
+  fzf.fzf_exec(function(fzf_cb)
+    local jobs = {}
+
+    for _, pattern in ipairs(patterns) do
+      local job = stream_ripgrep(pattern, params.directory, function(result)
+        local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
+        local symbol = get_first_symbol(text)
+
+        if symbol and not seen[result] then
+          seen[result] = true
+          local entry = format_entry(file, lnum, col, symbol)
+          lookup[entry.display] = entry
+          fzf_cb(entry.display)
+        end
+      end)
+      table.insert(jobs, job)
+    end
+
+    -- Start all jobs
+    for _, job in ipairs(jobs) do
+      job:start()
+    end
+
+    -- Wait for all jobs to complete
+    for _, job in ipairs(jobs) do
+      job:wait()
+    end
+
+    fzf_cb(nil)
+  end, {
+    prompt = title,
+    actions = {
+      ["default"] = function(selected)
+        local entry = lookup[selected[1]]
+        if entry then
+          vim.cmd("edit " .. entry.file)
+          vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
+        end
+      end,
+    },
+    winopts = {
+      height = 0.85,
+      width = 0.90,
+      preview = {
+        hidden = "nohidden",
+        vertical = "right",
+        horizontal = "right",
+        layout = "flex",
+        flip_columns = 120,
       },
-      winopts = {
-        height = 0.85,
-        width = 0.90,
-        preview = {
-          hidden = "nohidden",
-          vertical = "right",
-          horizontal = "right",
-          layout = "flex",
-          flip_columns = 120,
-        },
-      },
-      fzf_opts = {
-        ["--nth"] = params.include_file_name_in_search and "1.." or "2",
-      },
-      previewer = SymbolPreviewer, -- Use our custom previewer
-    }
-  )
+    },
+    fzf_opts = {
+      ["--nth"] = params.include_file_name_in_search and "1.." or "2",
+    },
+    previewer = SymbolPreviewer, -- Use our custom previewer
+  })
 end
 
 return {
