@@ -25,9 +25,6 @@ end, { desc = "Previous Error" })
 vim.keymap.set("n", "<leader>{", ":bprevious<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>}", ":bnext<CR>", { noremap = true })
 
--- undo tree
-vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", { noremap = true })
-
 vim.keymap.set("n", "<leader>w", function()
   vim.cmd("w")
 end)
@@ -61,44 +58,6 @@ vim.keymap.set("n", "<leader>fo", function()
   local file_path = vim.fn.expand("%:p")
   vim.fn.system({ "open", "-R", file_path })
 end, { noremap = true, silent = true, desc = "Open current file in Finder" })
-
-local function restart_lsp_clients(server_name)
-  local active_clients = vim.lsp.get_clients()
-
-  local clients_to_restart = {}
-
-  for _, client in ipairs(active_clients) do
-    if not server_name or client.name == server_name then
-      table.insert(clients_to_restart, client)
-    end
-  end
-
-  vim.notify("Stopping " .. #clients_to_restart .. " LSP clients", "info", {
-    title = "Restart LSP",
-    icon = "🔌",
-  })
-
-  for _, client in ipairs(active_clients) do
-    vim.lsp.stop_client(client.id)
-  end
-
-  vim.defer_fn(function()
-    vim.cmd("w!")
-    vim.cmd("e")
-  end, 100)
-
-  vim.cmd("Copilot attach")
-end
-
-vim.keymap.set("n", "<leader>ra", function()
-  restart_lsp_clients()
-  vim.cmd("Copilot enable")
-end, { noremap = true, desc = "Restart LSP" })
-
-vim.keymap.set("n", "<leader>rt", function()
-  restart_lsp_clients("typescript-tools")
-  vim.cmd("Copilot enable")
-end, { noremap = true, desc = "Restart LSP" })
 
 local function parseFilename(filename)
   local name, suffix, extension
@@ -164,7 +123,7 @@ vim.keymap.set("n", "<leader>gs", function()
   })
 end, { noremap = true, desc = "Toggle between sibling files" })
 
--- Add this to your init.lua file
+-- Close neovim safely
 vim.keymap.set("n", "<leader>-", function()
   local bufnr = vim.api.nvim_get_current_buf()
   local modified = vim.api.nvim_buf_get_option(bufnr, "modified")

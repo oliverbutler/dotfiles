@@ -156,7 +156,7 @@ return {
           vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
           vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
           vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-          -- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+          vim.keymap.set("n", "<C-i>", vim.lsp.buf.signature_help, opts)
 
           -- vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
           -- vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
@@ -196,6 +196,44 @@ return {
           end, opts)
         end,
       })
+
+      local function restart_lsp_clients(server_name)
+        local active_clients = vim.lsp.get_clients()
+
+        local clients_to_restart = {}
+
+        for _, client in ipairs(active_clients) do
+          if not server_name or client.name == server_name then
+            table.insert(clients_to_restart, client)
+          end
+        end
+
+        vim.notify("Stopping " .. #clients_to_restart .. " LSP clients", "info", {
+          title = "Restart LSP",
+          icon = "🔌",
+        })
+
+        for _, client in ipairs(active_clients) do
+          vim.lsp.stop_client(client.id)
+        end
+
+        vim.defer_fn(function()
+          vim.cmd("w!")
+          vim.cmd("e")
+        end, 100)
+
+        vim.cmd("Copilot attach")
+      end
+
+      vim.keymap.set("n", "<leader>ra", function()
+        restart_lsp_clients()
+        vim.cmd("Copilot enable")
+      end, { noremap = true, desc = "Restart LSP" })
+
+      vim.keymap.set("n", "<leader>rt", function()
+        restart_lsp_clients("typescript-tools")
+        vim.cmd("Copilot enable")
+      end, { noremap = true, desc = "Restart LSP" })
     end,
   },
 }
