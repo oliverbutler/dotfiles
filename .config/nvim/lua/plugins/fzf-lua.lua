@@ -7,7 +7,6 @@ return {
   config = function()
     local fzf = require("fzf-lua")
 
-    -- Setup configuration
     fzf.setup({
       global_resume = true,
       global_resume_query = true,
@@ -18,6 +17,12 @@ return {
         preview = {
           default = "builtin",
           horizontal = "right:50%",
+        },
+      },
+      keymap = {
+        fzf = {
+          -- quickfix
+          ["ctrl-q"] = "select-all+accept",
         },
       },
     })

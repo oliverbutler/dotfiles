@@ -172,7 +172,6 @@ return {
                 height = 0.8,
                 width = 0.9,
                 preview = {
-                  hidden = "hidden",
                   vertical = "up:45%",
                   horizontal = "right:50%",
                   layout = "flex",
@@ -193,7 +192,6 @@ return {
                 height = 0.8,
                 width = 0.9,
                 preview = {
-                  hidden = "hidden",
                   vertical = "up:45%",
                   horizontal = "right:50%",
                   layout = "flex",
