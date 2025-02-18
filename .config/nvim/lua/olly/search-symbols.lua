@@ -177,8 +177,6 @@ local function custom_symbol_search(params)
   )
 
   -- Get patterns for current filetype
-  local current_filetype = vim.bo.filetype
-  local filetype = ripgrep_line_patterns[current_filetype] and current_filetype or "typescript"
   local patterns = ripgrep_line_patterns[filetype][search_type]
 
   local raw_results = {}
@@ -204,70 +202,50 @@ local function custom_symbol_search(params)
     filetype
   )
 
-  local Job = require("plenary.job")
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
-  local conf = require("telescope.config").values
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
-  local previewers = require("telescope.previewers")
+  local fzf = require("fzf-lua")
+  local formatted_results = {}
+  local entries = {}
 
-  local fzf_lua = require("telescope").extensions.fzf
+  for _, entry in ipairs(symbol_results) do
+    local file, lnum, col, text = string.match(entry, "([^:]+):([^:]+):([^:]+):(.+)")
+    local symbol = get_first_symbol(text)
 
-  pickers
-    .new({}, {
-      prompt_title = title,
-      finder = finders.new_table({
-        results = symbol_results,
-        entry_maker = function(entry)
-          local file, lnum, col, text = string.match(entry, "([^:]+):([^:]+):([^:]+):(.+)")
+    if symbol then
+      local file_extension = string.match(file, "%.(%w+)$")
+      local icon, icon_hl = devicons.get_icon(file, file_extension, { default = true })
+      local display = icon .. "  " .. symbol .. " - " .. file .. ":" .. lnum
 
-          local symbol = get_first_symbol(text)
+      table.insert(formatted_results, display)
+      entries[display] = {
+        filename = file,
+        lnum = tonumber(lnum),
+        col = tonumber(col),
+      }
+    end
+  end
 
-          if not symbol then
-            return nil -- Skip this entry if no symbol is found
-          end
-
-          local file_extension = string.match(file, "%.(%w+)$")
-
-          local icon, icon_hl = devicons.get_icon(file, file_extension, { default = true })
-
-          return {
-            value = entry,
-            display = icon .. "  " .. symbol .. " - " .. file .. ":" .. lnum,
-            ordinal = include_file_name_in_search and symbol .. "" .. file or symbol,
-            filename = file,
-            lnum = tonumber(lnum),
-            col = tonumber(col),
-            icon = icon,
-            icon_hl = icon_hl,
-          }
-        end,
-      }),
-      sorter = fzf_lua.native_fzf_sorter(),
-      previewer = previewers.vim_buffer_vimgrep.new({}),
-      layout_strategy = "horizontal",
-      layout_config = {
-        width = 0.8,
-        height = 0.8,
-        preview_width = 0.5,
-      },
-      attach_mappings = function(prompt_bufnr, map)
-        actions.select_default:replace(function()
-          actions.close(prompt_bufnr)
-          local selection = action_state.get_selected_entry()
-          vim.notify("Opening " .. selection.filename .. " at line " .. selection.lnum, vim.log.levels.INFO)
-          vim.cmd("edit " .. selection.filename)
-          vim.api.nvim_win_set_cursor(0, { selection.lnum, selection.col - 1 })
-        end)
-        return true
+  fzf.fzf_exec(formatted_results, {
+    prompt = title,
+    actions = {
+      ["default"] = function(selected)
+        local entry = entries[selected[1]]
+        if entry then
+          vim.notify("Opening " .. entry.filename .. " at line " .. entry.lnum, vim.log.levels.INFO)
+          vim.cmd("edit " .. entry.filename)
+          vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
+        end
       end,
-    })
-    :find()
+    },
+    winopts = {
+      preview = {
+        hidden = "hidden",
+        vertical = "up:45%",
+        horizontal = "right:50%",
+      },
+    },
+  })
 end
 
 return {
   custom_symbol_search = custom_symbol_search,
-  get_first_symbol = get_first_symbol,
-  ripgrep_line_patterns = ripgrep_line_patterns,
 }

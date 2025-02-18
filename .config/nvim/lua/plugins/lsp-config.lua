@@ -167,30 +167,43 @@ return {
           vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
 
           vim.keymap.set("n", "gd", function()
-            require("telescope.builtin").lsp_definitions({
-              show_line = false,
-              trim_text = true,
-              layout_strategy = "horizontal",
-              layout_config = {
-                width = 0.90,
+            require("fzf-lua").lsp_definitions({
+              winopts = {
                 height = 0.8,
-                preview_cutoff = 1,
-                prompt_position = "top",
+                width = 0.9,
+                preview = {
+                  hidden = "hidden",
+                  vertical = "up:45%",
+                  horizontal = "right:50%",
+                  layout = "flex",
+                  flip_columns = 120,
+                },
+              },
+              jump_to_single_result = true, -- Jump directly if there's only one result
+              fzf_opts = {
+                ["--info"] = "inline",
+                ["--layout"] = "reverse",
               },
             })
           end, opts)
 
           vim.keymap.set("n", "gr", function()
-            require("telescope.builtin").lsp_references({
-              show_line = false,
-              trim_text = true,
-              include_declaration = false,
-              layout_strategy = "horizontal",
-              layout_config = {
-                width = 0.90,
+            require("fzf-lua").lsp_references({
+              winopts = {
                 height = 0.8,
-                preview_cutoff = 1,
-                prompt_position = "top",
+                width = 0.9,
+                preview = {
+                  hidden = "hidden",
+                  vertical = "up:45%",
+                  horizontal = "right:50%",
+                  layout = "flex",
+                  flip_columns = 120,
+                },
+              },
+              include_declaration = false,
+              fzf_opts = {
+                ["--info"] = "inline",
+                ["--layout"] = "reverse",
               },
             })
           end, opts)
