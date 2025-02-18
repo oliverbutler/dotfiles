@@ -36,6 +36,7 @@ return {
         "html",
         "htmx",
         "typos_lsp",
+        "vtsls",
       },
     })
 
@@ -50,6 +51,7 @@ return {
     })
 
     mason_dap.setup({
+      automatic_installation = true,
       ensure_installed = {
         "js",
         "delve",

@@ -1,11 +1,13 @@
-return  {
-  'MagicDuck/grug-far.nvim',
+return {
+  "MagicDuck/grug-far.nvim",
+  keys = {
+    {
+      "<leader>fr",
+      ":GrugFar<CR>",
+      desc = "Open GrugFar",
+    },
+  },
   config = function()
-    require('grug-far').setup({
-      -- options, see Configuration section below
-      -- there are no required options atm
-      -- engine = 'ripgrep' is default, but 'astgrep' can be specified
-    });
-  end
+    require("grug-far").setup({})
+  end,
 }
-

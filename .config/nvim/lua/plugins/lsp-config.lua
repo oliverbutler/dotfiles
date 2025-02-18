@@ -1,41 +1,5 @@
 return {
   {
-    "pmizio/typescript-tools.nvim",
-    ft = { "typescript", "typescriptreact" },
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    config = function()
-      require("typescript-tools").setup({
-        on_attach = function() end,
-        handlers = {},
-        root_dir = function()
-          return vim.fn.getcwd()
-        end,
-        settings = {
-          separate_diagnostic_server = true,
-          publish_diagnostic_on = "insert_leave",
-          expose_as_code_action = {
-            "remove_unused_imports",
-            "add_missing_imports",
-          },
-          complete_function_calls = false,
-          include_completions_with_insert_text = true,
-          tsserver_file_preferences = {},
-          tsserver_path = nil,
-          tsserver_plugins = {},
-          tsserver_max_memory = "10000",
-          tsserver_format_options = {},
-          tsserver_locale = "en",
-          code_lens = "off",
-          disable_member_code_lens = true,
-          jsx_close_tag = {
-            enable = true,
-            filetypes = { "javascriptreact", "typescriptreact" },
-          },
-        },
-      })
-    end,
-  },
-  {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp" },
     event = "VeryLazy",
@@ -43,6 +7,10 @@ return {
       local lspconfig = require("lspconfig")
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+      lspconfig.vtsls.setup({
+        capabilities = capabilities,
+      })
 
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
