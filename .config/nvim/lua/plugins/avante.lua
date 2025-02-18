@@ -41,6 +41,16 @@ return {
   version = false,
   opts = {},
   build = "make",
+  keys = {
+    {
+      "<leader>ak",
+      function()
+        vim.cmd("AvanteClear")
+        vim.cmd("AvanteRefresh")
+        vim.cmd("AvanteToggle")
+      end,
+    },
+  },
   dependencies = {
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
