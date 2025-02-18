@@ -160,6 +160,21 @@ local function remove_duplicates(results)
   return unique_results
 end
 
+local function format_entry(file, lnum, col, symbol)
+  -- Get file icon and highlight group
+  local icon, icon_hl = devicons.get_icon(file, string.match(file, "%a+$"), { default = true })
+  local file_path = vim.fn.fnamemodify(file, ":~:.")
+  return {
+    display = string.format("%s %s %s:%s", icon, symbol, file_path, lnum),
+    file = file,
+    lnum = tonumber(lnum),
+    col = tonumber(col),
+    symbol = symbol,
+    icon = icon,
+    icon_hl = icon_hl,
+  }
+end
+
 -- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control
 local function custom_symbol_search(params)
   local search_type = params.type
@@ -202,52 +217,67 @@ local function custom_symbol_search(params)
     filetype
   )
 
+  local formatted_entries = {}
+  local lookup = {} -- Add lookup table for easy access to entry data
+
+  for _, result in ipairs(symbol_results) do
+    local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
+    local symbol = get_first_symbol(text)
+
+    if symbol then
+      local entry = format_entry(file, lnum, col, symbol)
+      table.insert(formatted_entries, entry)
+      lookup[entry.display] = entry -- Store in lookup table
+    end
+  end
+
   local fzf = require("fzf-lua")
 
-  fzf.fzf_exec(symbol_results, { -- Pass the raw results directly
-    prompt = title,
-    actions = {
-      ["default"] = function(selected)
-        -- Parse the selected line to get file info
-        local line = selected[1]
-        local file, lnum, col = string.match(line, "([^:]+):([^:]+):([^:]+):")
-        if file then
-          vim.cmd("edit " .. file)
-          vim.api.nvim_win_set_cursor(0, { tonumber(lnum), tonumber(col) - 1 })
+  fzf.fzf_exec(
+    -- Generate display strings for fzf
+    function(cb)
+      for _, entry in ipairs(formatted_entries) do
+        cb(entry.display)
+      end
+      cb(nil)
+    end,
+    {
+      prompt = title,
+      actions = {
+        ["default"] = function(selected)
+          local entry = lookup[selected[1]]
+          if entry then
+            vim.cmd("edit " .. entry.file)
+            vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
+          end
+        end,
+      },
+      winopts = {
+        height = 0.85,
+        width = 0.90,
+        preview = {
+          hidden = "nohidden",
+          vertical = "right",
+          horizontal = "right",
+          layout = "flex",
+          flip_columns = 120,
+        },
+      },
+      fzf_opts = {
+        ["--nth"] = params.include_file_name_in_search and "1.." or "2",
+      },
+      previewer = "builtin",
+      preview_opts = "nohidden",
+      preview_window = "right:50%",
+      fn_transform = function(line)
+        local entry = lookup[line]
+        if entry then
+          return string.format("%s:%d:1:", entry.file, entry.lnum)
         end
+        return line
       end,
-    },
-    winopts = {
-      height = 0.85,
-      width = 0.90,
-    },
-    previewer = "builtin",
-    fzf_opts = {
-      ["--with-nth"] = "1..",
-    },
-    make_entry = {
-      fn = function(line)
-        local file, lnum, col, text = string.match(line, "([^:]+):([^:]+):([^:]+):(.+)")
-        local symbol = get_first_symbol(text)
-
-        if not symbol then
-          return nil
-        end
-
-        local file_icon, icon_hl = devicons.get_icon(file, vim.fn.fnamemodify(file, ":e"), { default = true })
-
-        -- Return a string for display
-        return {
-          -- This is what fzf will actually search through
-          ordinal = symbol .. " " .. file,
-          -- This is what will be displayed
-          display = string.format("%s %s %s:%d", file_icon, symbol, file, tonumber(lnum)),
-          -- Store the full line for the action handler
-          value = line,
-        }
-      end,
-    },
-  })
+    }
+  )
 end
 
 return {
