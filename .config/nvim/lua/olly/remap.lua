@@ -45,11 +45,6 @@ vim.keymap.set("n", "<leader>gl", function()
     cmd = string.format([[cd %s && exec lazygit]], dir)
   end
 
-  vim.notify("Opening lazygit: " .. dir, "info", {
-    title = "Lazygit",
-    icon = "🚀",
-  })
-
   vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C "%s"]], cmd))
 end)
 

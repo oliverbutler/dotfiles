@@ -148,7 +148,21 @@ return {
             })
           end, { desc = "Show line diagnostics" })
 
-          vim.keymap.set("n", "<leader>i", vim.lsp.buf.code_action, { buffer = ev.buf, desc = "Code action" })
+          vim.keymap.set("n", "<leader>i", function()
+            require("fzf-lua").lsp_code_actions({
+              winopts = {
+                height = 0.8,
+                width = 0.9,
+                preview = {
+                  vertical = "up:45%",
+                  horizontal = "right:50%",
+                  layout = "flex",
+                  flip_columns = 120,
+                },
+              },
+              previewer = "codeaction_native",
+            })
+          end, { buffer = ev.buf, desc = "Code action" })
 
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
