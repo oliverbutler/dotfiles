@@ -11,13 +11,12 @@ return {
     fzf.setup({
       global_resume = true,
       global_resume_query = true,
+      file_icons = true,
       winopts = {
         height = 0.85,
         width = 0.90,
         preview = {
-          hidden = "hidden",
-          vertical = "up:45%",
-          horizontal = "right:50%",
+          default = "builtin",
         },
       },
     })

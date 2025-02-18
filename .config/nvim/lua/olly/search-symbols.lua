@@ -203,45 +203,49 @@ local function custom_symbol_search(params)
   )
 
   local fzf = require("fzf-lua")
-  local formatted_results = {}
-  local entries = {}
 
-  for _, entry in ipairs(symbol_results) do
-    local file, lnum, col, text = string.match(entry, "([^:]+):([^:]+):([^:]+):(.+)")
-    local symbol = get_first_symbol(text)
-
-    if symbol then
-      local file_extension = string.match(file, "%.(%w+)$")
-      local icon, icon_hl = devicons.get_icon(file, file_extension, { default = true })
-      local display = icon .. "  " .. symbol .. " - " .. file .. ":" .. lnum
-
-      table.insert(formatted_results, display)
-      entries[display] = {
-        filename = file,
-        lnum = tonumber(lnum),
-        col = tonumber(col),
-      }
-    end
-  end
-
-  fzf.fzf_exec(formatted_results, {
+  fzf.fzf_exec(symbol_results, { -- Pass the raw results directly
     prompt = title,
     actions = {
       ["default"] = function(selected)
-        local entry = entries[selected[1]]
-        if entry then
-          vim.notify("Opening " .. entry.filename .. " at line " .. entry.lnum, vim.log.levels.INFO)
-          vim.cmd("edit " .. entry.filename)
-          vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
+        -- Parse the selected line to get file info
+        local line = selected[1]
+        local file, lnum, col = string.match(line, "([^:]+):([^:]+):([^:]+):")
+        if file then
+          vim.cmd("edit " .. file)
+          vim.api.nvim_win_set_cursor(0, { tonumber(lnum), tonumber(col) - 1 })
         end
       end,
     },
     winopts = {
-      preview = {
-        hidden = "hidden",
-        vertical = "up:45%",
-        horizontal = "right:50%",
-      },
+      height = 0.85,
+      width = 0.90,
+    },
+    previewer = "builtin",
+    fzf_opts = {
+      ["--with-nth"] = "1..",
+    },
+    make_entry = {
+      fn = function(line)
+        local file, lnum, col, text = string.match(line, "([^:]+):([^:]+):([^:]+):(.+)")
+        local symbol = get_first_symbol(text)
+
+        if not symbol then
+          return nil
+        end
+
+        local file_icon, icon_hl = devicons.get_icon(file, vim.fn.fnamemodify(file, ":e"), { default = true })
+
+        -- Return a string for display
+        return {
+          -- This is what fzf will actually search through
+          ordinal = symbol .. " " .. file,
+          -- This is what will be displayed
+          display = string.format("%s %s %s:%d", file_icon, symbol, file, tonumber(lnum)),
+          -- Store the full line for the action handler
+          value = line,
+        }
+      end,
     },
   })
 end
