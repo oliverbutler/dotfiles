@@ -10,6 +10,66 @@ return {
 
       lspconfig.vtsls.setup({
         capabilities = capabilities,
+        settings = {
+          typescript = {
+            inlayHints = {
+              parameterNames = { enabled = "all" }, -- Show all parameter names
+              parameterTypes = { enabled = false }, -- Disable parameter type hints
+              variableTypes = { enabled = false }, -- Disable variable type hints
+              propertyDeclarationTypes = { enabled = false }, -- Disable property type hints
+              functionLikeReturnTypes = { enabled = false }, -- Disable return type hints
+              enumMemberValues = { enabled = false }, -- Disable enum value hints
+            },
+            suggest = {
+              completeFunctionCalls = true,
+              includeCompletionsForModuleExports = true,
+              includeCompletionsWithObjectLiteralMethodSnippets = true,
+            },
+            updateImportsOnFileMove = {
+              enabled = "always",
+            },
+            format = {
+              indentSize = 2,
+              convertTabsToSpaces = true,
+              tabSize = 2,
+              trimTrailingWhitespace = true,
+              insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              parameterNames = { enabled = "all" }, -- Show all parameter names
+              parameterTypes = { enabled = false }, -- Disable parameter type hints
+              variableTypes = { enabled = false }, -- Disable variable type hints
+              propertyDeclarationTypes = { enabled = false }, -- Disable property type hints
+              functionLikeReturnTypes = { enabled = false }, -- Disable return type hints
+              enumMemberValues = { enabled = false }, -- Disable enum value hints
+            },
+            suggest = {
+              completeFunctionCalls = true,
+              includeCompletionsForModuleExports = true,
+              includeCompletionsWithObjectLiteralMethodSnippets = true,
+            },
+            updateImportsOnFileMove = {
+              enabled = "always",
+            },
+          },
+          completions = {
+            completeFunctionCalls = true,
+          },
+        },
+        -- Add common JS/TS file patterns
+        filetypes = {
+          "javascript",
+          "javascriptreact",
+          "javascript.jsx",
+          "typescript",
+          "typescriptreact",
+          "typescript.tsx",
+        },
+        -- Ensure proper root directory detection
+        root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+        single_file_support = true,
       })
 
       lspconfig.lua_ls.setup({
@@ -108,8 +168,6 @@ return {
       vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
       vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
-      -- Use LspAttach autocommand to only map the following keys
-      -- after the language server attaches to the current buffer
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
         callback = function(ev)
@@ -123,12 +181,11 @@ return {
             signs = true,
             underline = true,
             update_in_insert = false,
-            severity_sort = false,
+            severity_sort = true,
             float = {
               focusable = false,
               style = "minimal",
               border = "rounded",
-              source = "always",
               header = "",
               prefix = "",
               wrap = true,
@@ -151,8 +208,8 @@ return {
           vim.keymap.set("n", "<leader>i", function()
             require("fzf-lua").lsp_code_actions({
               winopts = {
-                height = 0.8,
-                width = 0.9,
+                height = 0.4,
+                width = 0.8,
                 preview = {
                   vertical = "up:45%",
                   horizontal = "right:50%",
@@ -161,25 +218,16 @@ return {
                 },
               },
               previewer = "codeaction_native",
+              preview_pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]],
             })
           end, { buffer = ev.buf, desc = "Code action" })
 
-          -- Buffer local mappings.
-          -- See `:help vim.lsp.*` for documentation on any of the below functions
           local opts = { buffer = ev.buf }
-          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+
           vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
           vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
           vim.keymap.set("n", "<C-i>", vim.lsp.buf.signature_help, opts)
-
-          -- vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
-          -- vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
-          -- vim.keymap.set("n", "<space>wl", function()
-          --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-          -- end, opts)
-          vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
-          vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-
+          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
           vim.keymap.set("n", "gd", function()
             require("fzf-lua").lsp_definitions({
               winopts = {
@@ -199,7 +247,6 @@ return {
               },
             })
           end, opts)
-
           vim.keymap.set("n", "gr", function()
             require("fzf-lua").lsp_references({
               winopts = {
@@ -222,18 +269,10 @@ return {
         end,
       })
 
-      local function restart_lsp_clients(server_name)
+      local function restart_lsp_clients()
         local active_clients = vim.lsp.get_clients()
 
-        local clients_to_restart = {}
-
-        for _, client in ipairs(active_clients) do
-          if not server_name or client.name == server_name then
-            table.insert(clients_to_restart, client)
-          end
-        end
-
-        vim.notify("Stopping " .. #clients_to_restart .. " LSP clients", "info", {
+        vim.notify("Stopping " .. #active_clients .. " LSP clients", vim.log.levels.INFO, {
           title = "Restart LSP",
           icon = "🔌",
         })
@@ -252,11 +291,6 @@ return {
 
       vim.keymap.set("n", "<leader>ra", function()
         restart_lsp_clients()
-        vim.cmd("Copilot enable")
-      end, { noremap = true, desc = "Restart LSP" })
-
-      vim.keymap.set("n", "<leader>rt", function()
-        restart_lsp_clients("typescript-tools")
         vim.cmd("Copilot enable")
       end, { noremap = true, desc = "Restart LSP" })
     end,
