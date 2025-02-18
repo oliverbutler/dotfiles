@@ -32,24 +32,28 @@ vim.keymap.set("n", "<leader>w", function()
   vim.cmd("w")
 end)
 
+vim.keymap.set("n", "<leader>q", function()
+  vim.cmd("q")
+end)
+
 -- lazygit
 vim.keymap.set("n", "<leader>gl", function()
-    local cmd
-    local dir = vim.fn.getcwd()
+  local cmd
+  local dir = vim.fn.getcwd()
 
-    if vim.env.GIT_DIR then
-        cmd = string.format([[GIT_DIR=%s exec lazygit]], vim.env.GIT_DIR)
-        dir = vim.env.GIT_DIR
-    else
-        cmd = string.format([[cd %s && exec lazygit]], dir)
-    end
+  if vim.env.GIT_DIR then
+    cmd = string.format([[GIT_DIR=%s exec lazygit]], vim.env.GIT_DIR)
+    dir = vim.env.GIT_DIR
+  else
+    cmd = string.format([[cd %s && exec lazygit]], dir)
+  end
 
-    vim.notify("Opening lazygit: " .. dir, "info", {
-        title = "Lazygit",
-        icon = "🚀",
-    })
+  vim.notify("Opening lazygit: " .. dir, "info", {
+    title = "Lazygit",
+    icon = "🚀",
+  })
 
-    vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C "%s"]], cmd))
+  vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C "%s"]], cmd))
 end)
 
 -- File helpers
