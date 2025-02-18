@@ -230,6 +230,31 @@ local function custom_symbol_search(params)
     end
   end
 
+  -- Add this before the fzf.fzf_exec call
+  local builtin = require("fzf-lua.previewer.builtin")
+
+  -- Create custom previewer
+  local SymbolPreviewer = builtin.buffer_or_file:extend()
+
+  function SymbolPreviewer:new(o, opts, fzf_win)
+    SymbolPreviewer.super.new(self, o, opts, fzf_win)
+    setmetatable(self, SymbolPreviewer)
+    return self
+  end
+
+  function SymbolPreviewer:parse_entry(entry_str)
+    -- Parse our custom entry format
+    -- The entry_str will be in format: "icon symbol filepath:line"
+    local _, symbol, file_info = entry_str:match("(%S+)%s+(%S+)%s+(.+)")
+    local filepath, line = file_info:match("([^:]+):(%d+)")
+
+    return {
+      path = filepath,
+      line = tonumber(line) or 1,
+      col = 1,
+    }
+  end
+
   local fzf = require("fzf-lua")
 
   fzf.fzf_exec(
@@ -265,7 +290,7 @@ local function custom_symbol_search(params)
       fzf_opts = {
         ["--nth"] = params.include_file_name_in_search and "1.." or "2",
       },
-      previewer = "builtin",
+      previewer = SymbolPreviewer, -- Use our custom previewer
     }
   )
 end
