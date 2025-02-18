@@ -211,10 +211,9 @@ local function custom_symbol_search(params)
   end
 
   local title = string.format(
-    "Search %s symbols %s in %s",
+    "Search %s symbols %s",
     valid_search_types[filetype][search_type],
-    include_file_name_in_search and " (include file name)" or "",
-    filetype
+    include_file_name_in_search and " (include file name)" or ""
   )
 
   local formatted_entries = {}
@@ -267,15 +266,6 @@ local function custom_symbol_search(params)
         ["--nth"] = params.include_file_name_in_search and "1.." or "2",
       },
       previewer = "builtin",
-      preview_opts = "nohidden",
-      preview_window = "right:50%",
-      fn_transform = function(line)
-        local entry = lookup[line]
-        if entry then
-          return string.format("%s:%d:1:", entry.file, entry.lnum)
-        end
-        return line
-      end,
     }
   )
 end
