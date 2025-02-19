@@ -180,7 +180,7 @@ return {
                   flip_columns = 120,
                 },
               },
-              jump_to_single_result = true, -- Jump directly if there's only one result
+              jump1 = true,
               fzf_opts = {
                 ["--info"] = "inline",
                 ["--layout"] = "reverse",

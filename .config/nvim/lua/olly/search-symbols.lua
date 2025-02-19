@@ -94,10 +94,17 @@ local ripgrep_line_patterns = {
       [[const.*=\s*z\.]],
     },
     react = {
-      -- Matches React component declarations
-      -- Covers functional components, class components, and components wrapped in higher-order functions
-      -- Examples: "const MyComponent = (" or "class MyComponent extends React.Component"
+      -- Pattern 1: Regular function/const component declarations
+      -- Example: const MyComponent = () => { or function MyComponent() {
       [[\b(export\s+)?(const|let|var|function|class)\s+([A-Z][a-zA-Z0-9]*)\s*(?:=\s*(?:function\s*\(|(?:React\.)?memo\(|(?:React\.)?forwardRef(?:<[^>]+>)?\(|\()|extends\s+React\.Component|\(|:)]],
+
+      -- Pattern 2: Generic function components
+      -- Example: export function MoneyInputField<TForm extends FieldValues>({
+      [[\b(export\s+)?function\s+([A-Z][a-zA-Z0-9]*)\s*<[^>]+>]],
+
+      -- Pattern 3: Arrow function components with generics
+      -- Example: export const MyComponent = <T extends unknown>({
+      [[\b(export\s+)?const\s+([A-Z][a-zA-Z0-9]*)\s*=\s*<[^>]+>]],
     },
   },
   go = {
@@ -113,7 +120,6 @@ ripgrep_line_patterns.javascript = ripgrep_line_patterns.typescript
 
 local function stream_ripgrep(pattern, directory, callback)
   local Job = require("plenary.job")
-  local start_time = vim.loop.hrtime()
   local count = 0
 
   return Job:new({
@@ -132,30 +138,7 @@ local function stream_ripgrep(pattern, directory, callback)
       count = count + 1
       callback(line)
     end,
-    on_exit = function()
-      local end_time = vim.loop.hrtime()
-      local duration_ms = (end_time - start_time) / 1e6
-      pcall(
-        vim.notify,
-        string.format("Found %d results for pattern '%s' in %.2f ms", count, pattern, duration_ms),
-        vim.log.levels.INFO
-      )
-    end,
   })
-end
-
-local function remove_duplicates(results)
-  local seen = {}
-  local unique_results = {}
-
-  for _, result in ipairs(results) do
-    if not seen[result] then
-      seen[result] = true
-      table.insert(unique_results, result)
-    end
-  end
-
-  return unique_results
 end
 
 local function format_entry(file, lnum, col, symbol)
@@ -198,8 +181,10 @@ local function custom_symbol_search(params)
     include_file_name_in_search and " (include file name)" or ""
   )
 
-  local seen = {}
+  local seen_results = {}
+  local seen_symbols = {}
   local lookup = {}
+  local all_entries = {}
 
   -- Add this before the fzf.fzf_exec call
   local builtin = require("fzf-lua.previewer.builtin")
@@ -229,6 +214,8 @@ local function custom_symbol_search(params)
   local fzf = require("fzf-lua")
 
   fzf.fzf_exec(function(fzf_cb)
+    local start_time = vim.loop.hrtime()
+    local total_results = 0
     local jobs = {}
 
     for _, pattern in ipairs(patterns) do
@@ -236,11 +223,18 @@ local function custom_symbol_search(params)
         local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
         local symbol = get_first_symbol(text)
 
-        if symbol and not seen[result] then
-          seen[result] = true
+        -- Track unique results by full result line
+        if symbol and not seen_results[result] then
+          seen_results[result] = true
           local entry = format_entry(file, lnum, col, symbol)
-          lookup[entry.display] = entry
-          fzf_cb(entry.display)
+
+          -- Only show first occurrence of each symbol
+          if not seen_symbols[symbol] then
+            seen_symbols[symbol] = true
+            lookup[entry.display] = entry
+            table.insert(all_entries, entry.display)
+            fzf_cb(entry.display)
+          end
         end
       end)
       table.insert(jobs, job)
@@ -255,6 +249,17 @@ local function custom_symbol_search(params)
     for _, job in ipairs(jobs) do
       job:wait()
     end
+
+    local end_time = vim.loop.hrtime()
+    local duration_ms = (end_time - start_time) / 1e6
+    local total_matches = vim.tbl_count(seen_results)
+    local unique_symbols = vim.tbl_count(seen_symbols)
+
+    pcall(
+      vim.notify,
+      string.format("Found %d matches (%d unique symbols) in %.2f ms", total_matches, unique_symbols, duration_ms),
+      vim.log.levels.INFO
+    )
 
     fzf_cb(nil)
   end, {
