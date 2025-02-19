@@ -10,66 +10,6 @@ return {
 
       lspconfig.vtsls.setup({
         capabilities = capabilities,
-        settings = {
-          typescript = {
-            inlayHints = {
-              parameterNames = { enabled = "all" }, -- Show all parameter names
-              parameterTypes = { enabled = false }, -- Disable parameter type hints
-              variableTypes = { enabled = false }, -- Disable variable type hints
-              propertyDeclarationTypes = { enabled = false }, -- Disable property type hints
-              functionLikeReturnTypes = { enabled = false }, -- Disable return type hints
-              enumMemberValues = { enabled = false }, -- Disable enum value hints
-            },
-            suggest = {
-              completeFunctionCalls = true,
-              includeCompletionsForModuleExports = true,
-              includeCompletionsWithObjectLiteralMethodSnippets = true,
-            },
-            updateImportsOnFileMove = {
-              enabled = "always",
-            },
-            format = {
-              indentSize = 2,
-              convertTabsToSpaces = true,
-              tabSize = 2,
-              trimTrailingWhitespace = true,
-              insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces = true,
-            },
-          },
-          javascript = {
-            inlayHints = {
-              parameterNames = { enabled = "all" }, -- Show all parameter names
-              parameterTypes = { enabled = false }, -- Disable parameter type hints
-              variableTypes = { enabled = false }, -- Disable variable type hints
-              propertyDeclarationTypes = { enabled = false }, -- Disable property type hints
-              functionLikeReturnTypes = { enabled = false }, -- Disable return type hints
-              enumMemberValues = { enabled = false }, -- Disable enum value hints
-            },
-            suggest = {
-              completeFunctionCalls = true,
-              includeCompletionsForModuleExports = true,
-              includeCompletionsWithObjectLiteralMethodSnippets = true,
-            },
-            updateImportsOnFileMove = {
-              enabled = "always",
-            },
-          },
-          completions = {
-            completeFunctionCalls = true,
-          },
-        },
-        -- Add common JS/TS file patterns
-        filetypes = {
-          "javascript",
-          "javascriptreact",
-          "javascript.jsx",
-          "typescript",
-          "typescriptreact",
-          "typescript.tsx",
-        },
-        -- Ensure proper root directory detection
-        root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-        single_file_support = true,
       })
 
       lspconfig.lua_ls.setup({

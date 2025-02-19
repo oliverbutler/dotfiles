@@ -37,7 +37,9 @@ return {
         "htmx",
         "typos_lsp",
         "vtsls",
+        "gopls",
       },
+      automatic_installation = true,
     })
 
     mason_tool_installer.setup({
@@ -48,6 +50,7 @@ return {
         "gofumpt",
         "gofumports",
       },
+      automatic_installation = true,
     })
 
     mason_dap.setup({
