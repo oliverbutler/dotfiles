@@ -1,6 +1,24 @@
-local function get_anthropic_api_key()
+local api_configs = {
+  {
+    env_var = "ANTHROPIC_API_KEY",
+    onepass_name = "Anthropic API Key",
+    file_name = ".anthropic_api_key",
+  },
+  {
+    env_var = "GROQ_API_KEY",
+    onepass_name = "Groq API Key",
+    file_name = ".groq_api_key",
+  },
+  {
+    env_var = "TAVILY_API_KEY",
+    onepass_name = "Tavily API Key",
+    file_name = ".tavily_api_key",
+  },
+}
+
+local function get_api_key(config)
   local home = os.getenv("HOME")
-  local key_file = home .. "/.config/nvim/.anthropic_api_key"
+  local key_file = home .. "/.config/nvim/" .. config.file_name
 
   -- Check if the key file exists
   local f = io.open(key_file, "r")
@@ -10,10 +28,11 @@ local function get_anthropic_api_key()
     return api_key:gsub("^%s*(.-)%s*$", "%1") -- Trim whitespace
   end
 
-  vim.notify("Retrieving Anthropic API Key")
+  vim.notify("Retrieving " .. config.onepass_name)
   -- If not stored, retrieve it from 1Password
-  local handle =
-    io.popen('op item get "Anthropic API Key" --account "5S2IFKBEWJARZAMDT64SKMOSVA" --fields password --reveal')
+  local handle = io.popen(
+    'op item get "' .. config.onepass_name .. '" --account "5S2IFKBEWJARZAMDT64SKMOSVA" --fields password --reveal'
+  )
 
   if handle then
     local result = handle:read("*a")
@@ -29,7 +48,7 @@ local function get_anthropic_api_key()
 
     return result
   else
-    print("Failed to get Anthropic API Key")
+    print("Failed to get " .. config.onepass_name)
     return nil
   end
 end
@@ -41,7 +60,17 @@ return {
   version = false,
   opts = {},
   build = "make",
-  keys = {},
+  keys = {
+    {
+      "<leader>ak",
+      ":AvanteClear<CR>",
+      {
+        noremap = true,
+        silent = true,
+        description = "Clear history",
+      },
+    },
+  },
   dependencies = {
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
@@ -72,9 +101,12 @@ return {
     },
   },
   config = function()
-    local api_key = get_anthropic_api_key()
-    if api_key then
-      vim.env.ANTHROPIC_API_KEY = api_key
+    -- Set up all API keys
+    for _, config in ipairs(api_configs) do
+      local api_key = get_api_key(config)
+      if api_key then
+        vim.env[config.env_var] = api_key
+      end
     end
 
     require("avante").setup({
@@ -115,6 +147,27 @@ return {
           apply_cursor = "a",
           switch_windows = "<Tab>",
           reverse_switch_windows = "<S-Tab>",
+        },
+      },
+
+      provider = "claude", -- In this example, use Claude for planning, but you can also use any provider you want.
+      cursor_applying_provider = "groq", -- In this example, use Groq for applying, but you can also use any provider you want.
+      behaviour = {
+        --- ... existing behaviours
+        enable_cursor_planning_mode = true, -- enable cursor planning mode!
+      },
+
+      web_search_engine = {
+        provider = "tavily",
+      },
+
+      vendors = {
+        groq = { -- define groq provider
+          __inherited_from = "openai",
+          api_key_name = "GROQ_API_KEY",
+          endpoint = "https://api.groq.com/openai/v1/",
+          model = "qwen-2.5-coder-32b",
+          max_tokens = 8192, -- remember to increase this value, otherwise it will stop generating halfway
         },
       },
     })
