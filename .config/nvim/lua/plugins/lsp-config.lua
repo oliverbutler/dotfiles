@@ -81,6 +81,9 @@ return {
 
       lspconfig.typos_lsp.setup({
         capabilities = capabilities,
+        init_options = {
+          diagnosticSeverity = "Info",
+        },
       })
 
       lspconfig.gopls.setup({

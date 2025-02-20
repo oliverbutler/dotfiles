@@ -56,6 +56,7 @@ return {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     "nvim-tree/nvim-web-devicons",
+    "ibhagwan/fzf-lua", -- for file_selector provider fzf
     "zbirenbaum/copilot.lua",
     {
       "HakonHarnes/img-clip.nvim",
@@ -85,6 +86,42 @@ return {
       vim.env.ANTHROPIC_API_KEY = api_key
     end
 
-    require("avante").setup()
+    require("avante").setup({
+      file_selector = {
+        provider = "fzf",
+      },
+      mappings = {
+        --- @class AvanteConflictMappings
+        diff = {
+          ours = "co",
+          theirs = "ct",
+          all_theirs = "ca",
+          both = "cb",
+          cursor = "cc",
+          next = "]x",
+          prev = "[x",
+        },
+        suggestion = {
+          accept = "<M-l>",
+          next = "<M-]>",
+          prev = "<M-[>",
+          dismiss = "<C-]>",
+        },
+        jump = {
+          next = "]]",
+          prev = "[[",
+        },
+        submit = {
+          normal = "<CR>",
+          insert = "<C-s>",
+        },
+        sidebar = {
+          apply_all = "A",
+          apply_cursor = "a",
+          switch_windows = "<Tab>",
+          reverse_switch_windows = "<S-Tab>",
+        },
+      },
+    })
   end,
 }
