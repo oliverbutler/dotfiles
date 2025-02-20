@@ -13,7 +13,11 @@ return {
 
     local treesitter = require("nvim-treesitter.configs")
 
-    treesitter.setup({ -- enable syntax highlighting
+    treesitter.setup({
+      modules = {},
+      sync_install = true,
+      auto_install = true,
+      ignore_install = {},
       highlight = {
         enable = true,
         additional_vim_regex_highlighting = false,
