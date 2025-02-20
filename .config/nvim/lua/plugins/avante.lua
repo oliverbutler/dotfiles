@@ -73,11 +73,17 @@ return {
   keys = {
     {
       "<leader>ak",
-      ":AvanteClear<CR>",
+      function()
+        vim.cmd("AvanteClear")
+        vim.cmd("AvanteToggle")
+        vim.defer_fn(function()
+          vim.cmd("AvanteToggle")
+        end, 50)
+      end,
       {
         noremap = true,
         silent = true,
-        description = "Clear history",
+        description = "Clear history and refresh Avante",
       },
     },
   },
