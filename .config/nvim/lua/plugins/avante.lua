@@ -2,30 +2,40 @@ local api_configs = {
   {
     env_var = "ANTHROPIC_API_KEY",
     onepass_name = "Anthropic API Key",
-    file_name = ".anthropic_api_key",
   },
   {
     env_var = "GROQ_API_KEY",
     onepass_name = "Groq API Key",
-    file_name = ".groq_api_key",
   },
   {
     env_var = "TAVILY_API_KEY",
     onepass_name = "Tavily API Key",
-    file_name = ".tavily_api_key",
   },
 }
 
-local function get_api_key(config)
+local function load_api_keys()
   local home = os.getenv("HOME")
-  local key_file = home .. "/.config/nvim/" .. config.file_name
+  local keys_file = home .. "/.config/nvim/.api_keys"
+  local stored_keys = {}
 
-  -- Check if the key file exists
-  local f = io.open(key_file, "r")
+  -- Try to load existing keys
+  local f = io.open(keys_file, "r")
   if f then
-    local api_key = f:read("*all")
+    for line in f:lines() do
+      local key, value = line:match("([^=]+)=(.*)")
+      if key and value then
+        stored_keys[key:gsub("^%s*(.-)%s*$", "%1")] = value:gsub("^%s*(.-)%s*$", "%1")
+      end
+    end
     f:close()
-    return api_key:gsub("^%s*(.-)%s*$", "%1") -- Trim whitespace
+  end
+  return stored_keys, keys_file
+end
+
+local function get_api_key(config, stored_keys, keys_file)
+  -- Check if key exists in stored keys
+  if stored_keys[config.env_var] then
+    return stored_keys[config.env_var]
   end
 
   vim.notify("Retrieving " .. config.onepass_name)
@@ -40,9 +50,9 @@ local function get_api_key(config)
     result = result:gsub("^%s*(.-)%s*$", "%1") -- Trim whitespace
 
     -- Store the key for future use
-    f = io.open(key_file, "w")
+    local f = io.open(keys_file, "a")
     if f then
-      f:write(result)
+      f:write(config.env_var .. "=" .. result .. "\n")
       f:close()
     end
 
@@ -101,9 +111,12 @@ return {
     },
   },
   config = function()
+    -- Load stored keys and get file path
+    local stored_keys, keys_file = load_api_keys()
+
     -- Set up all API keys
     for _, config in ipairs(api_configs) do
-      local api_key = get_api_key(config)
+      local api_key = get_api_key(config, stored_keys, keys_file)
       if api_key then
         vim.env[config.env_var] = api_key
       end
