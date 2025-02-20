@@ -56,17 +56,17 @@ async function generatePRDescription(): Promise<PRContent> {
   const gitDiff = await getGitDiff();
 
   const prompt = `
-    Generate a concise PR description based on this git diff. Return in this format:
-    First line is the PR title (short, includes type)
+    Generate a concise PR description based on this git diff. Return EXACTLY in this format:
+    First line is the PR title (short, lowercase, conventional naming e.g. feat: fix:)
 
     Then a blank line
 
-    Then a brief description with 2-4 bullet points that:
-    - Focus on high-level changes only
-    - Use casual tech terms (e.g. 'postgres' not 'PostgreSQL')
-    - Are short and to the point
+    then write 2-5 bullet points max that:
+    - start with "relates to BLB-XXX" if branch has a ticket number
+    - keep it super high level, like you're telling a mate what changed
+    - use normal tech terms (like nodejs not Node.js)
+    - Are short and to the point, bullets prefixed by emoji for bug, or feature, or none.
     - Avoid implementation details unless crucial
-    - Start with "Relates to BLB-XXX" if branch has ticket number
     - Only mention migrations if present
 
     Branch Name: ${branchName}

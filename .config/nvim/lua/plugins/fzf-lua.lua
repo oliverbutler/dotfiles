@@ -35,6 +35,9 @@ return {
     vim.keymap.set("n", "<leader>sw", function()
       fzf.grep_cword()
     end, { desc = "[S]search [W]ord" })
+    vim.keymap.set("n", "<leader>sd", function()
+      fzf.lsp_document_symbols()
+    end, { desc = "[S]search [D]ocument symbols" })
 
     vim.keymap.set("n", "<leader>'", fzf.live_grep, { desc = "[S]search [G]rep" })
 

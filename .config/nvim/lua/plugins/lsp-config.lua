@@ -32,8 +32,8 @@ return {
         settings = {
           tailwindCSS = {
             experimental = {
-              -- Support gocomponents
               classRegex = {
+                -- Go components patterns
                 "Class\\(([^)]*)\\)",
                 '["`]([^"`]*)["`]', -- Class("...") or Class(`...`)
                 "Classes\\(([^)]*)\\)",
@@ -44,6 +44,13 @@ return {
                 '["`]([^"`]*)["`]', -- Classes{"..."} or Classes{`...`}
                 'Class:\\s*["`]([^"`]*)["`]', -- Class: "..." or Class: `...`
                 ':\\s*["`]([^"`]*)["`]', -- Classes: "..." or Classes: `...`
+
+                -- support class variance authority
+                { "cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+
+                -- support classnames
+                { "classnames\\(([^)]*)\\)" },
               },
             },
           },
