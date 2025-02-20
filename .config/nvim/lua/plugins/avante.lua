@@ -41,16 +41,7 @@ return {
   version = false,
   opts = {},
   build = "make",
-  keys = {
-    {
-      "<leader>ak",
-      function()
-        vim.cmd("AvanteClear")
-        vim.cmd("AvanteRefresh")
-        vim.cmd("AvanteToggle")
-      end,
-    },
-  },
+  keys = {},
   dependencies = {
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
@@ -87,8 +78,12 @@ return {
     end
 
     require("avante").setup({
+      hints = {
+        enabled = false,
+      },
       file_selector = {
         provider = "fzf",
+        provider_opts = {},
       },
       mappings = {
         --- @class AvanteConflictMappings

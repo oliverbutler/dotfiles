@@ -10,6 +10,7 @@ return {
   end,
   opts = {
     triggers = {
+      { "<leader>" },
       { "s", mode = { "n", "v" } },
       { "v", mode = { "n", "v" } },
     },
