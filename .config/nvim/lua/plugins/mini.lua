@@ -1,5 +1,51 @@
 return {
   {
+    "echasnovski/mini.pairs",
+    version = false,
+    config = function()
+      require("mini.pairs").setup()
+    end,
+  },
+  {
+    "echasnovski/mini.move",
+    event = "VeryLazy",
+    config = function()
+      require("mini.move").setup()
+    end,
+  },
+  {
+    "echasnovski/mini.files",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>e",
+        function()
+          local mini_files = require("mini.files")
+          mini_files.open(vim.api.nvim_buf_get_name(0))
+        end,
+      },
+    },
+    config = function()
+      require("mini.files").setup({
+        mappings = {
+          close = "q",
+          go_in = "l",
+          go_in_plus = "<Enter>",
+          go_out = "<leader>e",
+          go_out_plus = "H",
+          mark_goto = "'",
+          mark_set = "m",
+          reset = "<BS>",
+          reveal_cwd = "@",
+          show_help = "g?",
+          synchronize = "<leader>w",
+          trim_left = "<",
+          trim_right = ">",
+        },
+      })
+    end,
+  },
+  {
     "echasnovski/mini.ai",
     event = "VeryLazy",
     opts = function()
@@ -30,38 +76,16 @@ return {
     event = "VeryLazy",
     opts = {
       mappings = {
-        add = "sa", -- Add surrounding in Normal and Visual modes
-        delete = "sd", -- Delete surrounding
-        find = "sf", -- Find surrounding (to the right)
-        find_left = "sF", -- Find surrounding (to the left)
-        highlight = "sh", -- Highlight surrounding
-        replace = "sr", -- Replace surrounding
-        update_n_lines = "sn", -- Update `n_lines`
-
-        suffix_last = "l", -- Suffix to search with "prev" method
-        suffix_next = "n", -- Suffix to search with "next" method
+        add = "sa",
+        delete = "sd",
+        find = "sf",
+        find_left = "sF",
+        highlight = "sh",
+        replace = "sr",
+        update_n_lines = "sn",
+        suffix_last = "l",
+        suffix_next = "n",
       },
     },
-    config = function(_, opts)
-      -- Setup mini.surround
-      require("mini.surround").setup(opts)
-
-      -- Disable default 's' behavior
-      vim.keymap.set("n", "s", "<nop>")
-
-      -- Register which-key mappings
-      require("which-key").add({
-        s = {
-          name = "Surround",
-          a = "Add surrounding",
-          d = "Delete surrounding",
-          f = "Find surrounding (right)",
-          F = "Find surrounding (left)",
-          h = "Highlight surrounding",
-          r = "Replace surrounding",
-          n = "Update n_lines",
-        },
-      })
-    end,
   },
 }

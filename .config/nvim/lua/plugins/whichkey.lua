@@ -9,6 +9,9 @@ return {
     wk.setup(opts)
   end,
   opts = {
-    -- Add any which-key configuration options here
+    triggers = {
+      { "s", mode = { "n", "v" } },
+      { "v", mode = { "n", "v" } },
+    },
   },
 }

@@ -49,13 +49,13 @@ return {
             { section = "startup" },
           },
         },
-        lazygit = {
-          enabled = true,
-        },
         gitbrowse = {
           enabled = true,
         },
         notifier = {
+          enabled = true,
+        },
+        image = {
           enabled = true,
         },
       }
