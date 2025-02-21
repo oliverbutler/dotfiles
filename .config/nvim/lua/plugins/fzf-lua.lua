@@ -13,10 +13,10 @@ return {
       file_icons = true,
       winopts = {
         height = 0.85,
-        width = 0.90,
+        width = 0.95,
         preview = {
           default = "builtin",
-          horizontal = "right:50%",
+          horizontal = "right:40%",
         },
       },
       keymap = {
@@ -38,6 +38,9 @@ return {
     vim.keymap.set("n", "<leader>sd", function()
       fzf.lsp_document_symbols()
     end, { desc = "[S]search [D]ocument symbols" })
+
+    vim.keymap.set("n", "<leader>sgb", fzf.git_branches, { desc = "[S]search [G]it [B]ranches" })
+    vim.keymap.set("n", "<leader>sgc", fzf.git_commits, { desc = "[S]search [G]it [C]ommits" })
 
     vim.keymap.set("n", "<leader>'", fzf.live_grep, { desc = "[S]search [G]rep" })
 

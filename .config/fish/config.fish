@@ -189,6 +189,7 @@ function zn
     end
 
     z $argv[1]
+
     nvim
 
 end

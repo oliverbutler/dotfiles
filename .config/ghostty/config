@@ -1,7 +1,8 @@
 theme = dark:catppuccin-mocha,light:catppuccin-latte
 font-family = "JetBrains Mono"
 shell-integration = fish
-background-opacity = 0.90
+background-opacity = 0.97
 background-blur = true
 link-url = true
 mouse-hide-while-typing = true
+# custom-shader = /home/olly/projects/ghostty-shaders/in-game-crt.glsl
