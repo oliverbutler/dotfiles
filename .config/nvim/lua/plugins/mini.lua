@@ -85,7 +85,7 @@ return {
         },
         mappings = {
           close = "q",
-          go_in = "l",
+          go_in = "<Enter>",
           go_in_plus = "<Enter>",
           go_out = "<leader>e",
           go_out_plus = "H",

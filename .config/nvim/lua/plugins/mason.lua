@@ -48,7 +48,6 @@ return {
         "prettierd",
         "sql-formatter",
         "gofumpt",
-        "gofumports",
       },
       automatic_installation = true,
     })
