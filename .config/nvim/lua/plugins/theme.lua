@@ -49,10 +49,12 @@ return {
           indentscope_color = "",
         },
         diffview = true,
-        telescope = {
-          enabled = true,
-          style = "nvchad",
-        },
+        fzf = true,
+        grug_far = true,
+        leap = true,
+        blink_cmp = true,
+        mason = true,
+        neotest = true,
       },
     },
 

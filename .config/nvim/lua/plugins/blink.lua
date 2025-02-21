@@ -67,7 +67,11 @@ return {
             "lsp",
             "path",
           },
+          per_filetype = {
+            sql = { "snippets", "dadbod", "buffer" },
+          },
           providers = {
+            dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
             avante = {
               module = "blink-cmp-avante",
               name = "Avante",

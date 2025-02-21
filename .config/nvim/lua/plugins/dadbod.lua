@@ -10,8 +10,23 @@ return {
     "DBUIAddConnection",
     "DBUIFindBuffer",
   },
-  init = function()
+  config = function()
     -- Your DBUI configuration
     vim.g.db_ui_use_nerd_fonts = 1
+
+    vim.g.dbs = {
+      {
+        name = "sqlitetest",
+        url = "sqlite:///home/olly/Downloads/chinook.db",
+      },
+    }
+
+    -- Disable folding in dbui (dadbod-ui left hand side sidebar)
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "dbui",
+      callback = function()
+        vim.wo.foldenable = false
+      end,
+    })
   end,
 }

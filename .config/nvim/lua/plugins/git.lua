@@ -37,6 +37,9 @@ return {
     config = function()
       require("diffview").setup({})
 
+      -- Q: How do I get the diagonal lines in place of deleted lines in diff-mode? From docs
+      vim.opt.fillchars:append({ diff = "╱" })
+
       vim.keymap.set(
         "n",
         "<leader>hf",

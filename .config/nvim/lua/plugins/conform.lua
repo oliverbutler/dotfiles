@@ -32,11 +32,11 @@ return {
       },
     })
 
-    conform.formatters.sql_formatter = {
-      prepend_args = function(self, ctx)
-        return { "-c", "/Users/olly/.config/nvim/lua/plugins/sql-formatter.json" }
-      end,
-    }
+    -- conform.formatters.sql_formatter = {
+    --   prepend_args = function(self, ctx)
+    --     return { "-c", "/Users/olly/.config/nvim/lua/plugins/sql-formatter.json" }
+    --   end,
+    -- }
 
     vim.keymap.set({ "n", "v" }, "<leader>mp", function()
       conform.format({
