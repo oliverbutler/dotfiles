@@ -1,0 +1,7 @@
+theme = dark:catppuccin-mocha,light:catppuccin-latte
+font-family = "JetBrains Mono"
+shell-integration = fish
+background-opacity = 0.90
+background-blur = true
+link-url = true
+mouse-hide-while-typing = true
