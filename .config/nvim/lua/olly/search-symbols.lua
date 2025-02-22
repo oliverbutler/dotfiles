@@ -182,49 +182,66 @@ local function get_symbol_results(params)
     include_file_name_in_search and " (include file name)" or ""
   )
 
-  local start_time = vim.loop.hrtime()
-
   ---@type SymbolSearchResult[]
   local results = {}
   local seen_symbols = {}
   local seen_results = {}
 
-  -- Synchronously process each pattern
+  local search_start_time = vim.loop.hrtime()
+  local search_results = {}
+
+  -- First phase: Collect all ripgrep results
   for _, pattern in ipairs(patterns) do
     local job = stream_ripgrep(pattern, directory, function(result)
-      local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
-      local symbol = get_first_symbol(text)
-
-      -- Track unique results by full result line
-      if symbol and not seen_results[result] then
-        seen_results[result] = true
-
-        -- Only show first occurrence of each symbol
-        if not seen_symbols[symbol] then
-          seen_symbols[symbol] = true
-          table.insert(results, {
-            symbol = symbol,
-            file = file,
-            lnum = tonumber(lnum),
-            col = tonumber(col),
-            text = text, -- Include the full text for display purposes
-          })
-        end
-      end
+      table.insert(search_results, result)
     end)
-
-    -- Run the job synchronously
     job:sync()
   end
+  local search_end_time = vim.loop.hrtime()
 
-  local end_time = vim.loop.hrtime()
-  local duration_ms = (end_time - start_time) / 1e6
+  -- Second phase: Process results
+  local process_start_time = vim.loop.hrtime()
+  for _, result in ipairs(search_results) do
+    local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
+    local symbol = get_first_symbol(text)
+
+    -- Track unique results by full result line
+    if symbol and not seen_results[result] then
+      seen_results[result] = true
+
+      -- Only show first occurrence of each symbol
+      if not seen_symbols[symbol] then
+        seen_symbols[symbol] = true
+        table.insert(results, {
+          symbol = symbol,
+          file = file,
+          lnum = tonumber(lnum),
+          col = tonumber(col),
+          text = text, -- Include the full text for display purposes
+        })
+      end
+    end
+  end
+  local process_end_time = vim.loop.hrtime()
+
+  -- Calculate timings
+  local search_duration_ms = (search_end_time - search_start_time) / 1e6
+  local process_duration_ms = (process_end_time - process_start_time) / 1e6
+  local total_duration_ms = search_duration_ms + process_duration_ms
+
   local total_matches = vim.tbl_count(seen_results)
   local unique_symbols = vim.tbl_count(seen_symbols)
 
   pcall(
     vim.notify,
-    string.format("Found %d matches (%d unique symbols) in %.2f ms", total_matches, unique_symbols, duration_ms),
+    string.format(
+      "Found %d matches (%d unique symbols) in %.0fms (%.0fms search, %.0fms processing)",
+      total_matches,
+      unique_symbols,
+      total_duration_ms,
+      search_duration_ms,
+      process_duration_ms
+    ),
     vim.log.levels.INFO
   )
 
