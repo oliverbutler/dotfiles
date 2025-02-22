@@ -186,16 +186,17 @@ return {
                 table.insert(items, {
                   text = result.symbol,
                   file = result.file,
+                  pos = { result.lnum, result.col },
                 })
               end
 
               return items
             end,
-            format = function(item)
-              local ret = {}
-              ret[#ret + 1] = { item.text or "", "@string" }
-              return ret
-            end,
+            -- format = function(item)
+            --   local ret = {}
+            --   ret[#ret + 1] = { item.text or "", "@string" }
+            --   return ret
+            -- end,
           })
         end, { desc = "[S]earch [" .. upper_key .. "]" })
 

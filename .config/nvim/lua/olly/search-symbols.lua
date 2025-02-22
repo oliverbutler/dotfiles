@@ -141,24 +141,10 @@ local function stream_ripgrep(pattern, directory, callback)
   })
 end
 
-local function format_entry(file, lnum, col, symbol)
-  -- Get file icon and highlight group
-  local icon, icon_hl = devicons.get_icon(file, string.match(file, "%a+$"), { default = true })
-  local file_path = vim.fn.fnamemodify(file, ":~:.")
-  return {
-    display = string.format("%s %s %s:%s", icon, symbol, file_path, lnum),
-    file = file,
-    lnum = tonumber(lnum),
-    col = tonumber(col),
-    symbol = symbol,
-    icon = icon,
-    icon_hl = icon_hl,
-  }
-end
-
----@alias SymbolSearchResult {symbol: string, file: string}
+---@alias SymbolSearchResult {symbol: string, file: string, col: number, lnum: number, text: string}
 ---@alias SymbolSearchReturn {title: string, results: SymbolSearchResult[]}
 
+---@param params {type: string, also_search_file_name: boolean, directory: string}
 ---@return SymbolSearchReturn
 local function get_symbol_results(params)
   local search_type = params.type
@@ -185,6 +171,8 @@ local function get_symbol_results(params)
     include_file_name_in_search and " (include file name)" or ""
   )
 
+  local start_time = vim.loop.hrtime()
+
   ---@type SymbolSearchResult[]
   local results = {}
   local seen_symbols = {}
@@ -205,7 +193,9 @@ local function get_symbol_results(params)
           seen_symbols[symbol] = true
           table.insert(results, {
             symbol = symbol,
-            file = string.format("%s:%s:%s", file, lnum, col),
+            file = file,
+            lnum = tonumber(lnum),
+            col = tonumber(col),
             text = text, -- Include the full text for display purposes
           })
         end
@@ -216,108 +206,21 @@ local function get_symbol_results(params)
     job:sync()
   end
 
+  local end_time = vim.loop.hrtime()
+  local duration_ms = (end_time - start_time) / 1e6
+  local total_matches = vim.tbl_count(seen_results)
+  local unique_symbols = vim.tbl_count(seen_symbols)
+
+  pcall(
+    vim.notify,
+    string.format("Found %d matches (%d unique symbols) in %.2f ms", total_matches, unique_symbols, duration_ms),
+    vim.log.levels.INFO
+  )
+
   return {
     title = title,
     results = results,
   }
-end
-
-local function custom_symbol_search(params)
-  local snacks = require("snacks")
-
-  snacks.picker.pick({
-    title = title,
-    finder = function()
-      ---@type snacks.picker.finder.Item[]
-      local items = {}
-
-      table.insert(items, { symbol = "foo", file = 1 })
-    end,
-    format = function(item)
-      local ret = {}
-      ret[#ret + 1] = { item.text or "", "@string" }
-      return ret
-    end,
-  })
-
-  -- local fzf = require("fzf-lua")
-  --
-  -- fzf.fzf_exec(function(fzf_cb)
-  --   local start_time = vim.loop.hrtime()
-  --   local total_results = 0
-  --   local jobs = {}
-  --
-  --   for _, pattern in ipairs(patterns) do
-  --     local job = stream_ripgrep(pattern, params.directory, function(result)
-  --       local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
-  --       local symbol = get_first_symbol(text)
-  --
-  --       -- Track unique results by full result line
-  --       if symbol and not seen_results[result] then
-  --         seen_results[result] = true
-  --         local entry = format_entry(file, lnum, col, symbol)
-  --
-  --         -- Only show first occurrence of each symbol
-  --         if not seen_symbols[symbol] then
-  --           seen_symbols[symbol] = true
-  --           lookup[entry.display] = entry
-  --           table.insert(all_entries, entry.display)
-  --           fzf_cb(entry.display)
-  --         end
-  --       end
-  --     end)
-  --     table.insert(jobs, job)
-  --   end
-  --
-  --   -- Start all jobs
-  --   for _, job in ipairs(jobs) do
-  --     job:start()
-  --   end
-  --
-  --   -- Wait for all jobs to complete
-  --   for _, job in ipairs(jobs) do
-  --     job:wait()
-  --   end
-  --
-  --   local end_time = vim.loop.hrtime()
-  --   local duration_ms = (end_time - start_time) / 1e6
-  --   local total_matches = vim.tbl_count(seen_results)
-  --   local unique_symbols = vim.tbl_count(seen_symbols)
-  --
-  --   pcall(
-  --     vim.notify,
-  --     string.format("Found %d matches (%d unique symbols) in %.2f ms", total_matches, unique_symbols, duration_ms),
-  --     vim.log.levels.INFO
-  --   )
-  --
-  --   fzf_cb(nil)
-  -- end, {
-  --   prompt = title,
-  --   actions = {
-  --     ["default"] = function(selected)
-  --       local entry = lookup[selected[1]]
-  --       if entry then
-  --         vim.cmd("edit " .. entry.file)
-  --         vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
-  --       end
-  --     end,
-  --   },
-  --   winopts = {
-  --     height = 0.85,
-  --     width = 0.90,
-  --     preview = {
-  --       hidden = "nohidden",
-  --       vertical = "right",
-  --       horizontal = "right",
-  --       layout = "flex",
-  --       flip_columns = 120,
-  --     },
-  --   },
-  --   fzf_opts = {
-  --     ["--nth"] = params.include_file_name_in_search and "1.." or "2",
-  --   },
-  --   previewer = SymbolPreviewer, -- Use our custom previewer
-  -- })
 end
 
 return {
