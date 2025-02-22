@@ -5,13 +5,6 @@ return {
   lazy = false,
   keys = {
     {
-      "<leader>gf",
-      function()
-        Snacks.lazygit.log_file()
-      end,
-      desc = "Open file in LazyGit",
-    },
-    {
       "<leader>go",
       function()
         Snacks.gitbrowse.open()
