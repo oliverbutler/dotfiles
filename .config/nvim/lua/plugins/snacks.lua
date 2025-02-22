@@ -17,6 +17,134 @@ return {
       end,
       desc = "Notification History",
     },
+    -- Help
+    {
+      "<leader>sh",
+      function()
+        Snacks.picker.help()
+      end,
+      desc = "[S]earch [H]elp",
+    },
+    -- Keymaps
+    {
+      "<leader>sk",
+      function()
+        Snacks.picker.keymaps()
+      end,
+      desc = "[S]earch [K]eymaps",
+    },
+    -- Files
+    {
+      "<leader>;",
+      function()
+        Snacks.picker.files()
+      end,
+      desc = "[S]earch Files",
+    },
+    -- Buffers
+    {
+      "<leader>sb",
+      function()
+        Snacks.picker.buffers()
+      end,
+      desc = "[S]earch [B]uffers",
+    },
+    -- Word under cursor
+    {
+      "<leader>sw",
+      function()
+        Snacks.picker.grep_word()
+      end,
+      desc = "[S]earch [W]ord",
+    },
+    -- Document symbols
+    {
+      "<leader>sd",
+      function()
+        Snacks.picker.lsp_symbols()
+      end,
+      desc = "[S]earch [D]ocument symbols",
+    },
+    -- Git branches and commits
+    {
+      "<leader>sgb",
+      function()
+        Snacks.picker.git_branches()
+      end,
+      desc = "[S]earch [G]it [B]ranches",
+    },
+    {
+      "<leader>sgc",
+      function()
+        Snacks.picker.git_log()
+      end,
+      desc = "[S]earch [G]it [C]ommits",
+    },
+    -- Old files
+    {
+      "<leader>so",
+      function()
+        Snacks.picker.recent()
+      end,
+      desc = "[S]earch [O]ld files",
+    },
+    -- Live grep
+    {
+      "<leader>'",
+      function()
+        Snacks.picker.grep({ live = true })
+      end,
+      desc = "[S]earch [G]rep",
+    },
+    -- Resume last picker
+    {
+      "<leader><leader>",
+      function()
+        Snacks.picker.resume()
+      end,
+      desc = "[ ] reopen last",
+    },
+    -- Visual mode word search
+    {
+      "<leader>sw",
+      function()
+        Snacks.picker.grep_word()
+      end,
+      desc = "[S]earch [W]ord",
+      mode = "v",
+    },
+    -- Current buffer search
+    {
+      "<leader>/",
+      function()
+        Snacks.picker.lines()
+      end,
+      desc = "[/] Fuzzily search in current buffer",
+    },
+    -- Search in all buffers
+    {
+      "<leader>?",
+      function()
+        Snacks.picker.grep_buffers()
+      end,
+      desc = "[/] Fuzzily search in open buffers",
+    },
+    -- Project-wide search
+    {
+      "<leader>.",
+      function()
+        Snacks.picker.grep({ live = true })
+      end,
+      desc = "[.] Fuzzy search in project",
+    },
+    -- Fast paste open
+    {
+      "<leader>P",
+      function()
+        local clipboard = vim.fn.getreg("+")
+        Snacks.picker.files({ pattern = clipboard })
+      end,
+    },
   },
   config = function()
     -- Enable mini.files to do a LSP rename
@@ -27,46 +155,78 @@ return {
       end,
     })
 
-    require("snacks").setup(
-      ---@type snacks.Config
-      {
-        animation = {
-          enabled = true,
-        },
-        dashboard = {
-          enabled = true,
-          preset = {
-            keys = {
-              { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-              { icon = " ", key = "s", desc = "Restore Session", section = "session" },
-              { icon = " ", key = "q", desc = "Quit", action = ":qa" },
-            },
-          },
-          sections = {
-            {
-              section = "terminal",
-              cmd = "chafa ~/.config/nvim/assets/maple-beach.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1",
-              height = 25,
-              padding = 1,
-            },
-            {
-              pane = 2,
-              { icon = " ", section = "recent_files", padding = 1 },
-              { section = "keys", gap = 1, padding = 1 },
-              { section = "startup" },
-            },
-          },
-        },
-        gitbrowse = {
-          enabled = true,
-        },
-        notifier = {
-          enabled = true,
-        },
-        image = {
-          enabled = true,
-        },
+    -- Custom search symbols function implementation
+    local function setup_custom_symbol_search()
+      local search_key_map = {
+        a = "all",
+        z = "zod",
+        t = "types",
+        c = "classes",
+        r = "react",
       }
-    )
+
+      local ollySearchSymbols = require("olly.search-symbols")
+
+      for key, value in pairs(search_key_map) do
+        local upper_key = key:upper()
+
+        vim.keymap.set("n", "<leader>s" .. key, function()
+          ollySearchSymbols.custom_symbol_search({
+            type = value,
+            also_search_file_name = false,
+          })
+        end, { desc = "[S]earch [" .. upper_key .. "]" })
+
+        vim.keymap.set("n", "<leader>s" .. upper_key, function()
+          ollySearchSymbols.custom_symbol_search({
+            type = value,
+            also_search_file_name = true,
+          })
+        end, { desc = "[S]earch [" .. upper_key .. "] (include file name)" })
+      end
+    end
+
+    require("snacks").setup({
+      animation = {
+        enabled = true,
+      },
+      dashboard = {
+        enabled = true,
+        preset = {
+          keys = {
+            { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+            { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          },
+        },
+        sections = {
+          {
+            section = "terminal",
+            cmd = "chafa ~/.config/nvim/assets/maple-beach.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1",
+            height = 25,
+            padding = 1,
+          },
+          {
+            pane = 2,
+            { icon = " ", section = "recent_files", padding = 1 },
+            { section = "keys", gap = 1, padding = 1 },
+            { section = "startup" },
+          },
+        },
+      },
+      gitbrowse = {
+        enabled = true,
+      },
+      notifier = {
+        enabled = true,
+      },
+      image = {
+        enabled = true,
+      },
+      picker = {},
+    })
+
+    -- Setup custom symbol search keymaps
+    setup_custom_symbol_search()
   end,
 }
