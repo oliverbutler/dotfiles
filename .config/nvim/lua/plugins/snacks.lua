@@ -19,9 +19,20 @@ return {
     },
   },
   config = function()
+    -- Enable mini.files to do a LSP rename
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "MiniFilesActionRename",
+      callback = function(event)
+        Snacks.rename.on_rename_file(event.data.from, event.data.to)
+      end,
+    })
+
     require("snacks").setup(
       ---@type snacks.Config
       {
+        animation = {
+          enabled = true,
+        },
         dashboard = {
           enabled = true,
           preset = {

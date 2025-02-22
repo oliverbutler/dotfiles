@@ -172,7 +172,6 @@ return {
       provider = "claude", -- In this example, use Claude for planning, but you can also use any provider you want.
       cursor_applying_provider = "groq", -- In this example, use Groq for applying, but you can also use any provider you want.
       behaviour = {
-        --- ... existing behaviours
         enable_cursor_planning_mode = true, -- enable cursor planning mode!
       },
 
@@ -186,7 +185,7 @@ return {
           api_key_name = "GROQ_API_KEY",
           endpoint = "https://api.groq.com/openai/v1/",
           model = "qwen-2.5-coder-32b",
-          max_tokens = 8192, -- remember to increase this value, otherwise it will stop generating halfway
+          max_tokens = 20000,
         },
       },
     })

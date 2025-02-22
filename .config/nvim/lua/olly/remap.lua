@@ -54,7 +54,7 @@ vim.keymap.set("n", "<leader>gl", function()
     cmd = string.format([[cd %s && exec lazygit]], dir)
   end
 
-  vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C "%s"]], cmd))
+  vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C -s bg=default -b none "%s"]], cmd))
 end)
 
 -- File helpers
