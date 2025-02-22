@@ -1,9 +1,25 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "saghen/blink.cmp" },
+    dependencies = { "saghen/blink.cmp", "yioneko/nvim-vtsls" },
     event = "VeryLazy",
+    keys = {
+      {
+        "<leader>i",
+        function()
+          vim.lsp.buf.code_action()
+        end,
+      },
+      {
+        "<leader>I",
+        function()
+          require("vtsls").commands.source_actions()
+        end,
+        desc = "[S]earch source actions",
+      },
+    },
     config = function()
+      require("lspconfig.configs").vtsls = require("vtsls").lspconfig -- set default server config, optional but recommended
       local lspconfig = require("lspconfig")
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
@@ -188,6 +204,14 @@ return {
         restart_lsp_clients()
         vim.cmd("Copilot enable")
       end, { noremap = true, desc = "Restart LSP" })
+
+      vim.keymap.set("n", "<leader>rt", function()
+        vim.notify("Restarting TS Language Server", vim.log.levels.INFO, {
+          title = "Restart TS Language Server",
+          icon = "🔌",
+        })
+        require("vtsls").commands.restart_tsserver()
+      end, { noremap = true, desc = "Restart TS Language Server" })
     end,
   },
 }
