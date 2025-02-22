@@ -145,6 +145,86 @@ return {
         Snacks.picker.files({ pattern = clipboard })
       end,
     },
+    {
+      "<leader>si",
+      function()
+        local params = vim.lsp.util.make_range_params()
+        params.context = {
+          diagnostics = vim.lsp.diagnostic.get_line_diagnostics(),
+          only = { "quickfix", "refactor", "source" },
+        }
+
+        local results = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
+        if not results or vim.tbl_isempty(results) then
+          print("No code actions available")
+          return
+        end
+
+        -- Collect all actions
+        local actions = {}
+        for _, result in pairs(results) do
+          if result.result then
+            for _, action in ipairs(result.result) do
+              table.insert(actions, action)
+            end
+          end
+        end
+
+        Snacks.picker.pick({
+          title = "Code Actions",
+          preview = "preview",
+          finder = function()
+            ---@type snacks.picker.finder.Item[]
+            local items = {}
+
+            for _, action in ipairs(actions) do
+              ---@type snacks.picker.finder.Item
+              local item = {
+                text = action.title,
+                -- Store the full action in the item for later use
+                action = action,
+                -- For now, just indicate if it's previewable
+                preview = {
+                  text = action.edit and "Edit" or "No preview",
+                },
+                on_select = function()
+                  -- Execute the selected action
+                  if action.edit then
+                    vim.lsp.util.apply_workspace_edit(action.edit, "UTF-8")
+                  end
+                  if action.command then
+                    vim.lsp.buf.execute_command(action.command)
+                  end
+                end,
+              }
+              table.insert(items, item)
+            end
+
+            return items
+          end,
+          format = function(item)
+            local ret = {}
+            -- Format the title with an icon based on whether it's previewable
+            local icon = item.action.edit and "󰏬 " or "󰏫 "
+            ret[#ret + 1] = { icon .. item.text, "@string" }
+            return ret
+          end,
+        })
+      end,
+      desc = "[S]earch code actions",
+    },
+    {
+      "gd",
+      function()
+        Snacks.picker.lsp_definitions()
+      end,
+    },
+    {
+      "gr",
+      function()
+        Snacks.picker.lsp_references()
+      end,
+    },
   },
   config = function()
     -- Enable mini.files to do a LSP rename
@@ -183,18 +263,22 @@ return {
               local items = {}
 
               for _, result in ipairs(search_result.results) do
-                table.insert(items, {
-                  text = result.symbol,
+                ---@type snacks.picker.finder.Item
+                local item = {
+                  text = result.symbol, -- the searchable text in the picker
+                  line = result.symbol, -- this tells snacks to use the symbol as the line shown in the preview (lhs)
                   file = result.file,
                   pos = { result.lnum, result.col },
-                })
+                }
+
+                table.insert(items, item)
               end
 
               return items
             end,
             -- format = function(item)
             --   local ret = {}
-            --   ret[#ret + 1] = { item.text or "", "@string" }
+            --   -- ret[#ret + 1] = { item.text or "", "@string" }
             --   return ret
             -- end,
           })

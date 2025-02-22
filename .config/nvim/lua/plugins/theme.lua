@@ -49,7 +49,7 @@ return {
           indentscope_color = "",
         },
         diffview = true,
-        fzf = true,
+        snacks = true,
         grug_far = true,
         leap = true,
         blink_cmp = true,

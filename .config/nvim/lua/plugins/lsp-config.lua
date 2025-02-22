@@ -155,67 +155,12 @@ return {
             })
           end, { desc = "Show line diagnostics" })
 
-          vim.keymap.set("n", "<leader>i", function()
-            require("fzf-lua").lsp_code_actions({
-              winopts = {
-                height = 0.4,
-                width = 0.8,
-                preview = {
-                  vertical = "up:45%",
-                  horizontal = "right:50%",
-                  layout = "flex",
-                  flip_columns = 120,
-                },
-              },
-              previewer = "codeaction_native",
-              preview_pager = [[delta --width=$COLUMNS --hunk-header-style="omit" --file-style="omit"]],
-            })
-          end, { buffer = ev.buf, desc = "Code action" })
-
           local opts = { buffer = ev.buf }
 
           vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
           vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
           vim.keymap.set("n", "<C-i>", vim.lsp.buf.signature_help, opts)
           vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-          vim.keymap.set("n", "gd", function()
-            require("fzf-lua").lsp_definitions({
-              winopts = {
-                height = 0.8,
-                width = 0.9,
-                preview = {
-                  vertical = "up:45%",
-                  horizontal = "right:50%",
-                  layout = "flex",
-                  flip_columns = 120,
-                },
-              },
-              jump1 = true,
-              fzf_opts = {
-                ["--info"] = "inline",
-                ["--layout"] = "reverse",
-              },
-            })
-          end, opts)
-          vim.keymap.set("n", "gr", function()
-            require("fzf-lua").lsp_references({
-              winopts = {
-                height = 0.8,
-                width = 0.9,
-                preview = {
-                  vertical = "up:45%",
-                  horizontal = "right:50%",
-                  layout = "flex",
-                  flip_columns = 120,
-                },
-              },
-              include_declaration = false,
-              fzf_opts = {
-                ["--info"] = "inline",
-                ["--layout"] = "reverse",
-              },
-            })
-          end, opts)
         end,
       })
 

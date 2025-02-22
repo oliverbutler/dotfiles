@@ -92,7 +92,6 @@ return {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     "nvim-tree/nvim-web-devicons",
-    "ibhagwan/fzf-lua", -- for file_selector provider fzf
     "zbirenbaum/copilot.lua",
     {
       "HakonHarnes/img-clip.nvim",
@@ -133,7 +132,7 @@ return {
         enabled = false,
       },
       file_selector = {
-        provider = "fzf",
+        provider = "snacks",
         provider_opts = {},
       },
       mappings = {
