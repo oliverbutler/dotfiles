@@ -86,6 +86,10 @@ return {
       fzf.blines()
     end, { desc = "[/] Fuzzily search in current buffer" })
 
+    vim.keymap.set("n", "<leader>?", function()
+      fzf.lines()
+    end, { desc = "[/] Fuzzily search in open buffers" })
+
     -- Project-wide search
     vim.keymap.set("n", "<leader>.", function()
       fzf.live_grep()
