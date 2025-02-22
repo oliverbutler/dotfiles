@@ -114,7 +114,8 @@ local ripgrep_line_patterns = {
       --   private handleClick(
       --   static getInstance(
       --   public render() {
-      [[^\s*((?:private|public|protected|static|async|\s)*)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(]],
+      -- Note: No whitespace allowed between method name and opening parenthesis
+      [[^\s*((?:private|public|protected|static|async|\s)*)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\(]],
     },
   },
   go = {
@@ -235,4 +236,6 @@ end
 
 return {
   get_symbol_results = get_symbol_results,
+  ripgrep_line_patterns = ripgrep_line_patterns,
+  get_first_symbol = get_first_symbol,
 }
