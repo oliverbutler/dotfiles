@@ -63,21 +63,7 @@ end
 
 
 function nvim
-    if test (count $argv) -eq 0
-        # No arguments provided, open current directory
-        if string match -q "$HOME/.config*" (pwd)
-            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim --listen /tmp/nvim-server.pipe
-        else
-            command nvim --listen /tmp/nvim-server.pipe
-        end
-    else
-        # Arguments provided, behave as before
-        if string match -q "$HOME/.config*" (pwd)
-            GIT_DIR=$HOME/.local/share/yadm/repo.git command nvim --listen /tmp/nvim-server.pipe $argv
-        else
-            command nvim --listen /tmp/nvim-server.pipe $argv
-        end
-    end
+    ~/.config/fish/nvim.sh $argv
 end
 
 

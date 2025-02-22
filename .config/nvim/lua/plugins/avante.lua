@@ -65,7 +65,7 @@ end
 
 return {
   "yetone/avante.nvim",
-  lazy = true,
+  event = "BufRead",
   version = false,
   opts = {},
   build = "make",
@@ -94,6 +94,7 @@ return {
         noremap = true,
         silent = true,
         description = "Toggle Avante",
+        mode = { "n", "v" },
       },
     },
     {
@@ -103,6 +104,7 @@ return {
         noremap = true,
         silent = true,
         description = "Edit Avante",
+        mode = { "n", "v" },
       },
     },
   },

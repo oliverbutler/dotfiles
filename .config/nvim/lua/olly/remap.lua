@@ -38,6 +38,7 @@ vim.keymap.set("n", "<leader>w", function()
   end
 end)
 
+-- Quit
 vim.keymap.set("n", "<leader>q", function()
   vim.cmd("q")
 end)

@@ -45,7 +45,7 @@ return {
     {
       "<leader>sb",
       function()
-        Snacks.picker.buffers()
+        Snacks.picker.buffers({})
       end,
       desc = "Search Buffers",
     },
@@ -117,7 +117,9 @@ return {
     {
       "<leader>/",
       function()
-        Snacks.picker.lines()
+        Snacks.picker.lines({
+          layout = "default",
+        })
       end,
       desc = "Search in Current Buffer",
     },
@@ -125,7 +127,9 @@ return {
     {
       "<leader>?",
       function()
-        Snacks.picker.grep_buffers()
+        Snacks.picker.grep_buffers({
+          layout = "default",
+        })
       end,
       desc = "Search in Open Buffers",
     },
