@@ -1,3 +1,4 @@
 .api_keys
 logs/*
 .DS_Store
+Session.vim

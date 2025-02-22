@@ -23,7 +23,7 @@ return {
       function()
         Snacks.picker.help()
       end,
-      desc = "[S]earch [H]elp",
+      desc = "Search Help",
     },
     -- Keymaps
     {
@@ -31,7 +31,7 @@ return {
       function()
         Snacks.picker.keymaps()
       end,
-      desc = "[S]earch [K]eymaps",
+      desc = "Search Keymaps",
     },
     -- Files
     {
@@ -39,7 +39,7 @@ return {
       function()
         Snacks.picker.files()
       end,
-      desc = "[S]earch Files",
+      desc = "Search Files",
     },
     -- Buffers
     {
@@ -47,7 +47,7 @@ return {
       function()
         Snacks.picker.buffers()
       end,
-      desc = "[S]earch [B]uffers",
+      desc = "Search Buffers",
     },
     -- Word under cursor
     {
@@ -55,7 +55,7 @@ return {
       function()
         Snacks.picker.grep_word()
       end,
-      desc = "[S]earch [W]ord",
+      desc = "Search Word",
     },
     -- Document symbols
     {
@@ -63,7 +63,7 @@ return {
       function()
         Snacks.picker.lsp_symbols()
       end,
-      desc = "[S]earch [D]ocument symbols",
+      desc = "Search Document Symbols",
     },
     -- Git branches and commits
     {
@@ -71,14 +71,14 @@ return {
       function()
         Snacks.picker.git_branches()
       end,
-      desc = "[S]earch [G]it [B]ranches",
+      desc = "Search Git Branches",
     },
     {
       "<leader>sgc",
       function()
         Snacks.picker.git_log()
       end,
-      desc = "[S]earch [G]it [C]ommits",
+      desc = "Search Git Commits",
     },
     -- Old files
     {
@@ -86,7 +86,7 @@ return {
       function()
         Snacks.picker.recent()
       end,
-      desc = "[S]earch [O]ld files",
+      desc = "Search Old Files",
     },
     -- Live grep
     {
@@ -94,7 +94,7 @@ return {
       function()
         Snacks.picker.grep({ live = true })
       end,
-      desc = "[S]earch [G]rep",
+      desc = "Search Grep",
     },
     -- Resume last picker
     {
@@ -102,7 +102,7 @@ return {
       function()
         Snacks.picker.resume()
       end,
-      desc = "[ ] reopen last",
+      desc = "Reopen Last Search",
     },
     -- Visual mode word search
     {
@@ -119,7 +119,7 @@ return {
       function()
         Snacks.picker.lines()
       end,
-      desc = "[/] Fuzzily search in current buffer",
+      desc = "Search in Current Buffer",
     },
     -- Search in all buffers
     {
@@ -127,7 +127,7 @@ return {
       function()
         Snacks.picker.grep_buffers()
       end,
-      desc = "[/] Fuzzily search in open buffers",
+      desc = "Search in Open Buffers",
     },
     -- Project-wide search
     {
@@ -135,7 +135,7 @@ return {
       function()
         Snacks.picker.grep({ live = true })
       end,
-      desc = "[.] Fuzzy search in project",
+      desc = "Search in Project",
     },
     -- Fast paste open
     {
@@ -208,13 +208,8 @@ return {
 
               return items
             end,
-            -- format = function(item)
-            --   local ret = {}
-            --   -- ret[#ret + 1] = { item.text or "", "@string" }
-            --   return ret
-            -- end,
           })
-        end, { desc = "[S]earch [" .. upper_key .. "]" })
+        end, { desc = "Search " .. value })
 
         -- vim.keymap.set("n", "<leader>s" .. upper_key, function()
         --   ollySearchSymbols.custom_symbol_search({

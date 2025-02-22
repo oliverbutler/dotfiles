@@ -65,8 +65,7 @@ end
 
 return {
   "yetone/avante.nvim",
-  event = "VeryLazy",
-  lazy = false,
+  lazy = true,
   version = false,
   opts = {},
   build = "make",
@@ -84,6 +83,26 @@ return {
         noremap = true,
         silent = true,
         description = "Clear history and refresh Avante",
+      },
+    },
+    {
+      "<leader>aa",
+      function()
+        vim.cmd("AvanteToggle")
+      end,
+      {
+        noremap = true,
+        silent = true,
+        description = "Toggle Avante",
+      },
+    },
+    {
+      "<leader>ae",
+      ":AvanteEdit<CR>",
+      {
+        noremap = true,
+        silent = true,
+        description = "Edit Avante",
       },
     },
   },
