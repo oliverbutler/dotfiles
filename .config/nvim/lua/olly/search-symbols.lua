@@ -129,22 +129,42 @@ local ripgrep_line_patterns = {
 -- JavaScript uses the same patterns as TypeScript
 ripgrep_line_patterns.javascript = ripgrep_line_patterns.typescript
 
-local function stream_ripgrep(pattern, directory, callback)
+-- Map our filetypes to ripgrep type flags
+local filetype_to_rg_type = {
+  typescript = { "typescript" },
+  javascript = { "js" },
+  go = { "go" },
+}
+
+local function stream_ripgrep(pattern, directory, callback, filetype)
   local Job = require("plenary.job")
   local count = 0
 
+  local args = {
+    "--no-heading",
+    "--with-filename",
+    "--line-number",
+    "--column",
+    "--smart-case",
+    "--max-filesize=1M",
+  }
+
+  -- Add type filters if filetype is specified
+  if filetype and filetype_to_rg_type[filetype] then
+    for _, type in ipairs(filetype_to_rg_type[filetype]) do
+      table.insert(args, "-t")
+      table.insert(args, type)
+    end
+  end
+
+  table.insert(args, pattern)
+  table.insert(args, directory or ".")
+
+  vim.notify(vim.inspect(args), vim.log.levels.INFO)
+
   return Job:new({
     command = "rg",
-    args = {
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      "--smart-case",
-      "--max-filesize=1M",
-      pattern,
-      directory or ".",
-    },
+    args = args,
     on_stdout = function(_, line)
       count = count + 1
       callback(line)
@@ -184,8 +204,8 @@ local function get_symbol_results(params)
 
   ---@type SymbolSearchResult[]
   local results = {}
-  local seen_symbols = {}
-  local seen_results = {}
+  -- Track unique locations using file:line:col as key
+  local seen_locations = {}
 
   local search_start_time = vim.loop.hrtime()
   local search_results = {}
@@ -194,7 +214,7 @@ local function get_symbol_results(params)
   for _, pattern in ipairs(patterns) do
     local job = stream_ripgrep(pattern, directory, function(result)
       table.insert(search_results, result)
-    end)
+    end, filetype)
     job:sync()
   end
   local search_end_time = vim.loop.hrtime()
@@ -205,13 +225,13 @@ local function get_symbol_results(params)
     local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
     local symbol = get_first_symbol(text)
 
-    -- Track unique results by full result line
-    if symbol and not seen_results[result] then
-      seen_results[result] = true
+    if symbol then
+      -- Create a unique location key
+      local location_key = string.format("%s:%s:%s", file, lnum, col)
 
-      -- Only show first occurrence of each symbol
-      if not seen_symbols[symbol] then
-        seen_symbols[symbol] = true
+      -- Only add if we haven't seen this exact location before
+      if not seen_locations[location_key] then
+        seen_locations[location_key] = true
         table.insert(results, {
           symbol = symbol,
           file = file,
@@ -229,15 +249,13 @@ local function get_symbol_results(params)
   local process_duration_ms = (process_end_time - process_start_time) / 1e6
   local total_duration_ms = search_duration_ms + process_duration_ms
 
-  local total_matches = vim.tbl_count(seen_results)
-  local unique_symbols = vim.tbl_count(seen_symbols)
+  local total_matches = vim.tbl_count(seen_locations)
 
   pcall(
     vim.notify,
     string.format(
-      "Found %d matches (%d unique symbols) in %.0fms (%.0fms search, %.0fms processing)",
+      "Found %d unique locations in %.0fms (%.0fms search, %.0fms processing)",
       total_matches,
-      unique_symbols,
       total_duration_ms,
       search_duration_ms,
       process_duration_ms
