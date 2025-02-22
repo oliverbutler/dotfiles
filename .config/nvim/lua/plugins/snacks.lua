@@ -146,7 +146,7 @@ return {
       end,
     },
     {
-      "<leader>si",
+      "<leader>i",
       function()
         local params = vim.lsp.util.make_range_params()
         params.context = {
@@ -173,29 +173,62 @@ return {
         Snacks.picker.pick({
           title = "Code Actions",
           preview = "preview",
+          confirm = function(self, item)
+            vim.notify("Selected: " .. item.text, vim.log.levels.INFO, {
+              title = "Code Action",
+              icon = "󰏫",
+            })
+            -- First close the picker
+            vim.api.nvim_win_close(0, true)
+
+            local action = item.action
+
+            -- debug log the whole action
+            vim.notify(vim.inspect(action), vim.log.levels.INFO, {
+              title = "Code Action",
+              icon = "󰏫",
+            })
+
+            vim.schedule(function()
+              -- Handle edit actions
+              if action.edit then
+                vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+              end
+
+              -- Handle command actions
+              if action.command then
+                vim.lsp.buf.execute_command(action.command)
+              end
+            end)
+          end,
           finder = function()
             ---@type snacks.picker.finder.Item[]
             local items = {}
 
             for _, action in ipairs(actions) do
+              local preview_text = ""
+              if action.edit then
+                local lines = {}
+                for uri, edits in pairs(action.edit.changes or {}) do
+                  for _, edit in ipairs(edits) do
+                    table.insert(lines, "File: " .. vim.fn.fnamemodify(vim.uri_to_fname(uri), ":~:."))
+                    table.insert(lines, "Change: " .. edit.newText)
+                    table.insert(lines, "")
+                  end
+                end
+                preview_text = table.concat(lines, "\n")
+              else
+                preview_text = "No preview available"
+              end
+
               ---@type snacks.picker.finder.Item
               local item = {
                 text = action.title,
-                -- Store the full action in the item for later use
                 action = action,
-                -- For now, just indicate if it's previewable
+                buf = vim.api.nvim_get_current_buf(),
                 preview = {
-                  text = action.edit and "Edit" or "No preview",
+                  text = preview_text,
                 },
-                on_select = function()
-                  -- Execute the selected action
-                  if action.edit then
-                    vim.lsp.util.apply_workspace_edit(action.edit, "UTF-8")
-                  end
-                  if action.command then
-                    vim.lsp.buf.execute_command(action.command)
-                  end
-                end,
               }
               table.insert(items, item)
             end
@@ -204,7 +237,6 @@ return {
           end,
           format = function(item)
             local ret = {}
-            -- Format the title with an icon based on whether it's previewable
             local icon = item.action.edit and "󰏬 " or "󰏫 "
             ret[#ret + 1] = { icon .. item.text, "@string" }
             return ret
