@@ -21,12 +21,6 @@ return {
       local sessions = require("mini.sessions")
 
       sessions.setup()
-
-      -- If no session, start one with mksession
-      if not sessions.get_latest() then
-        vim.notify("No session found, creating one", "info", { title = "Mini Sessions" })
-        vim.cmd("mksession!")
-      end
     end,
   },
   {

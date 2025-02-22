@@ -58,6 +58,7 @@ local valid_search_types = {
     zod = "Zod Schemas",
     classes = "Classes",
     react = "React Components",
+    methods = "Class Methods",
   },
   javascript = {
     types = "Types",
@@ -105,6 +106,15 @@ local ripgrep_line_patterns = {
       -- Pattern 3: Arrow function components with generics
       -- Example: export const MyComponent = <T extends unknown>({
       [[\b(export\s+)?const\s+([A-Z][a-zA-Z0-9]*)\s*=\s*<[^>]+>]],
+    },
+    methods = {
+      -- Matches class methods with optional modifiers (public/private/protected/static/async)
+      -- Examples:
+      --   async getPartnerImports(
+      --   private handleClick(
+      --   static getInstance(
+      --   public render() {
+      [[^\s*((?:private|public|protected|static|async|\s)*)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(]],
     },
   },
   go = {

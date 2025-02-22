@@ -37,7 +37,16 @@ return {
     {
       "<leader>;",
       function()
-        Snacks.picker.files()
+        Snacks.picker.smart({
+          multi = { "buffers", "recent", "files" },
+          format = "file", -- use `file` format for all sources
+          matcher = {
+            cwd_bonus = true, -- boost cwd matches
+            frecency = true, -- use frecency boosting
+            sort_empty = true, -- sort even when the filter is empty
+          },
+          transform = "unique_file",
+        })
       end,
       desc = "Search Files",
     },
@@ -45,7 +54,9 @@ return {
     {
       "<leader>sb",
       function()
-        Snacks.picker.buffers({})
+        Snacks.picker.buffers({
+          layout = "dropdown",
+        })
       end,
       desc = "Search Buffers",
     },
@@ -118,7 +129,7 @@ return {
       "<leader>/",
       function()
         Snacks.picker.lines({
-          layout = "default",
+          layout = "ivy_split",
         })
       end,
       desc = "Search in Current Buffer",
@@ -128,7 +139,7 @@ return {
       "<leader>?",
       function()
         Snacks.picker.grep_buffers({
-          layout = "default",
+          layout = "ivy_split",
         })
       end,
       desc = "Search in Open Buffers",
@@ -179,6 +190,7 @@ return {
         t = "types",
         c = "classes",
         r = "react",
+        m = "methods",
       }
 
       local ollySearchSymbols = require("olly.search-symbols")
@@ -261,7 +273,10 @@ return {
       image = {
         enabled = true,
       },
-      picker = {},
+      ---@type snacks.picker.Config
+      picker = {
+        hidden = true,
+      },
     })
 
     -- Setup custom symbol search keymaps
