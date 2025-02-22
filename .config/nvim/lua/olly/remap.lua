@@ -26,7 +26,16 @@ vim.keymap.set("n", "<leader>{", ":bprevious<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>}", ":bnext<CR>", { noremap = true })
 
 vim.keymap.set("n", "<leader>w", function()
-  vim.cmd("w")
+  -- Check if buffer is modifiable and not readonly
+  if vim.bo.modifiable and not vim.bo.readonly then
+    vim.cmd("w")
+  else
+    -- This is rather than the existing annoying text that appears
+    vim.notify("Buffer is not saveable", vim.log.levels.INFO, {
+      title = "Save Buffer",
+      icon = "ℹ️",
+    })
+  end
 end)
 
 vim.keymap.set("n", "<leader>q", function()

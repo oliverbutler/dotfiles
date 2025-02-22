@@ -42,6 +42,8 @@ return {
     vim.keymap.set("n", "<leader>sgb", fzf.git_branches, { desc = "[S]search [G]it [B]ranches" })
     vim.keymap.set("n", "<leader>sgc", fzf.git_commits, { desc = "[S]search [G]it [C]ommits" })
 
+    vim.keymap.set("n", "<leader>so", fzf.oldfiles, { desc = "[S]search [O]ld files" })
+
     vim.keymap.set("n", "<leader>'", fzf.live_grep, { desc = "[S]search [G]rep" })
 
     local search_key_map = {

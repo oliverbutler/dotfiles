@@ -1,4 +1,5 @@
 return {
+
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
@@ -17,7 +18,7 @@ return {
       end,
     },
     {
-      "<leader>n",
+      "<leader>no",
       function()
         Snacks.notifier.show_history()
       end,
@@ -26,27 +27,30 @@ return {
   },
   config = function()
     require("snacks").setup(
-
       ---@type snacks.Config
       {
         dashboard = {
           enabled = true,
-          sections = {
-            { section = "header" },
-            { section = "keys", gap = 1, padding = 1 },
-            { pane = 2, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
-            { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
-            {
-              title = "Notifications",
-              action = function()
-                vim.ui.open("https://github.com/notifications")
-              end,
-              key = "n",
-              icon = " ",
-              height = 5,
-              enabled = true,
+          preset = {
+            keys = {
+              { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+              { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+              { icon = " ", key = "q", desc = "Quit", action = ":qa" },
             },
-            { section = "startup" },
+          },
+          sections = {
+            {
+              section = "terminal",
+              cmd = "chafa ~/.config/nvim/assets/maple-beach.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1",
+              height = 25,
+              padding = 1,
+            },
+            {
+              pane = 2,
+              { icon = " ", section = "recent_files", padding = 1 },
+              { section = "keys", gap = 1, padding = 1 },
+              { section = "startup" },
+            },
           },
         },
         gitbrowse = {
