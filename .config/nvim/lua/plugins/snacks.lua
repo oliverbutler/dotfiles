@@ -241,7 +241,7 @@ return {
         sections = {
           {
             section = "terminal",
-            cmd = "chafa ~/.config/nvim/assets/maple-beach.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1",
+            cmd = "chafa ~/.config/nvim/assets/maple-beach.jpg --format symbols --symbols vhalf --size 60x25; sleep .1",
             height = 25,
             padding = 1,
           },
