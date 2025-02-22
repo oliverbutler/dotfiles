@@ -163,6 +163,7 @@ end
 local function get_symbol_results(params)
   local search_type = params.type
   local include_file_name_in_search = params.also_search_file_name
+  local directory = params.directory or "."
 
   -- Detect current filetype
   local current_filetype = vim.bo.filetype
@@ -186,10 +187,38 @@ local function get_symbol_results(params)
 
   ---@type SymbolSearchResult[]
   local results = {}
+  local seen_symbols = {}
+  local seen_results = {}
+
+  -- Synchronously process each pattern
+  for _, pattern in ipairs(patterns) do
+    local job = stream_ripgrep(pattern, directory, function(result)
+      local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
+      local symbol = get_first_symbol(text)
+
+      -- Track unique results by full result line
+      if symbol and not seen_results[result] then
+        seen_results[result] = true
+
+        -- Only show first occurrence of each symbol
+        if not seen_symbols[symbol] then
+          seen_symbols[symbol] = true
+          table.insert(results, {
+            symbol = symbol,
+            file = string.format("%s:%s:%s", file, lnum, col),
+            text = text, -- Include the full text for display purposes
+          })
+        end
+      end
+    end)
+
+    -- Run the job synchronously
+    job:sync()
+  end
 
   return {
     title = title,
-    results = {},
+    results = results,
   }
 end
 
@@ -292,6 +321,5 @@ local function custom_symbol_search(params)
 end
 
 return {
-  custom_symbol_search = custom_symbol_search,
   get_symbol_results = get_symbol_results,
 }

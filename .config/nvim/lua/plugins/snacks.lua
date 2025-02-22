@@ -171,18 +171,40 @@ return {
         local upper_key = key:upper()
 
         vim.keymap.set("n", "<leader>s" .. key, function()
-          ollySearchSymbols.custom_symbol_search({
+          local search_result = ollySearchSymbols.get_symbol_results({
             type = value,
             also_search_file_name = false,
           })
+
+          Snacks.picker.pick({
+            title = search_result.title,
+            finder = function()
+              ---@type snacks.picker.finder.Item[]
+              local items = {}
+
+              for _, result in ipairs(search_result.results) do
+                table.insert(items, {
+                  text = result.symbol,
+                  file = result.file,
+                })
+              end
+
+              return items
+            end,
+            format = function(item)
+              local ret = {}
+              ret[#ret + 1] = { item.text or "", "@string" }
+              return ret
+            end,
+          })
         end, { desc = "[S]earch [" .. upper_key .. "]" })
 
-        vim.keymap.set("n", "<leader>s" .. upper_key, function()
-          ollySearchSymbols.custom_symbol_search({
-            type = value,
-            also_search_file_name = true,
-          })
-        end, { desc = "[S]earch [" .. upper_key .. "] (include file name)" })
+        -- vim.keymap.set("n", "<leader>s" .. upper_key, function()
+        --   ollySearchSymbols.custom_symbol_search({
+        --     type = value,
+        --     also_search_file_name = true,
+        --   })
+        -- end, { desc = "[S]earch [" .. upper_key .. "] (include file name)" })
       end
     end
 
