@@ -148,6 +148,13 @@ return {
     {
       "<leader>i",
       function()
+        vim.lsp.buf.code_action()
+      end,
+    },
+    {
+      -- WIP - This is a custom implementation of the LSP code actions picker
+      "<leader>I",
+      function()
         local params = vim.lsp.util.make_range_params()
         params.context = {
           diagnostics = vim.lsp.diagnostic.get_line_diagnostics(),
@@ -174,10 +181,6 @@ return {
           title = "Code Actions",
           preview = "preview",
           confirm = function(self, item)
-            vim.notify("Selected: " .. item.text, vim.log.levels.INFO, {
-              title = "Code Action",
-              icon = "󰏫",
-            })
             -- First close the picker
             vim.api.nvim_win_close(0, true)
 
@@ -193,12 +196,26 @@ return {
               -- Handle edit actions
               if action.edit then
                 vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+                vim.notify("Workspace edit applied", vim.log.levels.INFO, {
+                  title = "Code Action",
+                  icon = "󰏬",
+                })
+                return
               end
 
-              -- Handle command actions
               if action.command then
                 vim.lsp.buf.execute_command(action.command)
+                vim.notify("Command executed", vim.log.levels.INFO, {
+                  title = "Code Action",
+                  icon = "󰏬",
+                })
+                return
               end
+
+              vim.notify("Not sure how to process", vim.log.levels.INFO, {
+                title = "Code Action",
+                icon = "󰏫",
+              })
             end)
           end,
           finder = function()
