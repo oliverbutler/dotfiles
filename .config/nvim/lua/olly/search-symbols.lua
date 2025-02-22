@@ -156,8 +156,11 @@ local function format_entry(file, lnum, col, symbol)
   }
 end
 
--- Emulates the "Search symbols" feature in VSCode/WebStorm but with much more control
-local function custom_symbol_search(params)
+---@alias SymbolSearchResult {symbol: string, file: string}
+---@alias SymbolSearchReturn {title: string, results: SymbolSearchResult[]}
+
+---@return SymbolSearchReturn
+local function get_symbol_results(params)
   local search_type = params.type
   local include_file_name_in_search = params.also_search_file_name
 
@@ -181,116 +184,114 @@ local function custom_symbol_search(params)
     include_file_name_in_search and " (include file name)" or ""
   )
 
-  local seen_results = {}
-  local seen_symbols = {}
-  local lookup = {}
-  local all_entries = {}
+  ---@type SymbolSearchResult[]
+  local results = {}
 
-  -- Add this before the fzf.fzf_exec call
-  local builtin = require("fzf-lua.previewer.builtin")
+  return {
+    title = title,
+    results = {},
+  }
+end
 
-  -- Create custom previewer
-  local SymbolPreviewer = builtin.buffer_or_file:extend()
+local function custom_symbol_search(params)
+  local snacks = require("snacks")
 
-  function SymbolPreviewer:new(o, opts, fzf_win)
-    SymbolPreviewer.super.new(self, o, opts, fzf_win)
-    setmetatable(self, SymbolPreviewer)
-    return self
-  end
+  snacks.picker.pick({
+    title = title,
+    finder = function()
+      ---@type snacks.picker.finder.Item[]
+      local items = {}
 
-  function SymbolPreviewer:parse_entry(entry_str)
-    -- Parse our custom entry format
-    -- The entry_str will be in format: "icon symbol filepath:line"
-    local _, symbol, file_info = entry_str:match("(%S+)%s+(%S+)%s+(.+)")
-    local filepath, line = file_info:match("([^:]+):(%d+)")
-
-    return {
-      path = filepath,
-      line = tonumber(line) or 1,
-      col = 1,
-    }
-  end
-
-  local fzf = require("fzf-lua")
-
-  fzf.fzf_exec(function(fzf_cb)
-    local start_time = vim.loop.hrtime()
-    local total_results = 0
-    local jobs = {}
-
-    for _, pattern in ipairs(patterns) do
-      local job = stream_ripgrep(pattern, params.directory, function(result)
-        local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
-        local symbol = get_first_symbol(text)
-
-        -- Track unique results by full result line
-        if symbol and not seen_results[result] then
-          seen_results[result] = true
-          local entry = format_entry(file, lnum, col, symbol)
-
-          -- Only show first occurrence of each symbol
-          if not seen_symbols[symbol] then
-            seen_symbols[symbol] = true
-            lookup[entry.display] = entry
-            table.insert(all_entries, entry.display)
-            fzf_cb(entry.display)
-          end
-        end
-      end)
-      table.insert(jobs, job)
-    end
-
-    -- Start all jobs
-    for _, job in ipairs(jobs) do
-      job:start()
-    end
-
-    -- Wait for all jobs to complete
-    for _, job in ipairs(jobs) do
-      job:wait()
-    end
-
-    local end_time = vim.loop.hrtime()
-    local duration_ms = (end_time - start_time) / 1e6
-    local total_matches = vim.tbl_count(seen_results)
-    local unique_symbols = vim.tbl_count(seen_symbols)
-
-    pcall(
-      vim.notify,
-      string.format("Found %d matches (%d unique symbols) in %.2f ms", total_matches, unique_symbols, duration_ms),
-      vim.log.levels.INFO
-    )
-
-    fzf_cb(nil)
-  end, {
-    prompt = title,
-    actions = {
-      ["default"] = function(selected)
-        local entry = lookup[selected[1]]
-        if entry then
-          vim.cmd("edit " .. entry.file)
-          vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
-        end
-      end,
-    },
-    winopts = {
-      height = 0.85,
-      width = 0.90,
-      preview = {
-        hidden = "nohidden",
-        vertical = "right",
-        horizontal = "right",
-        layout = "flex",
-        flip_columns = 120,
-      },
-    },
-    fzf_opts = {
-      ["--nth"] = params.include_file_name_in_search and "1.." or "2",
-    },
-    previewer = SymbolPreviewer, -- Use our custom previewer
+      table.insert(items, { symbol = "foo", file = 1 })
+    end,
+    format = function(item)
+      local ret = {}
+      ret[#ret + 1] = { item.text or "", "@string" }
+      return ret
+    end,
   })
+
+  -- local fzf = require("fzf-lua")
+  --
+  -- fzf.fzf_exec(function(fzf_cb)
+  --   local start_time = vim.loop.hrtime()
+  --   local total_results = 0
+  --   local jobs = {}
+  --
+  --   for _, pattern in ipairs(patterns) do
+  --     local job = stream_ripgrep(pattern, params.directory, function(result)
+  --       local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
+  --       local symbol = get_first_symbol(text)
+  --
+  --       -- Track unique results by full result line
+  --       if symbol and not seen_results[result] then
+  --         seen_results[result] = true
+  --         local entry = format_entry(file, lnum, col, symbol)
+  --
+  --         -- Only show first occurrence of each symbol
+  --         if not seen_symbols[symbol] then
+  --           seen_symbols[symbol] = true
+  --           lookup[entry.display] = entry
+  --           table.insert(all_entries, entry.display)
+  --           fzf_cb(entry.display)
+  --         end
+  --       end
+  --     end)
+  --     table.insert(jobs, job)
+  --   end
+  --
+  --   -- Start all jobs
+  --   for _, job in ipairs(jobs) do
+  --     job:start()
+  --   end
+  --
+  --   -- Wait for all jobs to complete
+  --   for _, job in ipairs(jobs) do
+  --     job:wait()
+  --   end
+  --
+  --   local end_time = vim.loop.hrtime()
+  --   local duration_ms = (end_time - start_time) / 1e6
+  --   local total_matches = vim.tbl_count(seen_results)
+  --   local unique_symbols = vim.tbl_count(seen_symbols)
+  --
+  --   pcall(
+  --     vim.notify,
+  --     string.format("Found %d matches (%d unique symbols) in %.2f ms", total_matches, unique_symbols, duration_ms),
+  --     vim.log.levels.INFO
+  --   )
+  --
+  --   fzf_cb(nil)
+  -- end, {
+  --   prompt = title,
+  --   actions = {
+  --     ["default"] = function(selected)
+  --       local entry = lookup[selected[1]]
+  --       if entry then
+  --         vim.cmd("edit " .. entry.file)
+  --         vim.api.nvim_win_set_cursor(0, { entry.lnum, entry.col - 1 })
+  --       end
+  --     end,
+  --   },
+  --   winopts = {
+  --     height = 0.85,
+  --     width = 0.90,
+  --     preview = {
+  --       hidden = "nohidden",
+  --       vertical = "right",
+  --       horizontal = "right",
+  --       layout = "flex",
+  --       flip_columns = 120,
+  --     },
+  --   },
+  --   fzf_opts = {
+  --     ["--nth"] = params.include_file_name_in_search and "1.." or "2",
+  --   },
+  --   previewer = SymbolPreviewer, -- Use our custom previewer
+  -- })
 end
 
 return {
   custom_symbol_search = custom_symbol_search,
+  get_symbol_results = get_symbol_results,
 }
