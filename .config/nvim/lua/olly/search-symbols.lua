@@ -8,46 +8,48 @@ local devicons = require("nvim-web-devicons")
 --
 -- Should work for JS/TS keywords, ignoring all preceding and trailing characters
 -- If theres more than one keyword in the line e.g. "export const" it will ignore the earlier one(s)
-local function get_first_symbol(input)
-  -- List of keywords to ignore
-  local keywords = {
-    "const",
-    "function",
-    "let",
-    "async",
-    "private",
-    "public",
-    "protected",
-    "type",
-    "interface",
-    "class",
-    "enum",
-    "export",
-    "static",
-    "get",
-    "set",
-  }
+-- Pre-compile patterns and create keyword lookup for better performance
+local KEYWORDS = {
+  ["const"] = true,
+  ["function"] = true,
+  ["let"] = true,
+  ["async"] = true,
+  ["private"] = true,
+  ["public"] = true,
+  ["protected"] = true,
+  ["type"] = true,
+  ["interface"] = true,
+  ["class"] = true,
+  ["enum"] = true,
+  ["export"] = true,
+  ["static"] = true,
+  ["get"] = true,
+  ["set"] = true,
+}
 
+-- Pre-compile patterns
+local TRIM_PATTERN = "^%s*(.-)%s*$"
+local IDENTIFIER_PATTERN = "^([%a_][%w_]*)"
+
+local function get_first_symbol(input)
   if not input then
     return nil
   end
 
-  -- Remove leading whitespace
-  input = input:match("^%s*(.-)%s*$")
+  -- Remove leading/trailing whitespace
+  input = input:match(TRIM_PATTERN)
 
-  -- Iterate through words
+  -- Single pass through the string to find first non-keyword identifier
   for word in input:gmatch("%S+") do
-    -- Check if the word is not a keyword
-    if not table.concat(keywords, " "):find(word, 1, true) then
-      -- Extract the identifier part (without parentheses or other characters)
-      local identifier = word:match("^([%a_][%w_]*)")
+    if not KEYWORDS[word] then
+      local identifier = word:match(IDENTIFIER_PATTERN)
       if identifier then
         return identifier
       end
     end
   end
 
-  return nil -- Return nil if no valid symbol is found
+  return nil
 end
 
 -- Search types per filetype
@@ -136,10 +138,10 @@ local filetype_to_rg_type = {
   go = { "go" },
 }
 
-local function stream_ripgrep(pattern, directory, callback, filetype)
+local function stream_ripgrep(pattern, directory, filetype)
   local Job = require("plenary.job")
-  local count = 0
 
+  -- Pre-allocate args table with known size
   local args = {
     "--no-heading",
     "--with-filename",
@@ -152,28 +154,28 @@ local function stream_ripgrep(pattern, directory, callback, filetype)
   -- Add type filters if filetype is specified
   if filetype and filetype_to_rg_type[filetype] then
     for _, type in ipairs(filetype_to_rg_type[filetype]) do
-      table.insert(args, "-t")
-      table.insert(args, type)
+      args[#args + 1] = "-t"
+      args[#args + 1] = type
     end
   end
 
-  table.insert(args, pattern)
-  table.insert(args, directory or ".")
+  args[#args + 1] = pattern
+  args[#args + 1] = directory or "."
 
-  vim.notify(vim.inspect(args), vim.log.levels.INFO)
-
-  return Job:new({
+  local job = Job:new({
     command = "rg",
     args = args,
-    on_stdout = function(_, line)
-      count = count + 1
-      callback(line)
-    end,
   })
+
+  job:sync()
+  return job:result()
 end
 
 ---@alias SymbolSearchResult {symbol: string, file: string, col: number, lnum: number, text: string}
 ---@alias SymbolSearchReturn {title: string, results: SymbolSearchResult[]}
+
+-- Pre-compile the result parsing pattern
+local RESULT_PATTERN = "([^:]+):([^:]+):([^:]+):(.+)"
 
 ---@param params {type: string, also_search_file_name: boolean, directory: string}
 ---@return SymbolSearchReturn
@@ -207,59 +209,49 @@ local function get_symbol_results(params)
   -- Track unique locations using file:line:col as key
   local seen_locations = {}
 
-  local search_start_time = vim.loop.hrtime()
-  local search_results = {}
+  local start_time = vim.loop.hrtime()
 
-  -- First phase: Collect all ripgrep results
+  -- Process results after getting them all
   for _, pattern in ipairs(patterns) do
-    local job = stream_ripgrep(pattern, directory, function(result)
-      table.insert(search_results, result)
-    end, filetype)
-    job:sync()
-  end
-  local search_end_time = vim.loop.hrtime()
+    local lines = stream_ripgrep(pattern, directory, filetype)
 
-  -- Second phase: Process results
-  local process_start_time = vim.loop.hrtime()
-  for _, result in ipairs(search_results) do
-    local file, lnum, col, text = string.match(result, "([^:]+):([^:]+):([^:]+):(.+)")
-    local symbol = get_first_symbol(text)
+    for _, line in ipairs(lines) do
+      local file, lnum, col, text = string.match(line, RESULT_PATTERN)
+      if not file then
+        goto continue
+      end
 
-    if symbol then
+      local symbol = get_first_symbol(text)
+      if not symbol then
+        goto continue
+      end
+
       -- Create a unique location key
       local location_key = string.format("%s:%s:%s", file, lnum, col)
 
       -- Only add if we haven't seen this exact location before
       if not seen_locations[location_key] then
         seen_locations[location_key] = true
-        table.insert(results, {
+        results[#results + 1] = {
           symbol = symbol,
           file = file,
           lnum = tonumber(lnum),
           col = tonumber(col),
-          text = text, -- Include the full text for display purposes
-        })
+          text = text,
+        }
       end
+      
+      ::continue::
     end
   end
-  local process_end_time = vim.loop.hrtime()
 
-  -- Calculate timings
-  local search_duration_ms = (search_end_time - search_start_time) / 1e6
-  local process_duration_ms = (process_end_time - process_start_time) / 1e6
-  local total_duration_ms = search_duration_ms + process_duration_ms
-
+  local end_time = vim.loop.hrtime()
+  local total_duration_ms = (end_time - start_time) / 1e6
   local total_matches = vim.tbl_count(seen_locations)
 
   pcall(
     vim.notify,
-    string.format(
-      "Found %d unique locations in %.0fms (%.0fms search, %.0fms processing)",
-      total_matches,
-      total_duration_ms,
-      search_duration_ms,
-      process_duration_ms
-    ),
+    string.format("Found %d unique locations in %.0fms", total_matches, total_duration_ms),
     vim.log.levels.INFO
   )
 

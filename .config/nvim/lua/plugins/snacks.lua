@@ -226,13 +226,6 @@ return {
             end,
           })
         end, { desc = "Search " .. value })
-
-        -- vim.keymap.set("n", "<leader>s" .. upper_key, function()
-        --   ollySearchSymbols.custom_symbol_search({
-        --     type = value,
-        --     also_search_file_name = true,
-        --   })
-        -- end, { desc = "[S]earch [" .. upper_key .. "] (include file name)" })
       end
     end
 
