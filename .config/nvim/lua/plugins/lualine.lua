@@ -1,6 +1,6 @@
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
+  dependencies = { "nvim-tree/nvim-web-devicons", "AndreM222/copilot-lualine" },
   config = function()
     local function get_git_branch()
       local git_path = vim.fn.finddir(".git", ".;")
@@ -45,10 +45,8 @@ return {
           },
         },
         lualine_c = { { "filename", path = 1 } },
-        lualine_x = {
-          "filetype",
-        },
-        lualine_y = { "progress" },
+        lualine_x = { "copilot" },
+        lualine_y = { "filetype" },
         lualine_z = { "location" },
       },
       inactive_sections = {
