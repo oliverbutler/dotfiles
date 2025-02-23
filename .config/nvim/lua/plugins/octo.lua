@@ -2,7 +2,7 @@ return {
   "pwntester/octo.nvim",
   requires = {
     "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
+    "echasnovski/mini.icons",
   },
   config = function()
     require("octo").setup({

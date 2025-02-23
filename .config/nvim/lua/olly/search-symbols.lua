@@ -1,5 +1,3 @@
-local devicons = require("nvim-web-devicons")
-
 -- Function to get the first "symbol" from a line of text/code
 -- e.g. "const foo = 1" will return "foo"
 -- e.g. "function bar() {}" will return "bar"
