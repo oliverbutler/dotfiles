@@ -160,6 +160,12 @@ return {
       end,
       desc = "Explorer",
     },
+    {
+      "<leader>g;",
+      function()
+        Snacks.lazygit()
+      end,
+    },
   },
   config = function()
     -- Enable mini.files to do a LSP rename
@@ -244,6 +250,9 @@ return {
             { section = "startup" },
           },
         },
+      },
+      lazygit = {
+        enabled = true,
       },
       gitbrowse = {
         enabled = true,

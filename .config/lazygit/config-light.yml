@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+git:
+  paging:
+    colorArg: always
+    pager: delta --light --paging=never --line-numbers
+
+os:
+  editPreset: "nvim-remote"
+
+customCommands:
+  - key: "I"
+    command: "bun ~/.config/git-ai/index.ts"
+    context: "global"
+    description: "Create PR with AI-generated description"
+
+gui:
+  border: rounded
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor:
+      - "#dc8a78"
+      - bold
+    inactiveBorderColor:
+      - "#6c6f85"
+    optionsTextColor:
+      - "#1e66f5"
+    selectedLineBgColor:
+      - "#ccd0da"
+    cherryPickedCommitBgColor:
+      - "#bcc0cc"
+    cherryPickedCommitFgColor:
+      - "#dc8a78"
+    unstagedChangesColor:
+      - "#d20f39"
+    defaultFgColor:
+      - "#4c4f69"
+    searchingActiveBorderColor:
+      - "#df8e1d"
+
+  authorColors:
+    "*": "#7287fd"

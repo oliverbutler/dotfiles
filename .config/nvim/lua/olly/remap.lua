@@ -21,6 +21,14 @@ vim.keymap.set("n", "[e", function()
   vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end, { desc = "Previous Error" })
 
+vim.keymap.set("n", "]d", function()
+  vim.diagnostic.goto_next()
+end, { desc = "Next Diagnostic" })
+
+vim.keymap.set("n", "[d", function()
+  vim.diagnostic.goto_prev()
+end, { desc = "Previous Diagnostic" })
+
 -- Map leader [ and ] to navigate files
 vim.keymap.set("n", "<leader>{", ":bprevious<CR>", { noremap = true })
 vim.keymap.set("n", "<leader>}", ":bnext<CR>", { noremap = true })
@@ -47,12 +55,13 @@ end)
 vim.keymap.set("n", "<leader>gl", function()
   local cmd
   local dir = vim.fn.getcwd()
+  local config_flag = vim.o.background == "light" and "-ucf ~/.config/lazygit/config-light.yml" or ""
 
   if vim.env.GIT_DIR then
-    cmd = string.format([[GIT_DIR=%s exec lazygit]], vim.env.GIT_DIR)
+    cmd = string.format([[GIT_DIR=%s exec lazygit %s]], vim.env.GIT_DIR, config_flag)
     dir = vim.env.GIT_DIR
   else
-    cmd = string.format([[cd %s && exec lazygit]], dir)
+    cmd = string.format([[cd %s && exec lazygit %s]], dir, config_flag)
   end
 
   vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C -s bg=default -b none "%s"]], cmd))
