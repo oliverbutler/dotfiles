@@ -6,8 +6,30 @@ return {
     config = function()
       local latte = require("catppuccin.palettes").get_palette("latte")
 
-      require("catppuccin").setup({
+      -- Function to darken hex colors
+      local function darken_hex(hex, percent)
+        -- Remove '#' if present
+        hex = hex:gsub("#", "")
+        -- Convert hex to RGB
+        local r = tonumber(hex:sub(1, 2), 16)
+        local g = tonumber(hex:sub(3, 4), 16)
+        local b = tonumber(hex:sub(5, 6), 16)
+        -- Darken by percentage (multiply by (1 - percent/100))
+        local factor = (1 - percent / 100)
+        r = math.floor(r * factor)
+        g = math.floor(g * factor)
+        b = math.floor(b * factor)
 
+        -- Ensure values stay in valid range
+        r = math.min(math.max(r, 0), 255)
+        g = math.min(math.max(g, 0), 255)
+        b = math.min(math.max(b, 0), 255)
+
+        -- Convert back to hex
+        return string.format("#%02x%02x%02x", r, g, b)
+      end
+
+      require("catppuccin").setup({
         flavour = "auto",
         background = { -- :h background
           light = "latte",
@@ -41,7 +63,34 @@ return {
         },
         color_overrides = {
           all = {},
-          latte = {},
+          latte = {
+            -- base = darken_hex(latte.base, 10),
+            -- crust = darken_hex(latte.crust, 10),
+            -- mantle = darken_hex(latte.mantle, 10),
+            -- overlay0 = darken_hex(latte.overlay0, 10),
+            -- overlay1 = darken_hex(latte.overlay1, 10),
+            -- overlay2 = darken_hex(latte.overlay2, 10),
+            -- surface0 = darken_hex(latte.surface0, 10),
+            -- surface1 = darken_hex(latte.surface1, 10),
+            -- surface2 = darken_hex(latte.surface2, 10),
+            blue = darken_hex(latte.blue, 10),
+            flamingo = darken_hex(latte.flamingo, 10),
+            green = darken_hex(latte.green, 10),
+            lavender = darken_hex(latte.lavender, 10),
+            maroon = darken_hex(latte.maroon, 10),
+            mauve = darken_hex(latte.mauve, 10),
+            peach = darken_hex(latte.peach, 10),
+            pink = darken_hex(latte.pink, 10),
+            red = darken_hex(latte.red, 10),
+            rosewater = darken_hex(latte.rosewater, 10),
+            sapphire = darken_hex(latte.sapphire, 10),
+            sky = darken_hex(latte.sky, 10),
+            subtext0 = darken_hex(latte.subtext0, 10),
+            subtext1 = darken_hex(latte.subtext1, 10),
+            teal = darken_hex(latte.teal, 10),
+            text = darken_hex(latte.text, 10),
+            yellow = darken_hex(latte.yellow, 10),
+          },
           frappe = {},
           macchiato = {},
           mocha = {},
