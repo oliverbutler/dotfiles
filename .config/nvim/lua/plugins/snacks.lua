@@ -17,7 +17,6 @@ return {
       end,
       desc = "Notification History",
     },
-    -- Help
     {
       "<leader>sh",
       function()
@@ -25,7 +24,6 @@ return {
       end,
       desc = "Search Help",
     },
-    -- Keymaps
     {
       "<leader>sk",
       function()
@@ -33,7 +31,6 @@ return {
       end,
       desc = "Search Keymaps",
     },
-    -- Files
     {
       "<leader>;",
       function()
@@ -50,7 +47,6 @@ return {
       end,
       desc = "Search Files",
     },
-    -- Buffers
     {
       "<leader>sb",
       function()
@@ -60,7 +56,6 @@ return {
       end,
       desc = "Search Buffers",
     },
-    -- Word under cursor
     {
       "<leader>sw",
       function()
@@ -68,7 +63,6 @@ return {
       end,
       desc = "Search Word",
     },
-    -- Document symbols
     {
       "<leader>sd",
       function()
@@ -76,7 +70,6 @@ return {
       end,
       desc = "Search Document Symbols",
     },
-    -- Git branches and commits
     {
       "<leader>sgb",
       function()
@@ -91,7 +84,6 @@ return {
       end,
       desc = "Search Git Commits",
     },
-    -- Old files
     {
       "<leader>so",
       function()
@@ -99,7 +91,6 @@ return {
       end,
       desc = "Search Old Files",
     },
-    -- Live grep
     {
       "<leader>'",
       function()
@@ -107,7 +98,6 @@ return {
       end,
       desc = "Search Grep",
     },
-    -- Resume last picker
     {
       "<leader><leader>",
       function()
@@ -115,16 +105,14 @@ return {
       end,
       desc = "Reopen Last Search",
     },
-    -- Visual mode word search
     {
       "<leader>sw",
       function()
         Snacks.picker.grep_word()
       end,
-      desc = "[S]earch [W]ord",
+      desc = "Search Word",
       mode = "v",
     },
-    -- Current buffer search
     {
       "<leader>/",
       function()
@@ -134,7 +122,6 @@ return {
       end,
       desc = "Search in Current Buffer",
     },
-    -- Search in all buffers
     {
       "<leader>?",
       function()
@@ -144,33 +131,34 @@ return {
       end,
       desc = "Search in Open Buffers",
     },
-    -- Project-wide search
-    {
-      "<leader>.",
-      function()
-        Snacks.picker.grep({ live = true })
-      end,
-      desc = "Search in Project",
-    },
-    -- Fast paste open
     {
       "<leader>P",
       function()
         local clipboard = vim.fn.getreg("+")
         Snacks.picker.files({ pattern = clipboard })
       end,
+      desc = "Fast Search Paste",
     },
     {
       "gd",
       function()
         Snacks.picker.lsp_definitions()
       end,
+      desc = "LSP Definitions",
     },
     {
       "gr",
       function()
         Snacks.picker.lsp_references()
       end,
+      desc = "LSP References",
+    },
+    {
+      "<leader>E",
+      function()
+        Snacks.explorer.open()
+      end,
+      desc = "Explorer",
     },
   },
   config = function()
@@ -268,7 +256,16 @@ return {
       },
       ---@type snacks.picker.Config
       picker = {
-        hidden = true,
+        enabled = true,
+      },
+      bigfile = {
+        enabled = true,
+      },
+      quickfile = {
+        enabled = true,
+      },
+      explorer = {
+        enabled = true,
       },
     })
 
