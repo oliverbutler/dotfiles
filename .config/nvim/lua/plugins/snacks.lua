@@ -266,6 +266,11 @@ return {
       ---@type snacks.picker.Config
       picker = {
         enabled = true,
+        formatters = {
+          file = {
+            truncate = 50, -- truncate the file path to (roughly) this length
+          },
+        },
       },
       bigfile = {
         enabled = true,

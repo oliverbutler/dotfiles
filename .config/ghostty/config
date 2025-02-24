@@ -5,4 +5,6 @@ background-opacity = 0.97
 background-blur = true
 link-url = true
 mouse-hide-while-typing = true
+font-thicken = true
+font-thicken-strength = 200
 # custom-shader = /home/olly/projects/ghostty-shaders/in-game-crt.glsl

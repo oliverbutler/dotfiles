@@ -14,16 +14,6 @@ return {
     end,
   },
   {
-    "echasnovski/mini.sessions",
-    version = false,
-    event = "VeryLazy",
-    config = function()
-      local sessions = require("mini.sessions")
-
-      sessions.setup()
-    end,
-  },
-  {
     "echasnovski/mini.icons",
     version = false,
     config = function()
