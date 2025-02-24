@@ -226,6 +226,8 @@ alias nx="pnpm nx"
 # LazyGit/Git
 alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/repo.git"
 
+alias lado="DOCKER_HOST=$(docker context inspect --format '{{.Endpoints.docker.Host}}') lazydocker"
+
 starship init fish | source
 
 if test -e .nvmrc && type -q nvm
