@@ -231,9 +231,9 @@ alias lado="DOCKER_HOST=$(docker context inspect --format '{{.Endpoints.docker.H
 starship init fish | source
 
 if test -e .nvmrc && type -q nvm
-    nvm use
+    nvm use >/dev/null
 else if test -e .fvm/fvm_config.json && type -q fvm
-    fvm use
+    fvm use >/dev/null
 end
 
 
