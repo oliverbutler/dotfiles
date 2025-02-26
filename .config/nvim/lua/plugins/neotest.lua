@@ -8,6 +8,7 @@ return {
     "nvim-neotest/neotest-jest",
     "nvim-neotest/nvim-nio",
     "nvim-neotest/neotest-go",
+    "sidlatau/neotest-dart",
   },
   -- Specifies when to load neotest
   keys = { "<leader>t" }, -- Example key bindings to trigger loading
@@ -42,6 +43,11 @@ return {
             -- vim.notify("CWD: " .. new_cwd)
             return new_cwd
           end,
+        }),
+        require("neotest-dart")({
+          command = "fvm flutter",
+          use_lsp = true,
+          custom_test_method_names = {},
         }),
       },
     })
