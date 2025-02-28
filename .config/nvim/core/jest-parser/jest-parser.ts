@@ -1,4 +1,3 @@
-
 import { formatObjectWithPrettier } from "./format";
 
 /**
@@ -84,10 +83,16 @@ export const getTestExpectedObject = async (params: {
  *    "createdAt": 2024-08-22T15:38:03.190Z,
  * to become
  *    "createdAt": expect.any(Date),
+ *
+ * But preserves quoted dates like:
+ *    "paymentDate": "2021-01-15T00:00:00.000Z",
  */
 const replaceDateWithExpectDate = (row: string): string => {
-  const dateRegex = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/g;
+  // This regex looks for ISO date strings that are NOT wrapped in quotes
+  // It uses negative lookbehind (?<!) and negative lookahead (?!) to ensure no quotes
+  // The regex matches: not a quote, then the date, then not a quote
+  const unquotedDateRegex =
+    /(?<!")(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)(?!")/g;
 
-  return row.replace(dateRegex, "expect.any(Date)");
+  return row.replace(unquotedDateRegex, "expect.any(Date)");
 };
-
