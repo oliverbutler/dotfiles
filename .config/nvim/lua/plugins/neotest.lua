@@ -1,6 +1,6 @@
 local function get_log_file_path()
   local home = os.getenv("HOME")
-  return home .. "/.config/nvim/logs/typescript.log"
+  return home .. "/.config/nvim/logs/neotest-ai.log"
 end
 
 -- Add string trim function
@@ -165,11 +165,15 @@ return {
       local ok, neotest = pcall(require, "neotest")
       if not ok then
         vim.notify("Neotest plugin not found", vim.log.levels.ERROR)
+        append_to_log("ERROR: Neotest plugin not found")
         return
       end
 
       -- Save current window/buffer
       local current_win = vim.api.nvim_get_current_win()
+
+      -- Log the yanked test
+      append_to_log("YANKED TEST: " .. yanked_test)
 
       -- Open neotest output
       neotest.output.open({ enter = true, short = true })
@@ -181,6 +185,9 @@ return {
         local error_lines = vim.api.nvim_buf_get_lines(error_bufnr, 0, -1, false)
         local error_output = table.concat(error_lines, "\n")
 
+        -- Log the test error output
+        append_to_log("TEST ERROR OUTPUT: " .. error_output)
+
         -- Return to the original window
         vim.api.nvim_set_current_win(current_win)
 
@@ -190,11 +197,13 @@ return {
         -- Check for API key
         if not vim.env.ANTHROPIC_API_KEY then
           vim.notify("ANTHROPIC_API_KEY environment variable not set", vim.log.levels.ERROR)
+          append_to_log("ERROR: ANTHROPIC_API_KEY environment variable not set")
           return
         end
 
         -- Show notification that we're processing
         vim.notify("Asking Claude to fix the test... Please wait", vim.log.levels.INFO)
+        append_to_log("INFO: Asking Claude to fix the test...")
 
         -- Create prompt for Claude
         local prompt = [[
@@ -213,6 +222,9 @@ And here's the test failure output:
 Only update the expectation to match the actual values. Don't change the test logic itself. Provide ONLY the complete fixed code with no additional explanation.
 ]]
 
+        -- Log the prompt sent to Claude
+        append_to_log("CLAUDE PROMPT: " .. prompt)
+
         -- Create temporary files
         local prompt_file = vim.fn.tempname()
         local response_file = vim.fn.tempname()
@@ -221,6 +233,7 @@ Only update the expectation to match the actual values. Don't change the test lo
         local f = io.open(prompt_file, "w")
         if not f then
           vim.notify("Failed to create temporary file", vim.log.levels.ERROR)
+          append_to_log("ERROR: Failed to create temporary file")
           return
         end
         f:write(prompt)
@@ -243,10 +256,14 @@ Only update the expectation to match the actual values. Don't change the test lo
           vim.fn.json_encode(prompt)
         )
 
+        -- Log the payload (truncated for readability)
+        append_to_log("CLAUDE API PAYLOAD: " .. payload:sub(1, 500) .. (payload:len() > 500 and "..." or ""))
+
         -- Write payload to file
         f = io.open(payload_file, "w")
         if not f then
           vim.notify("Failed to create payload file", vim.log.levels.ERROR)
+          append_to_log("ERROR: Failed to create payload file")
           os.remove(prompt_file)
           return
         end
@@ -268,6 +285,9 @@ curl -s https://api.anthropic.com/v1/messages \
           response_file
         )
 
+        -- Log the curl command (with API key redacted)
+        append_to_log("CURL COMMAND: " .. curl_cmd:gsub(vim.env.ANTHROPIC_API_KEY, "REDACTED"))
+
         -- Execute the API call
         vim.fn.jobstart(curl_cmd, {
           on_exit = function(_, code)
@@ -277,6 +297,7 @@ curl -s https://api.anthropic.com/v1/messages \
 
             if code ~= 0 then
               vim.notify("API call failed with code: " .. code, vim.log.levels.ERROR)
+              append_to_log("ERROR: API call failed with code: " .. code)
               os.remove(response_file)
               return
             end
@@ -285,12 +306,18 @@ curl -s https://api.anthropic.com/v1/messages \
             local resp_file = io.open(response_file, "r")
             if not resp_file then
               vim.notify("Failed to read API response", vim.log.levels.ERROR)
+              append_to_log("ERROR: Failed to read API response")
               return
             end
 
             local response_json = resp_file:read("*all")
             resp_file:close()
             os.remove(response_file)
+
+            -- Log the raw JSON response (truncated for readability)
+            append_to_log(
+              "CLAUDE RAW RESPONSE: " .. response_json:sub(1, 500) .. (response_json:len() > 500 and "..." or "")
+            )
 
             -- Parse the JSON response
             local ok, response = pcall(vim.fn.json_decode, response_json)
@@ -299,10 +326,14 @@ curl -s https://api.anthropic.com/v1/messages \
                 "Failed to parse API response: " .. vim.inspect(response_json:sub(1, 100)),
                 vim.log.levels.ERROR
               )
+              append_to_log("ERROR: Failed to parse API response: " .. vim.inspect(response_json:sub(1, 100)))
               return
             end
 
             local ai_response = response.content[1].text
+
+            -- Log the text response from Claude
+            append_to_log("CLAUDE TEXT RESPONSE: " .. ai_response)
 
             -- Extract code block from the response (if present)
             local code_block = ai_response:match("```[%w%s]*\n(.-)\n```")
@@ -314,6 +345,9 @@ curl -s https://api.anthropic.com/v1/messages \
             -- If no code block found, use the whole response
             local fixed_test = code_block or ai_response
 
+            -- Log the extracted code/fixed test
+            append_to_log("EXTRACTED FIXED TEST: " .. fixed_test)
+
             -- Log the new assertion for debugging
             vim.notify("New Assertion:", fixed_test)
 
@@ -323,6 +357,7 @@ curl -s https://api.anthropic.com/v1/messages \
 
             -- Notify user that fixed test is ready to paste
             vim.notify("Fixed test copied to register. Paste with 'p'", vim.log.levels.INFO)
+            append_to_log("INFO: Fixed test copied to register")
           end,
         })
       end, 300) -- 300ms delay to ensure neotest output is loaded
