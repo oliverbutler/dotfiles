@@ -76,10 +76,11 @@ return {
 
     -- Function to extract the test output and store it in a variable
 
-    -- Function to get the current line's test context
-    M.get_current_test_line = function()
+    -- Function to get the current test expectation block
+    M.get_current_test_block = function()
       local bufnr = vim.api.nvim_get_current_buf()
       local cur_line = vim.api.nvim_get_current_line()
+      local cur_row = vim.api.nvim_win_get_cursor(0)[1]
 
       -- Check if the line contains toEqual or toStrictEqual
       local toEqual_pos = cur_line:find("toEqual%(") or cur_line:find("toStrictEqual%(")
@@ -88,19 +89,43 @@ return {
         return nil
       end
 
-      return cur_line
+      -- Save current position
+      local save_pos = vim.api.nvim_win_get_cursor(0)
+
+      -- Move cursor to the opening parenthesis
+      vim.api.nvim_win_set_cursor(0, { cur_row, toEqual_pos + (cur_line:find("toStrictEqual") and 12 or 7) })
+
+      -- Use Vim's % motion to find the matching parenthesis
+      vim.cmd("normal! %")
+      local end_pos = vim.api.nvim_win_get_cursor(0)
+
+      -- Go back to the opening parenthesis
+      vim.api.nvim_win_set_cursor(0, { cur_row, toEqual_pos + (cur_line:find("toStrictEqual") and 12 or 7) })
+
+      -- Get the text between the parentheses (including them)
+      local start_line = cur_row
+      local end_line = end_pos[1]
+
+      -- Get all lines in the block
+      local lines = vim.api.nvim_buf_get_lines(bufnr, start_line - 1, end_line, false)
+
+      -- Restore cursor position
+      vim.api.nvim_win_set_cursor(0, save_pos)
+
+      -- Join the lines and return the full block
+      return table.concat(lines, "\n")
     end
 
     -- Function to fix test with Claude AI
     M.fix_test_with_ai = function(replace_inline)
-      -- Get the current line with expectation
-      local current_line = M.get_current_test_line()
-      if not current_line then
+      -- Get the current test block with expectation
+      local current_block = M.get_current_test_block()
+      if not current_block then
         return
       end
 
-      -- Log the current line
-      append_to_log("CURRENT LINE: " .. current_line)
+      -- Log the current block
+      append_to_log("CURRENT BLOCK: " .. current_block)
 
       -- Check if neotest is available
       local ok, neotest = pcall(require, "neotest")
@@ -149,9 +174,9 @@ return {
         local prompt = [[
 I have a failing Jest test. Help me fix the expectation to match the actual output.
 
-Here's the test expectation line:
+Here's the test expectation:
 ```
-]] .. current_line .. [[
+]] .. current_block .. [[
 ```
 
 And here's the test failure output:
@@ -159,8 +184,7 @@ And here's the test failure output:
 ]] .. error_output .. [[
 ```
 
-Only provide the fixed expectation line. Keep the same variable names and structure. 
-Don't change the test logic itself. Provide ONLY the fixed line with no additional explanation.
+Provide back only the FULL fixed expectation code, do not introduce comments/explanations, if you encounter variables used in the existing expectation, try to re-use them within the new output
 ]]
 
         -- Log the prompt sent to Claude
@@ -277,8 +301,7 @@ curl -s https://api.anthropic.com/v1/messages \
             append_to_log("CLAUDE TEXT RESPONSE: " .. ai_response)
 
             -- Extract code block from the response (if present)
-            local fixed_line = ai_response:match("```[%w%s]*\n(.-)
-```")
+            local fixed_line = ai_response:match("```[%w%s]*\n(.-)```")
             if not fixed_line then
               -- Try alternative pattern without language specification
               fixed_line = ai_response:match("```(.-)```")
@@ -290,8 +313,8 @@ curl -s https://api.anthropic.com/v1/messages \
             -- Clean up the response
             fixed_line = trim(fixed_line)
 
-            -- Log the extracted fixed line
-            append_to_log("EXTRACTED FIXED LINE: " .. fixed_line)
+            -- Log the extracted fixed block
+            append_to_log("EXTRACTED FIXED BLOCK: " .. fixed_line)
 
             -- Copy to clipboard
             vim.fn.setreg("+", fixed_line)
@@ -302,13 +325,38 @@ curl -s https://api.anthropic.com/v1/messages \
               vim.api.nvim_set_current_buf(current_buf)
               vim.api.nvim_win_set_cursor(current_win, current_pos)
 
-              -- Replace the current line with the fixed line
-              vim.api.nvim_buf_set_lines(current_buf, current_pos[1] - 1, current_pos[1], false, { fixed_line })
+              -- Find the toEqual or toStrictEqual in the current line
+              local cur_line = vim.api.nvim_get_current_line()
+              local toEqual_pos = cur_line:find("toEqual%(") or cur_line:find("toStrictEqual%(")
 
-              -- Save the file
-              vim.cmd("write")
+              if toEqual_pos then
+                -- Save current position
+                local save_pos = vim.api.nvim_win_get_cursor(0)
+                local cur_row = save_pos[1]
 
-              vim.notify("Replaced test expectation with AI-fixed version", vim.log.levels.INFO)
+                -- Move cursor to the opening parenthesis
+                vim.api.nvim_win_set_cursor(0, { cur_row, toEqual_pos + (cur_line:find("toStrictEqual") and 12 or 7) })
+
+                -- Use Vim's % motion to find the matching parenthesis
+                vim.cmd("normal! %")
+                local end_pos = vim.api.nvim_win_get_cursor(0)
+
+                -- Go back to the opening parenthesis
+                vim.api.nvim_win_set_cursor(0, { cur_row, toEqual_pos + (cur_line:find("toStrictEqual") and 12 or 7) })
+
+                -- Delete the content between parentheses
+                vim.cmd("normal! di(")
+
+                -- Insert the fixed content
+                vim.api.nvim_put(vim.fn.split(fixed_line, "\n"), "c", true, true)
+
+                -- Save the file
+                vim.cmd("write")
+
+                vim.notify("Replaced test expectation with AI-fixed version", vim.log.levels.INFO)
+              else
+                vim.notify("Could not find toEqual or toStrictEqual in the current line", vim.log.levels.ERROR)
+              end
             else
               vim.notify("Fixed test expectation copied to clipboard", vim.log.levels.INFO)
             end
@@ -391,223 +439,6 @@ curl -s https://api.anthropic.com/v1/messages \
     vim.keymap.set("n", "<leader>tj", function()
       M.get_test_output()
     end, { noremap = true, silent = true, desc = "Get test output and copy to clipboard" })
-
-    -- Command to fix Jest test expectation based on yanked test and neotest output
-    vim.api.nvim_create_user_command("FixTest", function()
-      -- Get the yanked text
-      local yanked_test = vim.fn.getreg('"')
-
-      if yanked_test == "" then
-        vim.notify("No text yanked. Select and yank a test first (use 'y')", vim.log.levels.ERROR)
-        return
-      end
-
-      -- Check if neotest is available
-      local ok, neotest = pcall(require, "neotest")
-      if not ok then
-        vim.notify("Neotest plugin not found", vim.log.levels.ERROR)
-        append_to_log("ERROR: Neotest plugin not found")
-        return
-      end
-
-      -- Save current window/buffer
-      local current_win = vim.api.nvim_get_current_win()
-
-      -- Log the yanked test
-      append_to_log("YANKED TEST: " .. yanked_test)
-
-      -- Open neotest output
-      neotest.output.open({ enter = true, short = true })
-
-      -- Get neotest output after a short delay
-      vim.defer_fn(function()
-        -- Get the error output
-        local error_bufnr = vim.api.nvim_get_current_buf()
-        local error_lines = vim.api.nvim_buf_get_lines(error_bufnr, 0, -1, false)
-        local error_output = table.concat(error_lines, "\n")
-
-        -- Log the test error output
-        append_to_log("TEST ERROR OUTPUT: " .. error_output)
-
-        -- Return to the original window
-        vim.api.nvim_set_current_win(current_win)
-
-        -- Close neotest output window
-        vim.cmd("pclose")
-
-        -- Check for API key
-        if not vim.env.ANTHROPIC_API_KEY then
-          vim.notify("ANTHROPIC_API_KEY environment variable not set", vim.log.levels.ERROR)
-          append_to_log("ERROR: ANTHROPIC_API_KEY environment variable not set")
-          return
-        end
-
-        -- Show notification that we're processing
-        vim.notify("Asking Claude to fix the test... Please wait", vim.log.levels.INFO)
-        append_to_log("INFO: Asking Claude to fix the test...")
-
-        -- Create prompt for Claude
-        local prompt = [[
-I have a failing Jest test. Help me fix the expectation to match the actual output.
-
-Here's the test:
-```
-]] .. yanked_test .. [[
-```
-
-And here's the test failure output:
-```
-]] .. error_output .. [[
-```
-
-Only update the expectation to match the actual values. Don't change the test logic itself. Provide ONLY the complete fixed code with no additional explanation.
-]]
-
-        -- Log the prompt sent to Claude
-        append_to_log("CLAUDE PROMPT: " .. prompt)
-
-        -- Create temporary files
-        local prompt_file = vim.fn.tempname()
-        local response_file = vim.fn.tempname()
-
-        -- Write prompt to temporary file
-        local f = io.open(prompt_file, "w")
-        if not f then
-          vim.notify("Failed to create temporary file", vim.log.levels.ERROR)
-          append_to_log("ERROR: Failed to create temporary file")
-          return
-        end
-        f:write(prompt)
-        f:close()
-
-        -- Create the JSON payload file
-        local payload_file = vim.fn.tempname()
-        local payload = string.format(
-          [[
-{
-  "model": "claude-3-5-haiku-20241022",
-  "max_tokens": 8000,
-  "messages": [
-    {
-      "role": "user",
-      "content": %s
-    }
-  ]
-}]],
-          vim.fn.json_encode(prompt)
-        )
-
-        -- Log the payload (truncated for readability)
-        append_to_log("CLAUDE API PAYLOAD: " .. payload:sub(1, 500) .. (payload:len() > 500 and "..." or ""))
-
-        -- Write payload to file
-        f = io.open(payload_file, "w")
-        if not f then
-          vim.notify("Failed to create payload file", vim.log.levels.ERROR)
-          append_to_log("ERROR: Failed to create payload file")
-          os.remove(prompt_file)
-          return
-        end
-        f:write(payload)
-        f:close()
-
-        -- Prepare the API call
-        local curl_cmd = string.format(
-          [[
-curl -s https://api.anthropic.com/v1/messages \
-  -H "x-api-key: %s" \
-  -H "anthropic-version: 2023-06-01" \
-  -H "content-type: application/json" \
-  --data @%s \
-  -o %s
-]],
-          vim.env.ANTHROPIC_API_KEY,
-          payload_file,
-          response_file
-        )
-
-        -- Log the curl command (with API key redacted)
-        append_to_log("CURL COMMAND: " .. curl_cmd:gsub(vim.env.ANTHROPIC_API_KEY, "REDACTED"))
-
-        -- Execute the API call
-        vim.fn.jobstart(curl_cmd, {
-          on_exit = function(_, code)
-            -- Clean up temporary prompt file
-            os.remove(prompt_file)
-            os.remove(payload_file)
-
-            if code ~= 0 then
-              vim.notify("API call failed with code: " .. code, vim.log.levels.ERROR)
-              append_to_log("ERROR: API call failed with code: " .. code)
-              os.remove(response_file)
-              return
-            end
-
-            -- Read the response from file
-            local resp_file = io.open(response_file, "r")
-            if not resp_file then
-              vim.notify("Failed to read API response", vim.log.levels.ERROR)
-              append_to_log("ERROR: Failed to read API response")
-              return
-            end
-
-            local response_json = resp_file:read("*all")
-            resp_file:close()
-            os.remove(response_file)
-
-            -- Log the raw JSON response (truncated for readability)
-            append_to_log(
-              "CLAUDE RAW RESPONSE: " .. response_json:sub(1, 500) .. (response_json:len() > 500 and "..." or "")
-            )
-
-            -- Parse the JSON response
-            local ok, response = pcall(vim.fn.json_decode, response_json)
-            if not ok or not response or not response.content or not response.content[1] then
-              vim.notify(
-                "Failed to parse API response: " .. vim.inspect(response_json:sub(1, 100)),
-                vim.log.levels.ERROR
-              )
-              append_to_log("ERROR: Failed to parse API response: " .. vim.inspect(response_json:sub(1, 100)))
-              return
-            end
-
-            local ai_response = response.content[1].text
-
-            -- Log the text response from Claude
-            append_to_log("CLAUDE TEXT RESPONSE: " .. ai_response)
-
-            -- Extract code block from the response (if present)
-            local code_block = ai_response:match("```[%w%s]*\n(.-)\n```")
-            if not code_block then
-              -- Try alternative pattern without language specification
-              code_block = ai_response:match("```(.-)\n```")
-            end
-
-            -- If no code block found, use the whole response
-            local fixed_test = code_block or ai_response
-
-            -- Log the extracted code/fixed test
-            append_to_log("EXTRACTED FIXED TEST: " .. fixed_test)
-
-            -- Log the new assertion for debugging
-            vim.notify("New Assertion:", fixed_test)
-
-            -- Explicitly set the default and plus registers
-            vim.fn.setreg('"', fixed_test) -- default register
-            vim.fn.setreg("+", fixed_test) -- system clipboard register
-
-            -- Notify user that fixed test is ready to paste
-            vim.notify("Fixed test copied to register. Paste with 'p'", vim.log.levels.INFO)
-            append_to_log("INFO: Fixed test copied to register")
-          end,
-        })
-      end, 300) -- 300ms delay to ensure neotest output is loaded
-    end, {})
-
-    -- Optional: Create a shorter command alias
-    vim.api.nvim_create_user_command("FT", function()
-      vim.cmd("FixTest")
-    end, {})
 
     vim.keymap.set("n", "<leader>tJ", function()
       M.paste_test_output()
