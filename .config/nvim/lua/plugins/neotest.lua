@@ -1,3 +1,23 @@
+local function get_log_file_path()
+  local home = os.getenv("HOME")
+  return home .. "/.config/nvim/logs/typescript.log"
+end
+
+-- Add string trim function
+local function trim(s)
+  return s:match("^%s*(.-)%s*$")
+end
+
+local function append_to_log(message)
+  local log_file = get_log_file_path()
+  local file = io.open(log_file, "a")
+  if file then
+    local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+    file:write(string.format("[%s] %s\n", timestamp, message))
+    file:close()
+  end
+end
+
 return {
   "nvim-neotest/neotest",
   dependencies = {
@@ -130,6 +150,188 @@ return {
     vim.keymap.set("n", "<leader>tj", function()
       M.get_test_output()
     end, { noremap = true, silent = true, desc = "Get test output and copy to clipboard" })
+
+    -- Command to fix Jest test expectation based on yanked test and neotest output
+    vim.api.nvim_create_user_command("FixTest", function()
+      -- Get the yanked text
+      local yanked_test = vim.fn.getreg('"')
+
+      if yanked_test == "" then
+        vim.notify("No text yanked. Select and yank a test first (use 'y')", vim.log.levels.ERROR)
+        return
+      end
+
+      -- Check if neotest is available
+      local ok, neotest = pcall(require, "neotest")
+      if not ok then
+        vim.notify("Neotest plugin not found", vim.log.levels.ERROR)
+        return
+      end
+
+      -- Save current window/buffer
+      local current_win = vim.api.nvim_get_current_win()
+
+      -- Open neotest output
+      neotest.output.open({ enter = true, short = true })
+
+      -- Get neotest output after a short delay
+      vim.defer_fn(function()
+        -- Get the error output
+        local error_bufnr = vim.api.nvim_get_current_buf()
+        local error_lines = vim.api.nvim_buf_get_lines(error_bufnr, 0, -1, false)
+        local error_output = table.concat(error_lines, "\n")
+
+        -- Return to the original window
+        vim.api.nvim_set_current_win(current_win)
+
+        -- Close neotest output window
+        vim.cmd("pclose")
+
+        -- Check for API key
+        if not vim.env.ANTHROPIC_API_KEY then
+          vim.notify("ANTHROPIC_API_KEY environment variable not set", vim.log.levels.ERROR)
+          return
+        end
+
+        -- Show notification that we're processing
+        vim.notify("Asking Claude to fix the test... Please wait", vim.log.levels.INFO)
+
+        -- Create prompt for Claude
+        local prompt = [[
+I have a failing Jest test. Help me fix the expectation to match the actual output.
+
+Here's the test:
+```
+]] .. yanked_test .. [[
+```
+
+And here's the test failure output:
+```
+]] .. error_output .. [[
+```
+
+Only update the expectation to match the actual values. Don't change the test logic itself. Provide ONLY the complete fixed code with no additional explanation.
+]]
+
+        -- Create temporary files
+        local prompt_file = vim.fn.tempname()
+        local response_file = vim.fn.tempname()
+
+        -- Write prompt to temporary file
+        local f = io.open(prompt_file, "w")
+        if not f then
+          vim.notify("Failed to create temporary file", vim.log.levels.ERROR)
+          return
+        end
+        f:write(prompt)
+        f:close()
+
+        -- Create the JSON payload file
+        local payload_file = vim.fn.tempname()
+        local payload = string.format(
+          [[
+{
+  "model": "claude-3-5-haiku-20241022",
+  "max_tokens": 8000,
+  "messages": [
+    {
+      "role": "user",
+      "content": %s
+    }
+  ]
+}]],
+          vim.fn.json_encode(prompt)
+        )
+
+        -- Write payload to file
+        f = io.open(payload_file, "w")
+        if not f then
+          vim.notify("Failed to create payload file", vim.log.levels.ERROR)
+          os.remove(prompt_file)
+          return
+        end
+        f:write(payload)
+        f:close()
+
+        -- Prepare the API call
+        local curl_cmd = string.format(
+          [[
+curl -s https://api.anthropic.com/v1/messages \
+  -H "x-api-key: %s" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  --data @%s \
+  -o %s
+]],
+          vim.env.ANTHROPIC_API_KEY,
+          payload_file,
+          response_file
+        )
+
+        -- Execute the API call
+        vim.fn.jobstart(curl_cmd, {
+          on_exit = function(_, code)
+            -- Clean up temporary prompt file
+            os.remove(prompt_file)
+            os.remove(payload_file)
+
+            if code ~= 0 then
+              vim.notify("API call failed with code: " .. code, vim.log.levels.ERROR)
+              os.remove(response_file)
+              return
+            end
+
+            -- Read the response from file
+            local resp_file = io.open(response_file, "r")
+            if not resp_file then
+              vim.notify("Failed to read API response", vim.log.levels.ERROR)
+              return
+            end
+
+            local response_json = resp_file:read("*all")
+            resp_file:close()
+            os.remove(response_file)
+
+            -- Parse the JSON response
+            local ok, response = pcall(vim.fn.json_decode, response_json)
+            if not ok or not response or not response.content or not response.content[1] then
+              vim.notify(
+                "Failed to parse API response: " .. vim.inspect(response_json:sub(1, 100)),
+                vim.log.levels.ERROR
+              )
+              return
+            end
+
+            local ai_response = response.content[1].text
+
+            -- Extract code block from the response (if present)
+            local code_block = ai_response:match("```[%w%s]*\n(.-)\n```")
+            if not code_block then
+              -- Try alternative pattern without language specification
+              code_block = ai_response:match("```(.-)\n```")
+            end
+
+            -- If no code block found, use the whole response
+            local fixed_test = code_block or ai_response
+
+            -- Log the new assertion for debugging
+            vim.notify("New Assertion:", fixed_test)
+
+            -- Explicitly set the default and plus registers
+            vim.fn.setreg('"', fixed_test) -- default register
+            vim.fn.setreg("+", fixed_test) -- system clipboard register
+
+            -- Notify user that fixed test is ready to paste
+            vim.notify("Fixed test copied to register. Paste with 'p'", vim.log.levels.INFO)
+          end,
+        })
+      end, 300) -- 300ms delay to ensure neotest output is loaded
+    end, {})
+
+    -- Optional: Create a shorter command alias
+    vim.api.nvim_create_user_command("FT", function()
+      vim.cmd("FixTest")
+    end, {})
 
     vim.keymap.set("n", "<leader>tJ", function()
       M.paste_test_output()
