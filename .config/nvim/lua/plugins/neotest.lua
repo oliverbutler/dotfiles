@@ -313,6 +313,11 @@ curl -s https://api.anthropic.com/v1/messages \
             -- Clean up the response
             fixed_line = trim(fixed_line)
 
+            -- Remove trailing semicolon if present
+            if fixed_line:sub(-1) == ";" then
+              fixed_line = fixed_line:sub(1, -2)
+            end
+
             -- Log the extracted fixed block
             append_to_log("EXTRACTED FIXED BLOCK: " .. fixed_line)
 
@@ -344,14 +349,27 @@ curl -s https://api.anthropic.com/v1/messages \
                 -- Go back to the opening parenthesis
                 vim.api.nvim_win_set_cursor(0, { cur_row, toEqual_pos + (cur_line:find("toStrictEqual") and 12 or 7) })
 
-                -- Delete the content between parentheses
+                local original_line_number = vim.fn.line(".")
+
+                -- Delete the content between parentheses (including parentheses)
                 vim.cmd("normal! di(")
 
+                -- Delete the whole line - at this point it'll be like "expect(x).toEqual()"
+                vim.cmd("normal! dd")
+
+                -- move back up to the line above, as we moved down doing dd
+                vim.cmd("normal! k")
+
+                -- Split the fixed content by newlines and prepare for insertion
+                local lines_to_insert = vim.fn.split(fixed_line, "\n")
+
                 -- Insert the fixed content
-                vim.api.nvim_put(vim.fn.split(fixed_line, "\n"), "c", true, true)
+                vim.api.nvim_put(lines_to_insert, "c", false, true)
 
                 -- Save the file
                 vim.cmd("write")
+
+                vim.cmd(tostring(original_line_number) .. "G")
 
                 vim.notify("Replaced test expectation with AI-fixed version", vim.log.levels.INFO)
               else
@@ -454,14 +472,14 @@ curl -s https://api.anthropic.com/v1/messages \
 
     vim.keymap.set("n", "<leader>ts", ":Neotest summary<CR>", { desc = "Show Neotest summary" })
 
-    vim.keymap.set("n", "<leader>to", function()
+    vim.keymap.set("n", "<leader>tO", function()
       require("neotest").output.open({
         auto_close = true,
         short = true,
       })
     end, { desc = "[T]est [O]utput (short)" })
 
-    vim.keymap.set("n", "<leader>tO", function()
+    vim.keymap.set("n", "<leader>to", function()
       require("neotest").output.open({
         enter = true,
       })

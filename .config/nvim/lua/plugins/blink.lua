@@ -171,6 +171,69 @@ return {
         ),
       })
 
+      ls.add_snippets("typescript", {
+        -- Arrow function snippet
+        s(
+          "cb",
+          fmt(
+            [[
+  () => {{
+    {}
+  }}
+  ]],
+            {
+              i(1),
+            }
+          )
+        ),
+
+        s(
+          "acb",
+          fmt(
+            [[
+  async () => {{
+    {}
+  }}
+  ]],
+            {
+              i(1),
+            }
+          )
+        ),
+
+        -- Async it block snippet
+        s(
+          "tit",
+          fmt(
+            [[
+  it('{}', async () => {{
+    {}
+  }});
+  ]],
+            {
+              i(1, "test description"),
+              i(2),
+            }
+          )
+        ),
+
+        -- Describe block snippet
+        s(
+          "tde",
+          fmt(
+            [[
+  describe('{}', () => {{
+    {}
+  }});
+  ]],
+            {
+              i(1, "test suite description"),
+              i(2),
+            }
+          )
+        ),
+      })
+
       require("blink.cmp").setup(opts)
     end,
   },
