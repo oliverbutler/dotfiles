@@ -199,6 +199,14 @@ return {
         provider = "tavily",
       },
 
+      claude = {
+        endpoint = "https://api.anthropic.com",
+        model = "claude-3-7-sonnet-20250219",
+        timeout = 15000,
+        temperature = 0,
+        max_tokens = 20000,
+        disable_tools = true, -- disable tools!
+      },
       vendors = {
         groq = { -- define groq provider
           __inherited_from = "openai",
