@@ -472,22 +472,18 @@ curl -s https://api.anthropic.com/v1/messages \
 
     vim.keymap.set("n", "<leader>ts", ":Neotest summary<CR>", { desc = "Show Neotest summary" })
 
-    vim.keymap.set("n", "<leader>tO", function()
+    vim.keymap.set("n", "<leader>to", function()
       require("neotest").output.open({
         auto_close = true,
         short = true,
       })
     end, { desc = "[T]est [O]utput (short)" })
 
-    vim.keymap.set("n", "<leader>to", function()
+    vim.keymap.set("n", "<leader>tp", function()
       require("neotest").output.open({
         enter = true,
       })
     end, { desc = "[T]est [O]utput (full)" })
-
-    vim.keymap.set("n", "<leader>tp", function()
-      require("neotest").output_panel.toggle()
-    end, { desc = "[T]est Output [P]anel" })
 
     vim.keymap.set("n", "<leader>tc", function()
       require("neotest").output_panel.clear()
