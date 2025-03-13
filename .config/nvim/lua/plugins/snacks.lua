@@ -37,6 +37,7 @@ return {
         Snacks.picker.smart({
           multi = { "buffers", "recent", "files" },
           format = "file", -- use `file` format for all sources
+          hidden = true,
           matcher = {
             cwd_bonus = true, -- boost cwd matches
             frecency = true, -- use frecency boosting
