@@ -19,6 +19,38 @@ return {
       end
     end, { desc = "Peek Fold" })
 
+    vim.keymap.set("n", "<leader>ft", function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+      local current_pos = vim.api.nvim_win_get_cursor(0)
+      local it_lines = {}
+
+      -- Find all lines containing "it(" pattern (typical for test files)
+      for i, line in ipairs(lines) do
+        if line:match("%s*it%s*%(") then
+          table.insert(it_lines, i)
+        end
+      end
+
+      -- Fold each "it" block
+      for _, lnum in ipairs(it_lines) do
+        -- Save current view
+        local view = vim.fn.winsaveview()
+
+        -- Move to the line and fold it
+        vim.api.nvim_win_set_cursor(0, { lnum, 0 })
+        vim.cmd("normal! zc")
+
+        -- Restore view
+        vim.fn.winrestview(view)
+      end
+
+      -- Return to original position
+      vim.api.nvim_win_set_cursor(0, current_pos)
+
+      vim.notify("Folded " .. #it_lines .. " test blocks", "info", { title = "UFO" })
+    end, { desc = "Fold all test 'it' blocks" })
+
     local handler = function(virtText, lnum, endLnum, width, truncate)
       local newVirtText = {}
       local suffix = (" 󰁂 %d "):format(endLnum - lnum)
@@ -52,6 +84,8 @@ return {
         return { "lsp", "indent" }
       end,
       fold_virt_text_handler = handler,
+      close_fold_kinds = { "imports", "comment" },
+      enable_get_fold_virt_text = true,
     })
   end,
 }
