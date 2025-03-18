@@ -205,7 +205,7 @@ return {
         timeout = 15000,
         temperature = 0,
         max_tokens = 20000,
-        disable_tools = true, -- disable tools!
+        disable_tools = false, -- disable tools!
       },
       vendors = {
         groq = { -- define groq provider

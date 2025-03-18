@@ -138,18 +138,21 @@ return {
   {
     "echasnovski/mini.surround",
     event = "VeryLazy",
-    opts = {
-      mappings = {
-        add = "sa",
-        delete = "sd",
-        find = "sf",
-        find_left = "sF",
-        highlight = "sh",
-        replace = "sr",
-        update_n_lines = "sn",
-        suffix_last = "l",
-        suffix_next = "n",
-      },
-    },
+    config = function()
+      require("mini.surround").setup({
+        highlight_duration = 2000,
+        mappings = {
+          add = "sa",
+          delete = "sd",
+          find = "sf",
+          find_left = "sF",
+          highlight = "sh",
+          replace = "sr",
+          update_n_lines = "sn",
+          suffix_last = "l",
+          suffix_next = "n",
+        },
+      })
+    end,
   },
 }
