@@ -23,7 +23,7 @@ return {
         python = { "isort", "black" },
         go = { "gofumpt", "gofumports" },
         sql = { "sql_formatter" },
-        ["*"] = { "injected" },
+        -- ["*"] = { "injected" },
       },
       format_on_save = {
         lsp_fallback = true,
