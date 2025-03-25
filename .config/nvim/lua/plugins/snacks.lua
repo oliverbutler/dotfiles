@@ -272,6 +272,12 @@ return {
             truncate = 50, -- truncate the file path to (roughly) this length
           },
         },
+        sources = {
+          files = {
+            hidden = true,
+            ignored = true,
+          },
+        },
       },
       bigfile = {
         enabled = true,
