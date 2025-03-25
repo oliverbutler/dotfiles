@@ -20,12 +20,20 @@ return {
     },
     config = function()
       require("lspconfig.configs").vtsls = require("vtsls").lspconfig -- set default server config, optional but recommended
+
       local lspconfig = require("lspconfig")
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       lspconfig.vtsls.setup({
         capabilities = capabilities,
+        settings = {
+          typescript = {
+            tsserver = {
+              maxTsServerMemory = 8192,
+            },
+          },
+        },
       })
 
       lspconfig.lua_ls.setup({
