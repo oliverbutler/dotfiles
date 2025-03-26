@@ -37,7 +37,6 @@ return {
         Snacks.picker.smart({
           multi = { "buffers", "recent", "files" },
           format = "file", -- use `file` format for all sources
-          hidden = true,
           matcher = {
             cwd_bonus = true, -- boost cwd matches
             frecency = true, -- use frecency boosting
@@ -273,9 +272,41 @@ return {
           },
         },
         sources = {
+          grep_word = {
+            hidden = true,
+            ignored = true,
+            exclude = {
+              "**/node_modules/**",
+              "**/.git/**",
+              "**/.cache/**",
+              "**/tmp/**",
+              "**/.nx/**",
+              "**/dist/**",
+            },
+          },
+          grep = {
+            hidden = true,
+            ignored = true,
+            exclude = {
+              "**/node_modules/**",
+              "**/.git/**",
+              "**/.cache/**",
+              "**/tmp/**",
+              "**/.nx/**",
+              "**/dist/**",
+            },
+          },
           files = {
             hidden = true,
             ignored = true,
+            exclude = {
+              "**/node_modules/**",
+              "**/.git/**",
+              "**/.cache/**",
+              "**/tmp/**",
+              "**/.nx/**",
+              "**/dist/**",
+            },
           },
         },
       },
