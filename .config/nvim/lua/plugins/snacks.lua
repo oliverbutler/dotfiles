@@ -161,9 +161,20 @@ return {
       desc = "Explorer",
     },
     {
-      "<leader>g;",
+      "<leader>gl",
       function()
-        Snacks.lazygit()
+        Snacks.lazygit.open({
+          win = {
+            width = 0.95,
+            height = 0.95,
+          },
+        })
+      end,
+    },
+    {
+      "<leader>gf",
+      function()
+        Snacks.lazygit.log_file()
       end,
     },
   },

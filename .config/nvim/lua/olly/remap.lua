@@ -51,21 +51,21 @@ vim.keymap.set("n", "<leader>q", function()
   vim.cmd("q")
 end)
 
--- lazygit
-vim.keymap.set("n", "<leader>gl", function()
-  local cmd
-  local dir = vim.fn.getcwd()
-  local config_flag = vim.o.background == "light" and "-ucf ~/.config/lazygit/config-light.yml" or ""
-
-  if vim.env.GIT_DIR then
-    cmd = string.format([[GIT_DIR=%s exec lazygit %s]], vim.env.GIT_DIR, config_flag)
-    dir = vim.env.GIT_DIR
-  else
-    cmd = string.format([[cd %s && exec lazygit %s]], dir, config_flag)
-  end
-
-  vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C -s bg=default -b none "%s"]], cmd))
-end)
+-- lazygit via tmux, disabled to use snacks version for now but snacks version used to have perf issues
+-- vim.keymap.set("n", "<leader>gl", function()
+--   local cmd
+--   local dir = vim.fn.getcwd()
+--   local config_flag = vim.o.background == "light" and "-ucf ~/.config/lazygit/config-light.yml" or ""
+--
+--   if vim.env.GIT_DIR then
+--     cmd = string.format([[GIT_DIR=%s exec lazygit %s]], vim.env.GIT_DIR, config_flag)
+--     dir = vim.env.GIT_DIR
+--   else
+--     cmd = string.format([[cd %s && exec lazygit %s]], dir, config_flag)
+--   end
+--
+--   vim.fn.system(string.format([[tmux display-popup -E -w 95%% -h 95%% -x C -y C -s bg=default -b none "%s"]], cmd))
+-- end)
 
 -- File helpers
 vim.keymap.set("n", "<leader>fo", function()
