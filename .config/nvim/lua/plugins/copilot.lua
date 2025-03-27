@@ -27,7 +27,7 @@ return {
           typescript = true,
           json = true,
           markdown = true,
-          yaml = false,
+          yaml = true,
           help = false,
           gitcommit = false,
           gitrebase = false,
