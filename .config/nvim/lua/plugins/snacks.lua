@@ -161,7 +161,7 @@ return {
       desc = "Explorer",
     },
     {
-      "<leader>gl",
+      "<leader>gL",
       function()
         Snacks.lazygit.open({
           win = {
