@@ -23,6 +23,7 @@ return {
         python = { "isort", "black" },
         go = { "gofumpt", "gofumports" },
         sql = { "sql_formatter" },
+        nix = { "nixfmt" },
         -- ["*"] = { "injected" },
       },
       format_on_save = {

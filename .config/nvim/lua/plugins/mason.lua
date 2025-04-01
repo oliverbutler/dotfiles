@@ -48,6 +48,7 @@ return {
         "prettierd",
         "sql-formatter",
         "gofumpt",
+        "nixfmt",
       },
       automatic_installation = true,
     })

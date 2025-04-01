@@ -1,6 +1,6 @@
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = { "echasnovski/mini.icons", "AndreM222/copilot-lualine" },
+  dependencies = { "echasnovski/mini.icons" },
   config = function()
     local function get_git_branch()
       local git_path = vim.fn.finddir(".git", ".;")
@@ -45,7 +45,6 @@ return {
           },
         },
         lualine_c = { { "filename", path = 1 } },
-        lualine_x = { "copilot" },
         lualine_y = { "filetype" },
         lualine_z = { "location" },
       },

@@ -6,32 +6,69 @@
 --
 -- Should work for JS/TS keywords, ignoring all preceding and trailing characters
 -- If theres more than one keyword in the line e.g. "export const" it will ignore the earlier one(s)
--- Pre-compile patterns and create keyword lookup for better performance
+-- Pre-compile patterns and create filetype-specific keyword lookups for better performance
 local KEYWORDS = {
-  ["const"] = true,
-  ["function"] = true,
-  ["let"] = true,
-  ["async"] = true,
-  ["private"] = true,
-  ["public"] = true,
-  ["protected"] = true,
-  ["type"] = true,
-  ["interface"] = true,
-  ["class"] = true,
-  ["enum"] = true,
-  ["export"] = true,
-  ["static"] = true,
-  ["get"] = true,
-  ["set"] = true,
+  typescript = {
+    ["const"] = true,
+    ["function"] = true,
+    ["let"] = true,
+    ["async"] = true,
+    ["private"] = true,
+    ["public"] = true,
+    ["protected"] = true,
+    ["type"] = true,
+    ["interface"] = true,
+    ["class"] = true,
+    ["enum"] = true,
+    ["export"] = true,
+    ["static"] = true,
+    ["get"] = true,
+    ["set"] = true,
+  },
+  javascript = {
+    ["const"] = true,
+    ["function"] = true,
+    ["let"] = true,
+    ["async"] = true,
+    ["private"] = true,
+    ["public"] = true,
+    ["protected"] = true,
+    ["type"] = true,
+    ["interface"] = true,
+    ["class"] = true,
+    ["enum"] = true,
+    ["export"] = true,
+    ["static"] = true,
+    ["get"] = true,
+    ["set"] = true,
+  },
+  go = {
+    ["func"] = true,
+    ["type"] = true,
+    ["interface"] = true,
+    ["struct"] = true,
+    ["var"] = true,
+    ["const"] = true,
+    ["package"] = true,
+    ["import"] = true,
+    ["map"] = true,
+    ["chan"] = true,
+  }
 }
 
 -- Pre-compile patterns
 local TRIM_PATTERN = "^%s*(.-)%s*$"
 local IDENTIFIER_PATTERN = "^([%a_][%w_]*)"
 
-local function get_first_symbol(input)
+local function get_first_symbol(input, filetype)
   if not input then
     return nil
+  end
+  
+  -- Default to typescript if filetype not provided or not supported
+  filetype = filetype or "typescript"
+  if not KEYWORDS[filetype] then
+    filetype = "typescript"
   end
 
   -- Remove leading/trailing whitespace
@@ -39,7 +76,7 @@ local function get_first_symbol(input)
 
   -- Single pass through the string to find first non-keyword identifier
   for word in input:gmatch("%S+") do
-    if not KEYWORDS[word] then
+    if not KEYWORDS[filetype][word] then
       local identifier = word:match(IDENTIFIER_PATTERN)
       if identifier then
         return identifier
@@ -219,7 +256,7 @@ local function get_symbol_results(params)
         goto continue
       end
 
-      local symbol = get_first_symbol(text)
+      local symbol = get_first_symbol(text, filetype)
       if not symbol then
         goto continue
       end
