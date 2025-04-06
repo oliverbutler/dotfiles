@@ -140,6 +140,13 @@ return {
       desc = "Fast Search Paste",
     },
     {
+      "gi",
+      function()
+        Snacks.picker.lsp_implementations()
+      end,
+      desc = "LSP Definitions",
+    },
+    {
       "gd",
       function()
         Snacks.picker.lsp_definitions()
