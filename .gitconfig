@@ -1,0 +1,31 @@
+[user]
+	name = Oliver Butler
+	email = dev@oliverbutler.uk
+
+[pull]
+	rebase = true
+
+[rebase]
+	autoStash = true
+	updateRefs = true
+
+[push]
+	autoSetupRemote = true
+
+[core]
+	pager = delta
+
+[delta]
+	navigate = true
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default
+
+[alias]
+	yolo = !git commit -am \"$(curl -sL http://whatthecommit.com/index.txt)\"
