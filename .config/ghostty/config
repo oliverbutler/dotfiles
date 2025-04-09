@@ -1,11 +1,13 @@
 theme = dark:catppuccin-mocha,light:catppuccin-latte
 font-family = "JetBrains Mono"
-shell-integration = fish
+shell-integration = zsh
 background-opacity = 0.97
 background-blur = true
 link-url = true
 mouse-hide-while-typing = true
 font-thicken = true
 font-thicken-strength = 200
-# custom-shader = /home/olly/projects/ghostty-shaders/in-game-crt.glsl
 font-feature = -calt
+macos-titlebar-style=transparent
+
+keybind = super+r=reload_config

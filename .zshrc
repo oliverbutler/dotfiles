@@ -1,6 +1,7 @@
 # Add Homebrew's executable directory to the front of the PATH
 export PATH=/usr/local/bin:$PATH
 export PATH=/opt/homebrew/bin:$PATH
+export PATH=/Users/olly/.local/share/bob/nvim-bin:$PATH
 
 # Set config homes
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -58,12 +59,6 @@ zinit cdreplay -q
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Keybindings
-bindkey -e
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
-bindkey '^[w' kill-region
-
 # History
 HISTSIZE=5000
 HISTFILE=~/.zsh_history
@@ -90,6 +85,28 @@ alias vim='nvim'
 alias c='clear'
 alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/repo.git"
 
+# Tmux setup
+twerk() {
+  if tmux ls 2>/dev/null | grep -q work; then
+    tmux attach-session -t work
+  else
+    tmux new-session -s work \; send-keys "zn col" C-m
+  fi
+}
+
+tome() {
+  if tmux ls 2>/dev/null | grep -q home; then
+    tmux attach-session -t home
+  else
+    tmux new-session -s home
+  fi
+}
+
+nvim() {
+  ~/.config/fish/nvim.sh "$@"
+}
+
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+eval "$(fnm env --use-on-cd --shell zsh)"
