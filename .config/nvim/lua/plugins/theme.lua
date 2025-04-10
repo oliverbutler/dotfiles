@@ -30,13 +30,18 @@ return {
       end
 
 
-      local nvimTheme = os.getenv("NVIM_THEME")
-      if nvimTheme == "dark" then
-        vim.o.background = "dark"
-      elseif nvimTheme == "light" then
-        vim.o.background = "light"
-      else
-        -- noop
+      -- Get NVIM_THEME directly from tmux environment
+      local handle = io.popen("tmux show-environment -g NVIM_THEME 2>/dev/null")
+      local result = handle and handle:read("*a") or ""
+      if handle then handle:close() end
+
+      -- Parse the value
+      local nvimTheme = result:match("NVIM_THEME=(%w+)")
+
+      -- Set the background if a valid theme is found
+      if nvimTheme == "dark" or nvimTheme == "light" then
+        vim.notify("NVIM_THEME is set to " .. nvimTheme)
+        vim.o.background = nvimTheme
       end
 
       require("catppuccin").setup({

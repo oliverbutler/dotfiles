@@ -56,7 +56,6 @@ set_status_right_value() {
 set_dark_mode() {
     echo "Olly Setting dark mode"
 
-    export NVIM_THEME=dark # for current shell
     tmux set-environment -g NVIM_THEME dark # consumed from .zshrc on new shell
     nvim --server /tmp/nvim-server.pipe --remote-send '<Esc>:set background=dark<CR>' # for current open nvim
 
@@ -69,7 +68,6 @@ set_dark_mode() {
 set_light_mode() {
     echo "Olly Setting light mode"
 
-    export NVIM_THEME=light # for current shell
     tmux set-environment -g NVIM_THEME light # consumed from .zshrc on new shell
     nvim --server /tmp/nvim-server.pipe --remote-send '<Esc>:set background=light<CR>' # for current open nvim
 
