@@ -48,7 +48,7 @@ tmux_set status-left-length 50
 tmux_set status-right "#[fg=$TC,bg=$G2] %H:%M:%S #[fg=$G0,bg=$TC] %Y-%m-%d "
 tmux_set status-right-length 50
 
-tmux_set window-status-format "#[fg=$G0,bg=$G0]#[fg=$TC,bg=$G1,nobold] #I #[fg=white,bg=$G1]#W #[fg=$G4,bg=$G0,nobold]"
+tmux_set window-status-format "#[fg=$G0,bg=$G0]#[fg=$G1,bg=$G0,bold]#[fg=$TC,bg=$G1,nobold]#I #[fg=white,bg=$G1] #W #[fg=$G4,bg=$G0,nobold]#[fg=$G1,bg=$G0,bold]"
 tmux_set window-status-current-format "#[fg=$G0,bg=$G0]#[fg=$TC,bg=$G0,bold]#[fg=$G0,bg=$TC,bold]#I #[fg=$G4,bg=$G2,bold] #W #[fg=$G4,bg=$G0,nobold]#[fg=$G2]"
 
 # Window status style
