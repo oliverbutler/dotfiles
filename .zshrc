@@ -88,6 +88,7 @@ alias ls='ls --color'
 alias vim='nvim'
 alias c='clear'
 alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/repo.git"
+alias n="nvim"
 
 # Tmux setup
 twerk() {
@@ -112,5 +113,5 @@ nvim() {
 
 # Shell integrations
 eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"

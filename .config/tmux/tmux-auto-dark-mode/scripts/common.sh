@@ -54,11 +54,10 @@ set_status_right_value() {
 
 
 set_dark_mode() {
-    echo "Olly Setting dark mode"
-
     tmux set-environment -g NVIM_THEME dark # consumed from .zshrc on new shell
     nvim --server /tmp/nvim-server.pipe --remote-send '<Esc>:set background=dark<CR>' # for current open nvim
 
+    tmux source-file /Users/olly/.config/tmux/reset-theme.conf
     tmux source-file /Users/olly/.config/tmux/dark-status.conf
     # Change status line to dark style.
     set_status_right_value "$(get_tmux_option "@adm-status-dark" "")"
@@ -66,11 +65,10 @@ set_dark_mode() {
 }
 
 set_light_mode() {
-    echo "Olly Setting light mode"
-
     tmux set-environment -g NVIM_THEME light # consumed from .zshrc on new shell
     nvim --server /tmp/nvim-server.pipe --remote-send '<Esc>:set background=light<CR>' # for current open nvim
 
+    tmux source-file /Users/olly/.config/tmux/reset-theme.conf
     tmux source-file /Users/olly/.config/tmux/light-status.conf
     # Change status line to light style.
     set_status_right_value "$(get_tmux_option "@adm-status-light" "")"
