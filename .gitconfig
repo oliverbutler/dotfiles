@@ -1,6 +1,7 @@
 [user]
 	name = Oliver Butler
 	email = dev@oliverbutler.uk
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEu6Iqvohxzm8FBBXznE/ZmHkry9nHHHM8PrtbNeXg0X
 
 [pull]
 	rebase = true
@@ -29,3 +30,9 @@
 
 [alias]
 	yolo = !git commit -am \"$(curl -sL http://whatthecommit.com/index.txt)\"
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true

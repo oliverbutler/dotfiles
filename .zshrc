@@ -112,6 +112,15 @@ nvim() {
   ~/.config/fish/nvim.sh "$@"
 }
 
+zn() {
+  z "$1" 
+  nvim 
+}
+
+src() {
+  source ~/.zshrc
+}
+
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"

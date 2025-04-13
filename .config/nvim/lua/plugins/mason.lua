@@ -46,7 +46,7 @@ return {
       ensure_installed = {
         "eslint",
         "prettierd",
-        "sql-formatter",
+        "sleek",
         "gofumpt",
         "nixfmt",
       },

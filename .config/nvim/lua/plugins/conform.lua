@@ -22,7 +22,7 @@ return {
         lua = { "stylua" },
         python = { "isort", "black" },
         go = { "gofumpt", "gofumports" },
-        sql = { "sql_formatter" },
+        sql = { "sleek" },
         nix = { "nixfmt" },
         -- ["*"] = { "injected" },
       },
