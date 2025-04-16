@@ -19,7 +19,8 @@ return {
       },
     },
     config = function()
-      require("lspconfig.configs").vtsls = require("vtsls").lspconfig -- set default server config, optional but recommended
+      require("lspconfig.configs").vtsls = require("vtsls")
+          .lspconfig -- set default server config, optional but recommended
 
       local lspconfig = require("lspconfig")
 
@@ -59,19 +60,19 @@ return {
               classRegex = {
                 -- Go components patterns
                 "Class\\(([^)]*)\\)",
-                '["`]([^"`]*)["`]', -- Class("...") or Class(`...`)
+                '["`]([^"`]*)["`]',           -- Class("...") or Class(`...`)
                 "Classes\\(([^)]*)\\)",
-                '["`]([^"`]*)["`]', -- Classes("...") or Classes(`...`)
+                '["`]([^"`]*)["`]',           -- Classes("...") or Classes(`...`)
                 "Class\\{([^)]*)\\}",
-                '["`]([^"`]*)["`]', -- Class{"..."} or Class{`...`}
+                '["`]([^"`]*)["`]',           -- Class{"..."} or Class{`...`}
                 "Classes\\{([^)]*)\\}",
-                '["`]([^"`]*)["`]', -- Classes{"..."} or Classes{`...`}
+                '["`]([^"`]*)["`]',           -- Classes{"..."} or Classes{`...`}
                 'Class:\\s*["`]([^"`]*)["`]', -- Class: "..." or Class: `...`
-                ':\\s*["`]([^"`]*)["`]', -- Classes: "..." or Classes: `...`
+                ':\\s*["`]([^"`]*)["`]',      -- Classes: "..." or Classes: `...`
 
                 -- support class variance authority
                 { "cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)",  "(?:'|\"|`)([^']*)(?:'|\"|`)" },
 
                 -- support classnames
                 { "classnames\\(([^)]*)\\)" },
@@ -203,13 +204,12 @@ return {
           vim.cmd("w!")
           vim.cmd("e")
         end, 100)
-
-        vim.cmd("Copilot attach")
       end
 
       vim.keymap.set("n", "<leader>ra", function()
         restart_lsp_clients()
         vim.cmd("Copilot enable")
+        vim.cmd("Copilot attach")
       end, { noremap = true, desc = "Restart LSP" })
 
       vim.keymap.set("n", "<leader>rt", function()
@@ -218,6 +218,8 @@ return {
           icon = "🔌",
         })
         require("vtsls").commands.restart_tsserver()
+        vim.cmd("Copilot enable")
+        vim.cmd("Copilot attach")
       end, { noremap = true, desc = "Restart TS Language Server" })
     end,
   },

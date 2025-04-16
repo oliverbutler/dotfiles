@@ -3,6 +3,7 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/Users/olly/.local/share/bob/nvim-bin:$PATH
 export PATH=/Users/olly/go/bin:$PATH
+export PATH=/opt/homebrew/opt/libpq/bin:$PATH
 
 # Set config homes
 export XDG_CONFIG_HOME="$HOME/.config"

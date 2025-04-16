@@ -72,54 +72,124 @@ vim.keymap.set("n", "<leader>fo", function()
   vim.fn.system({ "open", "-R", file_path })
 end, { noremap = true, silent = true, desc = "Open current file in Finder" })
 
+-- Define language-specific test patterns
+local test_patterns = {
+  -- JavaScript/TypeScript patterns
+  js = { dot_suffix = { "spec", "test" } },
+  jsx = { dot_suffix = { "spec", "test" } },
+  ts = { dot_suffix = { "spec", "test" } },
+  tsx = { dot_suffix = { "spec", "test" } },
+
+  -- Go patterns
+  go = { underscore_suffix = { "test" } },
+
+  -- Default patterns for other languages
+  default = { dot_suffix = { "spec", "test" } }
+}
+
 local function parseFilename(filename)
-  local name, suffix, extension
+  local name, suffix, extension, suffix_type
 
   -- Find the last dot which should separate the file extension
   local lastDotIndex = filename:match("^.*()%.")
   if not lastDotIndex then
-    return nil, nil, nil -- No dot found
+    return nil, nil, nil, nil -- No dot found
   end
   extension = filename:sub(lastDotIndex + 1)
 
   -- Remove the extension part from the filename
   local remaining = filename:sub(1, lastDotIndex - 1)
 
-  -- Find the second to last dot which should separate the suffix
+  -- Check for underscore suffix pattern (Go style: file_test.go)
+  local underscore_idx = remaining:match("^(.-)_([^_]+)$")
+  if underscore_idx then
+    local potential_suffix = remaining:match("^.+_([^_]+)$")
+    -- Check if the suffix matches known underscore suffixes for this extension
+    local patterns = test_patterns[extension] or test_patterns.default
+    if patterns.underscore_suffix then
+      for _, valid_suffix in ipairs(patterns.underscore_suffix) do
+        if potential_suffix == valid_suffix then
+          name = remaining:sub(1, #remaining - #potential_suffix - 1) -- Remove _suffix
+          suffix = potential_suffix
+          suffix_type = "underscore"
+          return name, suffix, extension, suffix_type
+        end
+      end
+    end
+  end
+
+  -- Check for dot suffix pattern (JS/TS style: file.spec.js)
   local secondLastDotIndex = remaining:match("^.*()%.")
   if secondLastDotIndex then
-    suffix = remaining:sub(secondLastDotIndex + 1)
+    local potential_suffix = remaining:sub(secondLastDotIndex + 1)
     name = remaining:sub(1, secondLastDotIndex - 1)
-    -- Check if the found suffix is either 'spec' or 'test'
-    if suffix ~= "spec" and suffix ~= "test" then
-      name = remaining -- If not, the whole remaining part is the name
-      suffix = nil
+
+    -- Check if the found suffix is a valid dot suffix for this extension
+    local patterns = test_patterns[extension] or test_patterns.default
+    if patterns.dot_suffix then
+      for _, valid_suffix in ipairs(patterns.dot_suffix) do
+        if potential_suffix == valid_suffix then
+          suffix = potential_suffix
+          suffix_type = "dot"
+          return name, suffix, extension, suffix_type
+        end
+      end
     end
+
+    -- If we get here, the suffix wasn't recognized as a test suffix
+    name = remaining
+    suffix = nil
   else
     name = remaining
   end
 
-  return name, suffix, extension
+  return name, suffix, extension, suffix_type
 end
 
 vim.keymap.set("n", "<leader>gs", function()
-  local current_file = vim.fn.expand("%:t") -- Get the current file name
+  local current_file = vim.fn.expand("%:t")  -- Get the current file name
   local current_dir = vim.fn.expand("%:p:h") -- Get the current directory path
 
-  local name, suffix, extension = parseFilename(current_file)
+  local name, suffix, extension, suffix_type = parseFilename(current_file)
 
+  -- Get language-specific patterns
+  local patterns = test_patterns[extension] or test_patterns.default
   local alternate_files = {}
+
   if suffix then
     -- If we have a suffix, create the alternate path without the suffix
-    table.insert(alternate_files, { suffix = nil, filename = string.format("%s.%s", name, extension) })
+    table.insert(alternate_files, {
+      suffix = nil,
+      filename = string.format("%s.%s", name, extension)
+    })
   else
-    -- If we don't have a suffix, create alternate paths with both suffix possibilities
-    table.insert(alternate_files, { suffix = "spec", filename = string.format("%s.spec.%s", name, extension) })
-    table.insert(alternate_files, { suffix = "test", filename = string.format("%s.test.%s", name, extension) })
+    -- If we don't have a suffix, create alternate paths with all possible patterns for this extension
+
+    -- Add dot suffix patterns (file.spec.js, file.test.js)
+    if patterns.dot_suffix then
+      for _, pattern in ipairs(patterns.dot_suffix) do
+        table.insert(alternate_files, {
+          suffix = pattern,
+          suffix_type = "dot",
+          filename = string.format("%s.%s.%s", name, pattern, extension)
+        })
+      end
+    end
+
+    -- Add underscore suffix patterns (file_test.go)
+    if patterns.underscore_suffix then
+      for _, pattern in ipairs(patterns.underscore_suffix) do
+        table.insert(alternate_files, {
+          suffix = pattern,
+          suffix_type = "underscore",
+          filename = string.format("%s_%s.%s", name, pattern, extension)
+        })
+      end
+    end
   end
 
   for _, alt in ipairs(alternate_files) do
-    if alt.suffix ~= suffix then
+    if alt.suffix ~= suffix or alt.suffix_type ~= suffix_type then
       local path = current_dir .. "/" .. alt.filename
       print("Checking path: " .. path) -- Debugging output
 
@@ -250,12 +320,12 @@ local function delete_qf_items()
     vim.api.nvim_feedkeys(
       vim.api.nvim_replace_termcodes(
         "<esc>", -- what to escape
-        true, -- Vim leftovers
-        false, -- Also replace `<lt>`?
-        true -- Replace keycodes (like `<esc>`)?
+        true,    -- Vim leftovers
+        false,   -- Also replace `<lt>`?
+        true     -- Replace keycodes (like `<esc>`)?
       ),
-      "x", -- Mode flag
-      false -- Should be false, since we already `nvim_replace_termcodes()`
+      "x",       -- Mode flag
+      false      -- Should be false, since we already `nvim_replace_termcodes()`
     )
   end
 
