@@ -1,0 +1,17 @@
+{
+  "window.commandCenter": 1,
+  "git.enableSmartCommit": true,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "workbench.colorTheme": "Catppuccin Mocha",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.fontFamily": "JetBrainsMono Nerd Font, monospace",
+  // vim setup
+  "vim.useSystemClipboard": true,
+  "vim.foldfix": true,
+  "workbench.preferredLightColorTheme": "Catppuccin Latte",
+  "workbench.preferredDarkColorTheme": "Catppuccin Mocha",
+  "window.systemColorTheme": "auto",
+  "window.autoDetectColorScheme": true
+}

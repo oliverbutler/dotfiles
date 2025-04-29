@@ -3,7 +3,7 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/Users/olly/.local/share/bob/nvim-bin:$PATH
 export PATH=/Users/olly/go/bin:$PATH
-export PATH=/opt/homebrew/opt/libpq/bin:$PATH
+
 
 # Set config homes
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -91,6 +91,8 @@ alias vim='nvim'
 alias c='clear'
 alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/repo.git"
 alias n="nvim"
+alias nx="pnpm nx"
+alias l="lazygit"
 
 # Tmux setup
 twerk() {
@@ -126,3 +128,9 @@ src() {
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/olly/.config/.dart-cli-completion/zsh-config.zsh ]] && . /Users/olly/.config/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
