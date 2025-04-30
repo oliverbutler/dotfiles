@@ -6,12 +6,14 @@
   "workbench.colorTheme": "Catppuccin Mocha",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "editor.fontFamily": "JetBrainsMono Nerd Font, monospace",
+  "editor.fontFamily": "JetBrainsMono Nerd Font, JetBrainsMono NF, monospace",
   // vim setup
   "vim.useSystemClipboard": true,
   "vim.foldfix": true,
   "workbench.preferredLightColorTheme": "Catppuccin Latte",
   "workbench.preferredDarkColorTheme": "Catppuccin Mocha",
   "window.systemColorTheme": "auto",
-  "window.autoDetectColorScheme": true
+  "window.autoDetectColorScheme": true,
+  "cursor.composer.shouldAllowCustomModes": true,
+  "git.autofetch": true
 }

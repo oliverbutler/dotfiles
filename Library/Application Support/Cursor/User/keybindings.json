@@ -23,33 +23,50 @@
   },
   {
     "command": "workbench.action.showAllEditors",
-    "key": "space ,",
+    "key": "space space",
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
   },
   // from neovim
   {
-    // space r n -> lsp rename
     "command": "editor.action.rename",
     "key": "space r n",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    // space g r -> lsp go to references
+    "command": "editor.action.revealDefinition",
+    "key": "g d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
     "command": "editor.action.goToReferences",
-    "key": "space g r",
+    "key": "g r",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    // space g i -> lsp go to implementation
     "command": "editor.action.goToImplementation",
-    "key": "space g i",
+    "key": "g i",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
+  // Search for things
   {
-    // space ; -> open file search (same as ctrl+p)
     "command": "workbench.action.quickOpen",
     "key": "space ;",
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+  },
+  {
+    "command": "workbench.action.findInFiles",
+    "key": "space '",
+    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+  },
+  {
+    "key": "space /",
+    "command": "fuzzySearch.activeTextEditor",
+    "when": "vim.mode == 'Normal' && editorFocus"
+  },
+  {
+    "command": "workbench.action.gotoSymbol",
+    "key": "space s d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   {
@@ -80,39 +97,18 @@
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
   },
 
-  {
-    // space / to find in file
-    "key": "space /",
-    "command": "fuzzySearch.activeTextEditor",
-    "when": "vim.mode == 'Normal' && editorFocus"
-  },
-
   // Accept suggestion with Ctrl+E
   {
     "key": "ctrl+e",
     "command": "acceptSelectedSuggestion",
     "when": "suggestWidgetVisible"
   },
-  // Navigate suggestion list forward with Tab
+  // Trigger autocomplete with Ctrl+X
   {
-    "key": "tab",
-    "command": "selectNextSuggestion",
-    "when": "suggestWidgetVisible"
+    "key": "ctrl+x",
+    "command": "editor.action.triggerSuggest",
+    "when": "editorTextFocus"
   },
-  // Navigate suggestion list backward with Shift+Tab
-  {
-    "key": "shift+tab",
-    "command": "selectPrevSuggestion",
-    "when": "suggestWidgetVisible"
-  },
-  // Remap regular Tab to Ctrl+A when suggest widget is NOT open
-  {
-    "key": "ctrl+a",
-    "command": "editor.action.acceptCursorTabSuggestion",
-    "when": "!suggestWidgetVisible && editorTextFocus"
-  },
-
-  // from https://gist.github.com/nikolovlazar/1174876ab2769c52ac9fc1534c557d70
   {
     "args": {
       "commands": [
@@ -143,7 +139,7 @@
   // Coding
   {
     "command": "editor.action.codeAction",
-    "key": "space .",
+    "key": "space i",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
@@ -161,16 +157,7 @@
     "key": "shift-k",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
-  {
-    "command": "editor.action.rename",
-    "key": "space c r",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
-  {
-    "command": "workbench.action.gotoSymbol",
-    "key": "space c s",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
+
   {
     "command": "workbench.action.closeActiveEditor",
     "key": "space b d",
@@ -182,31 +169,6 @@
     "when": "(vim.mode == 'Normal' && editorTextFocus) || !inputFocus"
   },
   {
-    "command": "workbench.action.quickOpen",
-    "key": "space space",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
-  },
-  {
-    "command": "editor.action.revealDefinition",
-    "key": "space g d",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
-  {
-    "command": "editor.action.goToReferences",
-    "key": "space g r",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
-  {
-    "command": "editor.action.goToImplementation",
-    "key": "space g i",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
-  {
-    "command": "workbench.action.findInFiles",
-    "key": "space s g",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
-  },
-  {
     "args": {
       "commands": ["workbench.view.scm", "workbench.scm.focus"]
     },
@@ -215,10 +177,7 @@
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
   },
   {
-    "args": {
-      "commands": ["lazygit.openLazygit"]
-    },
-    "command": "runCommands",
+    "command": "lazygit.openLazygit",
     "key": "space g l",
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
   },
@@ -315,5 +274,26 @@
     "command": "workbench.action.debug.continue",
     "key": "space d c",
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus) && inDebugMode && debugState == 'stopped'"
+  },
+  // Error & Diagnostic Navigation
+  {
+    "command": "editor.action.marker.next",
+    "key": "] e",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "editor.action.marker.prev",
+    "key": "[ e",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "editor.action.marker.nextInFiles",
+    "key": "] d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "editor.action.marker.prevInFiles",
+    "key": "[ d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   }
 ]
