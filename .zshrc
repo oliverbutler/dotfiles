@@ -3,6 +3,8 @@ export PATH=/usr/local/bin:$PATH
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/Users/olly/.local/share/bob/nvim-bin:$PATH
 export PATH=/Users/olly/go/bin:$PATH
+export PATH=/Users/olly/.pub-cache/bin:$PATH
+export PATH=/Users/olly/.local/bin:$PATH
 
 
 # Set config homes

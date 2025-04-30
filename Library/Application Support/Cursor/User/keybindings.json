@@ -181,7 +181,7 @@
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
   },
   {
-    "command": "lazygit.openLazygit",
+    "command": "lazygit-vscode.toggle",
     "key": "space g l",
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
   },
@@ -298,6 +298,31 @@
   {
     "command": "editor.action.marker.prevInFiles",
     "key": "[ d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "cursorTop",
+    "key": "g g",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "testing.runAtCursor",
+    "key": "space t r",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "testing.reRunLastRun",
+    "key": "space t l",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "-testing.runCurrentFile",
+    "key": "space t f",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "workbench.view.testing.focus",
+    "key": "space t s",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   }
 ]

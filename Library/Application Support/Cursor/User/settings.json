@@ -15,5 +15,7 @@
   "window.systemColorTheme": "auto",
   "window.autoDetectColorScheme": true,
   "cursor.composer.shouldAllowCustomModes": true,
-  "git.autofetch": true
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "lazygit-vscode.configPath": "~/.config/lazygit/config-light.yml"
 }
