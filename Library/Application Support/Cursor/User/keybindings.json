@@ -68,7 +68,11 @@
     "key": "space s d",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
-
+  {
+    "key": "space s w",
+    "command": "extension.searchUnderCursor",
+    "when": "vim.mode == 'Normal' && editorFocus"
+  },
   {
     // space w -> save file
     "key": "space w",
