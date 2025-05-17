@@ -6,7 +6,7 @@ background-blur = true
 link-url = true
 mouse-hide-while-typing = true
 font-thicken = true
-font-thicken-strength = 200
+font-thicken-strength = 50
 font-feature = -calt
 macos-titlebar-style=transparent
 
