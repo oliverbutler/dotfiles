@@ -22,9 +22,9 @@
     "key": "ctrl+l"
   },
   {
-    "command": "workbench.action.showAllEditors",
+    "command": "olly.resumeLastCommand",
     "key": "space space",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   // from neovim
   {
@@ -38,11 +38,6 @@
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "editor.action.goToReferences",
-    "key": "g r",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
-  {
     "command": "editor.action.goToImplementation",
     "key": "g i",
     "when": "vim.mode == 'Normal' && editorTextFocus"
@@ -51,17 +46,17 @@
   {
     "command": "workbench.action.quickOpen",
     "key": "space ;",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "workbench.action.findInFiles",
+    "command": "search.action.openEditor",
     "key": "space '",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "key": "space /",
     "command": "fuzzySearch.activeTextEditor",
-    "when": "vim.mode == 'Normal' && editorFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "workbench.action.gotoSymbol",
@@ -70,8 +65,8 @@
   },
   {
     "key": "space s w",
-    "command": "extension.searchUnderCursor",
-    "when": "vim.mode == 'Normal' && editorFocus"
+    "command": "olly.ripgrepSearch",
+    "when": "(vim.mode == 'Normal' && editorTextFocus) || (vim.mode == 'View'"
   },
   {
     // space w -> save file
@@ -84,21 +79,21 @@
     // space q -> close tab/close item
     "key": "space q",
     "command": "workbench.action.closeActiveEditor",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   {
     // space [ -> go back
     "key": "space [",
     "command": "workbench.action.navigateBack",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   {
     // space ] -> go forwards
     "key": "space ]",
     "command": "workbench.action.navigateForward",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   // Accept suggestion with Ctrl+E
@@ -115,30 +110,11 @@
   },
   {
     "args": {
-      "commands": [
-        "workbench.action.toggleSidebarVisibility",
-        "workbench.files.action.focusFilesExplorer"
-      ]
+      "commands": ["workbench.files.action.focusFilesExplorer"]
     },
     "command": "runCommands",
     "key": "space e",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus) && !sideBarFocus"
-  },
-  {
-    "args": {
-      "commands": [
-        "workbench.action.toggleSidebarVisibility",
-        "workbench.action.focusActiveEditorGroup"
-      ]
-    },
-    "command": "runCommands",
-    "key": "space e",
-    "when": "sideBarFocus && !inputFocus"
-  },
-  {
-    "command": "workbench.action.toggleSidebarVisibility",
-    "key": "space e",
-    "when": "vim.mode == 'Normal' && editorTextFocus && foldersViewVisible"
+    "when": "vim.mode == 'Normal' && editorTextFocus && !sideBarFocus"
   },
   // Coding
   {
@@ -165,12 +141,12 @@
   {
     "command": "workbench.action.closeActiveEditor",
     "key": "space b d",
-    "when": "(vim.mode == 'Normal' && editorTextFocus) || !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "workbench.action.closeOtherEditors",
     "key": "space b o",
-    "when": "(vim.mode == 'Normal' && editorTextFocus) || !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "args": {
@@ -178,17 +154,38 @@
     },
     "command": "runCommands",
     "key": "space g s",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "lazygit-vscode.toggle",
     "key": "space g l",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "editor.action.addSelectionToNextFindMatch",
     "key": "ctrl-n",
-    "when": "(vim.mode == 'Normal' || vim.mode == 'Visual') && (editorTextFocus || !inputFocus)"
+    "when": "vim.mode == 'Normal' || vim.mode == 'Visual' && editorTextFocus"
+  },
+  // LSP
+  {
+    "command": "olly.goToReferences",
+    "key": "g r",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.goToDefinition",
+    "key": "g d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.goToTypeDefinition",
+    "key": "g t",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.goToImplementation",
+    "key": "g i",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   // File Explorer
   {
@@ -252,7 +249,7 @@
   {
     "command": "workbench.action.debug.selectandstart",
     "key": "space d a",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus) && debuggersAvailable"
+    "when": "vim.mode == 'Normal' && editorTextFocus && debuggersAvailable"
   },
   {
     "command": "workbench.action.debug.stop",
@@ -262,7 +259,7 @@
   {
     "command": "workbench.action.debug.stepOver",
     "key": "space d o",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus) && inDebugMode && debugState == 'stopped'"
+    "when": "vim.mode == 'Normal' && editorTextFocus && inDebugMode && debugState == 'stopped'"
   },
   {
     "command": "editor.debug.action.toggleBreakpoint",
@@ -277,7 +274,7 @@
   {
     "command": "workbench.action.debug.continue",
     "key": "space d c",
-    "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus) && inDebugMode && debugState == 'stopped'"
+    "when": "vim.mode == 'Normal' && editorTextFocus && inDebugMode && debugState == 'stopped'"
   },
   // Error & Diagnostic Navigation
   {
@@ -324,5 +321,93 @@
     "command": "workbench.view.testing.focus",
     "key": "space t s",
     "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  // Harpoon
+  {
+    "command": "vscode-harpoon.addEditor",
+    "key": "space m",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "vscode-harpoon.editEditors",
+    "key": "space k",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "vscode-harpoon.gotoEditor1",
+    "key": "space 1",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "vscode-harpoon.gotoEditor2",
+    "key": "space 2",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "vscode-harpoon.gotoEditor3",
+    "key": "space 3",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "vscode-harpoon.gotoEditor4",
+    "key": "space 4",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "vscode-harpoon.gotoEditor5",
+    "key": "space 5",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  // olly extensions
+  {
+    "command": "olly.swapToSibling",
+    "key": "space g s",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "react",
+    "key": "space s r",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "all",
+    "key": "space s a",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "zod",
+    "key": "space s z",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "class",
+    "key": "space s c",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "method",
+    "key": "space s m",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "function",
+    "key": "space s f",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "olly.searchSymbols",
+    "args": "variable",
+    "key": "space s v",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "workbench.action.terminal.toggleTerminal",
+    "key": "cmd+,"
   }
 ]

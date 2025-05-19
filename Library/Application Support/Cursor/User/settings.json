@@ -17,5 +17,12 @@
   "cursor.composer.shouldAllowCustomModes": true,
   "git.autofetch": true,
   "git.confirmSync": false,
-  "lazygit-vscode.configPath": "~/.config/lazygit/config-light.yml"
+  "lazygit-vscode.configPath": "~/.config/lazygit/config-light.yml",
+  "gitlens.plusFeatures.enabled": false,
+  "gitlens.views.commitDetails.files.layout": "tree",
+  "command-runner.commands": {
+    "swapTestFile": "bun ~/.config/vscode/go-to-sibling.ts"
+  },
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "editor.minimap.renderCharacters": false
 }

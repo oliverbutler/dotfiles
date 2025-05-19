@@ -136,3 +136,11 @@ eval "$(fnm env --use-on-cd --shell zsh)"
 [[ -f /Users/olly/.config/.dart-cli-completion/zsh-config.zsh ]] && . /Users/olly/.config/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+
+# pnpm
+export PNPM_HOME="/Users/olly/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
