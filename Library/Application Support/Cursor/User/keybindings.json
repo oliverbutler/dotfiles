@@ -22,7 +22,7 @@
     "key": "ctrl+l"
   },
   {
-    "command": "olly.resumeLastCommand",
+    "command": "omn.resumeLastCommand",
     "key": "space space",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
@@ -65,7 +65,7 @@
   },
   {
     "key": "space s w",
-    "command": "olly.ripgrepSearch",
+    "command": "omn.ripgrepSearch",
     "when": "(vim.mode == 'Normal' && editorTextFocus) || (vim.mode == 'View' && editorTextFocus)"
   },
   {
@@ -158,22 +158,22 @@
   },
   // LSP
   {
-    "command": "olly.goToReferences",
+    "command": "omn.goToReferences",
     "key": "g r",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.goToDefinition",
+    "command": "omn.goToDefinition",
     "key": "g d",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.goToTypeDefinition",
+    "command": "omn.goToTypeDefinition",
     "key": "g t",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.goToImplementation",
+    "command": "omn.goToImplementation",
     "key": "g i",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
@@ -350,48 +350,48 @@
   },
   // olly extensions
   {
-    "command": "olly.swapToSibling",
+    "command": "omn.swapToSibling",
     "key": "space g s",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "react",
     "key": "space s r",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "all",
     "key": "space s a",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "zod",
     "key": "space s z",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "class",
     "key": "space s c",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "method",
     "key": "space s m",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "function",
     "key": "space s f",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "olly.searchSymbols",
+    "command": "omn.searchSymbols",
     "args": "variable",
     "key": "space s v",
     "when": "vim.mode == 'Normal' && editorTextFocus"
