@@ -30,38 +30,38 @@
   {
     "command": "editor.action.rename",
     "key": "space r n",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "editor.action.revealDefinition",
     "key": "g d",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "editor.action.goToImplementation",
     "key": "g i",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   // Search for things
   {
     "command": "workbench.action.quickOpen",
     "key": "space ;",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "search.action.openEditor",
     "key": "space '",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "key": "space /",
     "command": "fuzzySearch.activeTextEditor",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "workbench.action.gotoSymbol",
     "key": "space s d",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "key": "space s w",
@@ -84,14 +84,14 @@
     // space [ -> go back
     "key": "space [",
     "command": "workbench.action.navigateBack",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   {
     // space ] -> go forwards
     "key": "space ]",
     "command": "workbench.action.navigateForward",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   // Accept suggestion with Ctrl+E
@@ -112,39 +112,29 @@
     },
     "command": "runCommands",
     "key": "space e",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !sideBarFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   // Coding
   {
     "command": "editor.action.codeAction",
     "key": "space i",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
-  },
-  {
-    "command": "editor.action.moveLinesUpAction",
-    "key": "shift-k",
-    "when": "vim.mode == 'VisualLine' && editorTextFocus && !inputFocus"
-  },
-  {
-    "command": "editor.action.moveLinesDownAction",
-    "key": "shift-j",
-    "when": "vim.mode == 'VisualLine' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "editor.action.showHover",
     "key": "shift-k",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
 
   {
     "command": "workbench.action.closeActiveEditor",
     "key": "space b d",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "workbench.action.closeOtherEditors",
     "key": "space b o",
-    "when": "vim.mode == 'Normal' && editorTextFocus && !inputFocus"
+    "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
     "command": "lazygit-vscode.toggle",
