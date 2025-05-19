@@ -24,5 +24,6 @@
     "swapTestFile": "bun ~/.config/vscode/go-to-sibling.ts"
   },
   "workbench.editor.enablePreviewFromQuickOpen": true,
-  "editor.minimap.renderCharacters": false
+  "editor.minimap.renderCharacters": false,
+  "jest.runMode": "on-demand"
 }
