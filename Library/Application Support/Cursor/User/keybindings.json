@@ -32,16 +32,6 @@
     "key": "space r n",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
-  {
-    "command": "editor.action.revealDefinition",
-    "key": "g d",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
-  {
-    "command": "editor.action.goToImplementation",
-    "key": "g i",
-    "when": "vim.mode == 'Normal' && editorTextFocus"
-  },
   // Search for things
   {
     "command": "workbench.action.quickOpen",
@@ -148,23 +138,43 @@
   },
   // LSP
   {
-    "command": "omn.goToReferences",
+    "command": "editor.action.goToReferences",
     "key": "g r",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "omn.goToDefinition",
+    "command": "omn.goToReferences",
+    "key": "g o r",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "editor.action.revealDefinition",
     "key": "g d",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "omn.goToTypeDefinition",
+    "command": "omn.goToDefinition",
+    "key": "g o d",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "editor.action.goToTypeDefinition",
     "key": "g t",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   {
-    "command": "omn.goToImplementation",
+    "command": "omn.goToTypeDefinition",
+    "key": "g o t",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "editor.action.goToImplementation",
     "key": "g i",
+    "when": "vim.mode == 'Normal' && editorTextFocus"
+  },
+  {
+    "command": "omn.goToImplementation",
+    "key": "g o i",
     "when": "vim.mode == 'Normal' && editorTextFocus"
   },
   // File Explorer
@@ -389,5 +399,9 @@
   {
     "command": "workbench.action.terminal.toggleTerminal",
     "key": "cmd+,"
+  },
+  {
+    "command": "workbench.action.toggleMaximizedPanel",
+    "key": "cmd+shift+,"
   }
 ]

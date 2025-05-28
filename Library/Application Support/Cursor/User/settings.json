@@ -25,5 +25,11 @@
   },
   "workbench.editor.enablePreviewFromQuickOpen": true,
   "editor.minimap.renderCharacters": false,
-  "jest.runMode": "on-demand"
+  "jest.runMode": "on-demand",
+  "editor.inlayHints.enabled": "on",
+  "editor.cursorSurroundingLines": 20,
+  "editor.cursorSurroundingLinesStyle": "default",
+  "breadcrumbs.enabled": true,
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "editor.minimap.enabled": true
 }
