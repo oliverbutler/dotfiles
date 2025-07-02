@@ -1,0 +1,43 @@
+[
+  {
+    // VIM Motions
+    "context": "Editor && vim_mode == normal && vim_operator == none && !VimWaiting",
+    "bindings": {
+      "space g l": [
+        "task::Spawn",
+        { "task_name": "lazygit", "reveal_target": "center" }
+      ],
+      "space g ;": [
+        "task::Spawn",
+        { "task_name": "lazygit", "reveal_target": "center" }
+      ],
+      "space g d": [
+        "task::Spawn",
+        { "task_name": "lazydocker", "reveal_target": "center" }
+      ],
+      "space [": "pane::GoBack",
+      "space ]": "pane::GoForward",
+      "space t r": "task::Spawn",
+      "space t l": "task::Rerun",
+      "space .": "editor::ToggleCodeActions",
+      "g r": "editor::FindAllReferences",
+      "space r n ": "editor::Rename",
+      "space t o": [
+        "task::Spawn",
+        { "task_name": "tmux", "reveal_target": "center" }
+      ],
+      "space b o": "pane::CloseInactiveItems" // close other
+    }
+  },
+  {
+    // General
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "cmd-,": "workspace::ToggleBottomDock",
+      "cmd-l": "workspace::ToggleRightDock"
+    }
+  }
+]

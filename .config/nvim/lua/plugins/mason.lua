@@ -38,6 +38,7 @@ return {
         "typos_lsp",
         "vtsls",
         "gopls",
+        "golangci_lint_ls"
       },
       automatic_installation = true,
     })

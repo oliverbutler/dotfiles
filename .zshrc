@@ -5,6 +5,7 @@ export PATH=/Users/olly/.local/share/bob/nvim-bin:$PATH
 export PATH=/Users/olly/go/bin:$PATH
 export PATH=/Users/olly/.pub-cache/bin:$PATH
 export PATH=/Users/olly/.local/bin:$PATH
+export PATH=/opt/homebrew/opt/libpq/bin:$PATH
 
 
 # Set config homes
@@ -118,8 +119,8 @@ nvim() {
 }
 
 zn() {
-  z "$1" 
-  nvim 
+  z "$1"
+  nvim
 }
 
 src() {
@@ -144,3 +145,4 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
