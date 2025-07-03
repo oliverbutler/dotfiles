@@ -30,6 +30,12 @@
   "editor.cursorSurroundingLines": 20,
   "editor.cursorSurroundingLinesStyle": "default",
   "breadcrumbs.enabled": true,
-  "diffEditor.hideUnchangedRegions.enabled": true,
-  "editor.minimap.enabled": true
+  "git-worktree-menu.worktreeDir": "~/projects/onsi-repo",
+  "cursor.cpp.disabledLanguages": ["plaintext"],
+  "cursor.cpp.enablePartialAccepts": true,
+  "githubPullRequests.pullBranch": "never",
+  "datadog.telemetry.setup.suppressMigrationNotification": true,
+  "datadog.telemetry.setup.enableTelemetry": "disabled",
+  "playwright.reuseBrowser": true,
+  "playwright.showTrace": false
 }
