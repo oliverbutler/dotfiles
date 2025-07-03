@@ -9,6 +9,7 @@ return {
         panel = {
           enabled = false,
         },
+        copilot_node_command = vim.fn.expand("$HOME") .. "/.local/share/fnm/node-versions/v20.16.0/installation/bin/node",
         suggestion = {
           enabled = true,
           auto_trigger = true,
@@ -36,7 +37,6 @@ return {
           cvs = false,
           ["."] = false,
         },
-        copilot_node_command = "node",
         server_opts_overrides = {},
       })
 

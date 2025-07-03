@@ -64,7 +64,7 @@ local function get_first_symbol(input, filetype)
   if not input then
     return nil
   end
-  
+
   -- Default to typescript if filetype not provided or not supported
   filetype = filetype or "typescript"
   if not KEYWORDS[filetype] then
@@ -275,7 +275,7 @@ local function get_symbol_results(params)
           text = text,
         }
       end
-      
+
       ::continue::
     end
   end
@@ -301,3 +301,4 @@ return {
   ripgrep_line_patterns = ripgrep_line_patterns,
   get_first_symbol = get_first_symbol,
 }
+
