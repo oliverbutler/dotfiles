@@ -10,16 +10,94 @@
     "key": "ctrl+h"
   },
   {
-    "command": "workbench.action.navigateUp",
+    "command": "workbench.action.navigateDown",
     "key": "ctrl+j"
   },
   {
-    "command": "workbench.action.navigateDown",
+    "command": "workbench.action.navigateUp",
     "key": "ctrl+k"
   },
   {
     "command": "workbench.action.navigateRight",
     "key": "ctrl+l"
+  },
+  // Terminal split navigation
+  {
+    "command": "workbench.action.terminal.focusPreviousPane",
+    "key": "ctrl+h",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusNextPane",
+    "key": "ctrl+l",
+    "when": "terminalFocus"
+  },
+  // Terminal window navigation (like tmux windows)
+  {
+    "command": "workbench.action.terminal.focusNext",
+    "key": "ctrl+space n",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.new",
+    "key": "ctrl+space c",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.killActiveTab",
+    "key": "ctrl+space x",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.splitActiveTab",
+    "key": "ctrl+space shift+5",
+    "when": "terminalFocus"
+  },
+  // Terminal window switching by number (like tmux)
+  {
+    "command": "workbench.action.terminal.focusAtIndex1",
+    "key": "ctrl+space 1",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex2",
+    "key": "ctrl+space 2",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex3",
+    "key": "ctrl+space 3",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex4",
+    "key": "ctrl+space 4",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex5",
+    "key": "ctrl+space 5",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex6",
+    "key": "ctrl+space 6",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex7",
+    "key": "ctrl+space 7",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex8",
+    "key": "ctrl+space 8",
+    "when": "terminalFocus"
+  },
+  {
+    "command": "workbench.action.terminal.focusAtIndex9",
+    "key": "ctrl+space 9",
+    "when": "terminalFocus"
   },
   {
     "command": "omn.resumeLastCommand",
@@ -403,5 +481,13 @@
   {
     "command": "workbench.action.toggleMaximizedPanel",
     "key": "cmd+shift+,"
+  },
+  {
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+      "text": "\\\r\n"
+    },
+    "when": "terminalFocus"
   }
 ]
