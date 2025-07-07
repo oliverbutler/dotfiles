@@ -127,10 +127,6 @@ src() {
   source ~/.zshrc
 }
 
-# Shell integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init zsh)"
-eval "$(fnm env --use-on-cd --shell zsh)"
 
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
@@ -146,3 +142,9 @@ case ":$PATH:" in
 esac
 # pnpm end
 export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
+
+
+# Shell integrations
+eval "$(fzf --zsh)"
+eval "$(zoxide init zsh)"
+eval "$(fnm env --use-on-cd --shell zsh --log-level=quiet)"
