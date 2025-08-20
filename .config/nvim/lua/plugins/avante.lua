@@ -189,8 +189,18 @@ return {
         },
       },
 
-      provider = "claude", -- In this example, use Claude for planning, but you can also use any provider you want.
-      cursor_applying_provider = "groq", -- In this example, use Groq for applying, but you can also use any provider you want.
+      provider = "claude",
+      providers = {
+        claude = {
+          endpoint = "https://api.anthropic.com",
+          model = "claude-sonnet-4-20250514",
+          timeout = 30000, -- Timeout in milliseconds
+          extra_request_body = {
+            temperature = 0.75,
+            max_tokens = 20480,
+          },
+        },
+      },
       behaviour = {
         enable_cursor_planning_mode = false, -- enable cursor planning mode!
       },
@@ -199,23 +209,6 @@ return {
         provider = "tavily",
       },
 
-      claude = {
-        endpoint = "https://api.anthropic.com",
-        model = "claude-3-7-sonnet-20250219",
-        timeout = 15000,
-        temperature = 0,
-        max_tokens = 20000,
-        disable_tools = true, -- disable tools!
-      },
-      vendors = {
-        groq = { -- define groq provider
-          __inherited_from = "openai",
-          api_key_name = "GROQ_API_KEY",
-          endpoint = "https://api.groq.com/openai/v1/",
-          model = "qwen-2.5-coder-32b",
-          max_tokens = 20000,
-        },
-      },
     })
   end,
 }

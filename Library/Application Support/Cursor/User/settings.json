@@ -33,5 +33,18 @@
   "datadog.telemetry.setup.suppressMigrationNotification": true,
   "datadog.telemetry.setup.enableTelemetry": "disabled",
   "playwright.reuseBrowser": true,
-  "playwright.showTrace": false
+  "playwright.showTrace": false,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "diffEditor.hideUnchangedRegions.enabled": true
 }

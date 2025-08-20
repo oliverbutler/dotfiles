@@ -489,5 +489,9 @@
       "text": "\\\r\n"
     },
     "when": "terminalFocus"
+  },
+  {
+    "key": "cmd+e",
+    "command": "composerMode.background"
   }
 ]

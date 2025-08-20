@@ -97,6 +97,60 @@ alias n="nvim"
 alias nx="pnpm nx"
 alias l="lazygit"
 
+# QMK flash helper (migrated from Fish)
+qmk-flash() {
+  # Choose build directory based on OS
+  case "$(uname)" in
+    Darwin)
+      build_dir="$HOME/projects/qmk_firmware/.build"
+      ;;
+    Linux)
+      build_dir="/home/olly/projects/qmk_firmware/.build"
+      ;;
+    *)
+      build_dir="$HOME/projects/qmk_firmware/.build"
+      ;;
+  esac
+
+  # Fetch secret and compile firmware
+  export SOFLE_VAR_1="$(op item get "sofle-1" --account "5S2IFKBEWJARZAMDT64SKMOSVA" --fields password --reveal)"
+  qmk compile -kb sofle/rev1 -km oliverbutler -e CONVERT_TO=elite_pi -e "SOFLE_VAR_1=$SOFLE_VAR_1"
+
+  # Try to flash UF2 by copying to RPI-RP2 mass-storage device
+  for i in {1..20}; do
+    case "$(uname)" in
+      Darwin)
+        if [ -d "/Volumes/RPI-RP2" ]; then
+          echo "Found device at: /Volumes/RPI-RP2"
+          if cp "$build_dir/sofle_rev1_oliverbutler_elite_pi.uf2" "/Volumes/RPI-RP2/"; then
+            echo "Successfully flashed keyboard!"
+            return 0
+          fi
+        fi
+        ;;
+      Linux)
+        mount_point="/tmp/keyboard_mount"
+        device_path="$(lsblk -o NAME,LABEL -nr | grep "RPI-RP2" | awk '{print $1}' | head -n1)"
+        if [ -n "$device_path" ]; then
+          echo "Found device: /dev/$device_path"
+          mkdir -p "$mount_point"
+          if sudo mount "/dev/$device_path" "$mount_point" \
+            && sudo cp "$build_dir/sofle_rev1_oliverbutler_elite_pi.uf2" "$mount_point/" \
+            && sudo umount "$mount_point"; then
+            echo "Successfully flashed keyboard!"
+            return 0
+          fi
+        fi
+        ;;
+    esac
+    echo "Attempt $i: Device not found, retrying in 1 second..."
+    sleep 1
+  done
+
+  echo "Error: Failed to find or flash RPI-RP2 device after 20 attempts"
+  return 1
+}
+
 # Tmux setup
 twerk() {
   if tmux ls 2>/dev/null | grep -q work; then
