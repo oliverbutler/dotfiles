@@ -46,5 +46,14 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "diffEditor.hideUnchangedRegions.enabled": true
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "eslint.execArgv": ["--max_old_space_size=16000"],
+  "typescript.tsserver.maxTsServerMemory": 16000,
+  "workbench.editor.enablePreview": false,
+  "excalidraw.theme": "light",
+  "datadog.connection.notification.suppressSignInNotification": true,
+  "datadog.connection.oauth.setup.domain": "app.datadoghq.eu",
+  "remote.SSH.remotePlatform": {
+    "ubuntu@n8n-dev": "linux"
+  },
 }

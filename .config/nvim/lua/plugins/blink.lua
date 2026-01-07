@@ -165,7 +165,7 @@ return {
                 return to_pascal_case(vim.fn.expand("%:t:r"))
               end, {}),
               i(1, "contract"), -- First insertion, user types here
-              rep(1),           -- Repeat the value entered in the first insertion
+              rep(1), -- Repeat the value entered in the first insertion
             }
           )
         ),

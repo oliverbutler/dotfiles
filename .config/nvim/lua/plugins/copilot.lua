@@ -1,7 +1,6 @@
 return {
   {
     "zbirenbaum/copilot.lua",
-    enabled = false,
     cmd = "Copilot",
     event = "InsertEnter",
     config = function()
@@ -9,7 +8,8 @@ return {
         panel = {
           enabled = false,
         },
-        copilot_node_command = vim.fn.expand("$HOME") .. "/.local/share/fnm/node-versions/v20.16.0/installation/bin/node",
+        copilot_node_command = vim.fn.expand("$HOME")
+          .. "/.local/share/fnm/node-versions/v22.16.0/installation/bin/node",
         suggestion = {
           enabled = true,
           auto_trigger = true,

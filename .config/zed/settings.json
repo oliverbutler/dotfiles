@@ -7,8 +7,11 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "edit_predictions": {
+    "mode": "eager",
+  },
   "preview_tabs": {
-    "enable_preview_from_file_finder": true
+    "enable_preview_from_file_finder": true,
   },
   "vertical_scroll_margin": 20.0,
   "agent": {
@@ -17,22 +20,21 @@
     "model_parameters": [],
     "default_model": {
       "provider": "anthropic",
-      "model": "claude-sonnet-4-latest"
+      "model": "claude-sonnet-4-latest",
     },
-    "version": "2"
   },
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "copilot",
   },
   "vim_mode": true,
   "terminal": {
-    "font_family": "JetBrainsMono Nerd Font"
+    "font_family": "JetBrainsMono Nerd Font",
   },
   "ui_font_size": 14,
   "buffer_font_size": 14,
   "theme": {
     "mode": "system",
     "light": "Catppuccin Latte",
-    "dark": "Catppuccin Mocha"
-  }
+    "dark": "Catppuccin Mocha",
+  },
 }
