@@ -19,32 +19,18 @@ return {
       },
     },
     config = function()
-      require("lspconfig.configs").vtsls = require("vtsls")
-          .lspconfig -- set default server config, optional but recommended
-
-      local lspconfig = require("lspconfig")
-
-      local configs = require 'lspconfig/configs'
-
-      if not configs.golangcilsp then
-        configs.golangcilsp = {
-          default_config = {
-            cmd = { 'golangci-lint-langserver' },
-            root_dir = lspconfig.util.root_pattern('.git', 'go.mod'),
-            init_options = {
-              command = { "golangci-lint", "run", "--output.json.path", "stdout", "--show-stats=false", "--issues-exit-code=1" },
-            },
-          }
-        }
-      end
+      -- Setup vtsls integration
+      require("lspconfig.configs").vtsls = require("vtsls").lspconfig -- set default server config, optional but recommended
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      lspconfig.golangci_lint_ls.setup {
-        filetypes = { 'go', 'gomod' }
-      }
+      -- Configure each LSP server using vim.lsp.config
+      vim.lsp.config("golangci_lint_ls", {
+        capabilities = capabilities,
+        filetypes = { "go", "gomod" },
+      })
 
-      lspconfig.vtsls.setup({
+      vim.lsp.config("vtsls", {
         capabilities = capabilities,
         settings = {
           typescript = {
@@ -55,11 +41,11 @@ return {
         },
       })
 
-      lspconfig.lua_ls.setup({
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
       })
 
-      lspconfig.tailwindcss.setup({
+      vim.lsp.config("tailwindcss", {
         capabilities = capabilities,
         filetypes = {
           "html",
@@ -78,19 +64,19 @@ return {
               classRegex = {
                 -- Go components patterns
                 "Class\\(([^)]*)\\)",
-                '["`]([^"`]*)["`]',           -- Class("...") or Class(`...`)
+                '["`]([^"`]*)["`]', -- Class("...") or Class(`...`)
                 "Classes\\(([^)]*)\\)",
-                '["`]([^"`]*)["`]',           -- Classes("...") or Classes(`...`)
+                '["`]([^"`]*)["`]', -- Classes("...") or Classes(`...`)
                 "Class\\{([^)]*)\\}",
-                '["`]([^"`]*)["`]',           -- Class{"..."} or Class{`...`}
+                '["`]([^"`]*)["`]', -- Class{"..."} or Class{`...`}
                 "Classes\\{([^)]*)\\}",
-                '["`]([^"`]*)["`]',           -- Classes{"..."} or Classes{`...`}
+                '["`]([^"`]*)["`]', -- Classes{"..."} or Classes{`...`}
                 'Class:\\s*["`]([^"`]*)["`]', -- Class: "..." or Class: `...`
-                ':\\s*["`]([^"`]*)["`]',      -- Classes: "..." or Classes: `...`
+                ':\\s*["`]([^"`]*)["`]', -- Classes: "..." or Classes: `...`
 
                 -- support class variance authority
                 { "cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)",  "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
 
                 -- support classnames
                 { "classnames\\(([^)]*)\\)" },
@@ -100,43 +86,41 @@ return {
         },
       })
 
-      lspconfig.html.setup({
+      vim.lsp.config("html", {
         capabilities = capabilities,
         filetypes = { "html", "templ" },
       })
 
-      lspconfig.htmx.setup({
+      vim.lsp.config("htmx", {
         capabilities = capabilities,
         filetypes = { "html", "templ" },
       })
 
-      lspconfig.templ.setup({
+      vim.lsp.config("templ", {
         capabilities = capabilities,
       })
 
-      lspconfig.eslint.setup({
+      vim.lsp.config("eslint", {
         capabilities = capabilities,
       })
 
-      lspconfig.terraformls.setup({
+      vim.lsp.config("terraformls", {
         capabilities = capabilities,
       })
 
-      lspconfig.typos_lsp.setup({
+      vim.lsp.config("typos_lsp", {
         capabilities = capabilities,
         init_options = {
           diagnosticSeverity = "Info",
         },
       })
 
-      lspconfig.gopls.setup({
+      vim.lsp.config("gopls", {
         capabilities = capabilities,
         cmd = { "gopls" },
         filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        -- root_dir = lspconfig.util.root_pattern("go.mod", ".git", "go.work"),
-        -- FIXME: had issues with it starting in single file modes
         root_dir = function(fname)
-          return lspconfig.util.root_pattern("go.mod", ".git", "go.work")(fname) or vim.fn.getcwd()
+          return vim.fs.root(fname, { "go.mod", ".git", "go.work" }) or vim.fn.getcwd()
         end,
         settings = {
           gopls = {
@@ -151,6 +135,19 @@ return {
           },
         },
       })
+
+      -- Enable all configured servers
+      vim.lsp.enable("golangci_lint_ls")
+      vim.lsp.enable("vtsls")
+      vim.lsp.enable("lua_ls")
+      vim.lsp.enable("tailwindcss")
+      vim.lsp.enable("html")
+      vim.lsp.enable("htmx")
+      vim.lsp.enable("templ")
+      vim.lsp.enable("eslint")
+      vim.lsp.enable("terraformls")
+      vim.lsp.enable("typos_lsp")
+      vim.lsp.enable("gopls")
 
       vim.filetype.add({
         extension = {

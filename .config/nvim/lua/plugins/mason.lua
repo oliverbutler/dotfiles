@@ -41,6 +41,10 @@ return {
         "golangci_lint_ls"
       },
       automatic_installation = true,
+      handlers = {
+        -- Prevent stylua from being set up as an LSP (it's a formatter, not an LSP server)
+        stylua = function() end,
+      },
     })
 
     mason_tool_installer.setup({
