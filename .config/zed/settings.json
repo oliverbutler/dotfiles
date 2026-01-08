@@ -25,6 +25,7 @@
   },
   "features": {
     "edit_prediction_provider": "copilot",
+    "experimental_edit_prediction_context_retrieval": true,
   },
   "vim_mode": true,
   "terminal": {

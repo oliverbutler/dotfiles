@@ -1,7 +1,7 @@
-theme = dark:catppuccin-mocha,light:catppuccin-latte
+theme = dark:catppuccin-mocha.conf,light:catppuccin-latte.conf
 font-family = "JetBrains Mono"
 shell-integration = zsh
-background-opacity = 0.97
+background-opacity = 1.0
 background-blur = true
 link-url = true
 mouse-hide-while-typing = true
