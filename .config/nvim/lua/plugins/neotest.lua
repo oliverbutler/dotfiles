@@ -35,7 +35,30 @@ return {
   module = "neotest", -- Load when the neotest module is required
   cmd = { "TestFile", "TestNearest", "TestSuite", "TestLast", "TestVisit" }, -- Load for neotest commands
   config = function()
+    -- Custom function to truncate test names
+    local function truncate_string(str, max_len)
+      if #str > max_len then
+        return str:sub(1, max_len - 3) .. "..."
+      end
+      return str
+    end
+
     require("neotest").setup({
+      summary = {
+        enabled = true,
+        expand_errors = true,
+        follow = true,
+        mappings = {
+          expand = { "<CR>", "<2-LeftMouse>" },
+          expand_all = "e",
+          output = "o",
+          short = "O",
+          attach = "a",
+          jumpto = "i",
+          stop = "u",
+          run = "r",
+        },
+      },
       adapters = {
         require("neotest-go"),
         --			require("neotest-vitest"),
@@ -470,7 +493,20 @@ curl -s https://api.anthropic.com/v1/messages \
       M.fix_test_with_ai(true)
     end, { noremap = true, silent = true, desc = "Fix test with AI (replace inline)" })
 
-    vim.keymap.set("n", "<leader>ts", ":Neotest summary<CR>", { desc = "Show Neotest summary" })
+    vim.keymap.set("n", "<leader>ts", function()
+      require("neotest").summary.toggle()
+      -- Wait a bit for the window to open, then configure it
+      vim.defer_fn(function()
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          local buf = vim.api.nvim_win_get_buf(win)
+          local bufname = vim.api.nvim_buf_get_name(buf)
+          if bufname:match("Neotest Summary") then
+            vim.api.nvim_set_option_value("wrap", false, { win = win })
+            vim.api.nvim_set_option_value("linebreak", false, { win = win })
+          end
+        end
+      end, 50)
+    end, { desc = "Show Neotest summary" })
 
     vim.keymap.set("n", "<leader>to", function()
       require("neotest").output.open({

@@ -1,5 +1,12 @@
 return {
   {
+    -- By default some inlay hints are super long, this truncates them!
+    "ray-d-song/inlay-hint-trim.nvim",
+    config = function()
+      require("inlay-hint-trim").setup()
+    end,
+  },
+  {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp" },
     event = "VeryLazy",
