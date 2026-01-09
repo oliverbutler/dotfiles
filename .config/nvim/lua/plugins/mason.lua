@@ -33,17 +33,17 @@ return {
         "prismals",
         "terraformls",
         "templ",
-        "html",
         "htmx",
         "typos_lsp",
-        "vtsls",
         "gopls",
-        "golangci_lint_ls"
+        "golangci_lint_ls",
       },
       automatic_installation = true,
       handlers = {
         -- Prevent stylua from being set up as an LSP (it's a formatter, not an LSP server)
         stylua = function() end,
+        -- Prevent vtsls from being set up (we're using ts_ls instead)
+        vtsls = function() end,
       },
     })
 

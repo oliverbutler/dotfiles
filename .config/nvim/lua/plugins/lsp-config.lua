@@ -1,7 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "saghen/blink.cmp", "yioneko/nvim-vtsls" },
+    dependencies = { "saghen/blink.cmp" },
     event = "VeryLazy",
     keys = {
       {
@@ -10,18 +10,8 @@ return {
           vim.lsp.buf.code_action()
         end,
       },
-      {
-        "<leader>I",
-        function()
-          require("vtsls").commands.source_actions()
-        end,
-        desc = "[S]earch source actions",
-      },
     },
     config = function()
-      -- Setup vtsls integration
-      require("lspconfig.configs").vtsls = require("vtsls").lspconfig -- set default server config, optional but recommended
-
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       -- Configure each LSP server using vim.lsp.config
@@ -30,12 +20,29 @@ return {
         filetypes = { "go", "gomod" },
       })
 
-      vim.lsp.config("vtsls", {
+      vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         settings = {
           typescript = {
-            tsserver = {
-              maxTsServerMemory = 8192,
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = false,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = false,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
             },
           },
         },
@@ -138,7 +145,7 @@ return {
 
       -- Enable all configured servers
       vim.lsp.enable("golangci_lint_ls")
-      vim.lsp.enable("vtsls")
+      vim.lsp.enable("ts_ls")
       vim.lsp.enable("lua_ls")
       vim.lsp.enable("tailwindcss")
       vim.lsp.enable("html")
@@ -232,7 +239,7 @@ return {
           title = "Restart TS Language Server",
           icon = "🔌",
         })
-        require("vtsls").commands.restart_tsserver()
+        vim.cmd("LspRestart ts_ls")
         vim.cmd("Copilot enable")
         vim.cmd("Copilot attach")
       end, { noremap = true, desc = "Restart TS Language Server" })
