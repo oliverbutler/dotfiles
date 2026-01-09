@@ -38,6 +38,7 @@ return {
           shortened_branch,
           "diff",
           "diagnostics",
+          require("opencode").statusline,
           {
             require("noice").api.statusline.mode.get,
             cond = require("noice").api.statusline.mode.has,

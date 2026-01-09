@@ -12,12 +12,14 @@ return {
       function()
         require("opencode").ask("@this: ", { submit = true })
       end,
+      { desc = "Execute opencode action on text object 'this'" },
     },
     {
       "<leader>os",
       function()
         require("opencode").select()
       end,
+      { desc = "Execute opencode action…" },
     },
   },
   config = function()
