@@ -6,6 +6,7 @@ export PATH=/Users/olly/go/bin:$PATH
 export PATH=/Users/olly/.pub-cache/bin:$PATH
 export PATH=/Users/olly/.local/bin:$PATH
 export PATH=/opt/homebrew/opt/libpq/bin:$PATH
+export PATH="/Users/olly/.cache/.bun/bin:$PATH"
 
 
 # Set config homes
@@ -96,6 +97,7 @@ alias yal="lazygit -ucd ~/.local/share/yadm/lazygit -w ~ -g ~/.local/share/yadm/
 alias n="nvim"
 alias nx="pnpm nx"
 alias l="lazygit"
+alias immichsync="ssh root@10.0.0.40 '/mnt/user/backups/backup-scripts/do-immich-lightroom-sync.sh'"
 
 # QMK flash helper (migrated from Fish)
 qmk-flash() {
@@ -202,3 +204,8 @@ export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
 eval "$(fnm env --use-on-cd --shell zsh --log-level=quiet)"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/olly/.lmstudio/bin"
+# End of LM Studio CLI section
+

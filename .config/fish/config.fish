@@ -339,3 +339,8 @@ function qmk-flash
     return 1
 end
 zoxide init fish | source
+
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/olly/.lmstudio/bin
+# End of LM Studio CLI section
+
