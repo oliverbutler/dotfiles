@@ -183,7 +183,8 @@ return {
         vim.cmd("pclose")
 
         -- Check for API key
-        if not vim.env.ANTHROPIC_API_KEY then
+        local api_key = vim.fn.getenv("ANTHROPIC_API_KEY")
+        if not api_key or api_key == vim.NIL or api_key == "" then
           vim.notify("ANTHROPIC_API_KEY environment variable not set", vim.log.levels.ERROR)
           append_to_log("ERROR: ANTHROPIC_API_KEY environment variable not set")
           return
@@ -268,13 +269,13 @@ curl -s https://api.anthropic.com/v1/messages \
   --data @%s \
   -o %s
 ]],
-          vim.env.ANTHROPIC_API_KEY,
+          api_key,
           payload_file,
           response_file
         )
 
         -- Log the curl command (with API key redacted)
-        append_to_log("CURL COMMAND: " .. curl_cmd:gsub(vim.env.ANTHROPIC_API_KEY, "REDACTED"))
+        append_to_log("CURL COMMAND: " .. curl_cmd:gsub(api_key, "REDACTED"))
 
         -- Execute the API call
         vim.fn.jobstart(curl_cmd, {

@@ -29,29 +29,36 @@ return {
 
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
+        cmd = { "typescript-language-server", "--stdio" },
+        cmd_env = {
+          TSS_LOG = "-level verbose -file /tmp/tsserver.log",
+        },
+        init_options = {
+          maxTsServerMemory = 4096,
+        },
         settings = {
-          typescript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "all",
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = false,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-            },
-          },
-          javascript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "all",
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = false,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
-            },
-          },
+          -- typescript = {
+          --   inlayHints = {
+          --     includeInlayParameterNameHints = "all",
+          --     includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+          --     includeInlayFunctionParameterTypeHints = true,
+          --     includeInlayVariableTypeHints = false,
+          --     includeInlayPropertyDeclarationTypeHints = true,
+          --     includeInlayFunctionLikeReturnTypeHints = true,
+          --     includeInlayEnumMemberValueHints = true,
+          --   },
+          -- },
+          -- javascript = {
+          --   inlayHints = {
+          --     includeInlayParameterNameHints = "all",
+          --     includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+          --     includeInlayFunctionParameterTypeHints = true,
+          --     includeInlayVariableTypeHints = false,
+          --     includeInlayPropertyDeclarationTypeHints = true,
+          --     includeInlayFunctionLikeReturnTypeHints = true,
+          --     includeInlayEnumMemberValueHints = true,
+          --   },
+          -- },
         },
       })
 
@@ -237,8 +244,10 @@ return {
 
       vim.keymap.set("n", "<leader>ra", function()
         restart_lsp_clients()
-        vim.cmd("Copilot enable")
-        vim.cmd("Copilot attach")
+        pcall(function()
+          vim.cmd("Copilot enable")
+          vim.cmd("Copilot attach")
+        end)
       end, { noremap = true, desc = "Restart LSP" })
 
       vim.keymap.set("n", "<leader>rt", function()
@@ -247,8 +256,10 @@ return {
           icon = "🔌",
         })
         vim.cmd("LspRestart ts_ls")
-        vim.cmd("Copilot enable")
-        vim.cmd("Copilot attach")
+        pcall(function()
+          vim.cmd("Copilot enable")
+          vim.cmd("Copilot attach")
+        end)
       end, { noremap = true, desc = "Restart TS Language Server" })
     end,
   },

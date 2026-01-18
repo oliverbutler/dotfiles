@@ -1,3 +1,14 @@
+-- Load API keys from .api_keys file
+local api_keys_file = vim.fn.stdpath("config") .. "/.api_keys"
+if vim.fn.filereadable(api_keys_file) == 1 then
+  for line in io.lines(api_keys_file) do
+    local key, value = line:match("^([^=]+)=(.+)$")
+    if key and value then
+      vim.fn.setenv(key, value)
+    end
+  end
+end
+
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
