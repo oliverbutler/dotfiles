@@ -21,11 +21,18 @@ return {
     config = function()
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+      -- Add folding capabilities for nvim-ufo
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      }
+
       -- Configure each LSP server using vim.lsp.config
-      vim.lsp.config("golangci_lint_ls", {
-        capabilities = capabilities,
-        filetypes = { "go", "gomod" },
-      })
+      -- Note: golangci_lint_ls is disabled due to stability issues
+      -- vim.lsp.config("golangci_lint_ls", {
+      --   capabilities = capabilities,
+      --   filetypes = { "go", "gomod" },
+      -- })
 
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
@@ -85,19 +92,19 @@ return {
               classRegex = {
                 -- Go components patterns
                 "Class\\(([^)]*)\\)",
-                '["`]([^"`]*)["`]', -- Class("...") or Class(`...`)
+                '["`]([^"`]*)["`]',           -- Class("...") or Class(`...`)
                 "Classes\\(([^)]*)\\)",
-                '["`]([^"`]*)["`]', -- Classes("...") or Classes(`...`)
+                '["`]([^"`]*)["`]',           -- Classes("...") or Classes(`...`)
                 "Class\\{([^)]*)\\}",
-                '["`]([^"`]*)["`]', -- Class{"..."} or Class{`...`}
+                '["`]([^"`]*)["`]',           -- Class{"..."} or Class{`...`}
                 "Classes\\{([^)]*)\\}",
-                '["`]([^"`]*)["`]', -- Classes{"..."} or Classes{`...`}
+                '["`]([^"`]*)["`]',           -- Classes{"..."} or Classes{`...`}
                 'Class:\\s*["`]([^"`]*)["`]', -- Class: "..." or Class: `...`
-                ':\\s*["`]([^"`]*)["`]', -- Classes: "..." or Classes: `...`
+                ':\\s*["`]([^"`]*)["`]',      -- Classes: "..." or Classes: `...`
 
                 -- support class variance authority
                 { "cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+                { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)",  "(?:'|\"|`)([^']*)(?:'|\"|`)" },
 
                 -- support classnames
                 { "classnames\\(([^)]*)\\)" },
@@ -140,9 +147,7 @@ return {
         capabilities = capabilities,
         cmd = { "gopls" },
         filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_dir = function(fname)
-          return vim.fs.root(fname, { "go.mod", ".git", "go.work" }) or vim.fn.getcwd()
-        end,
+        root_markers = { "go.mod", "go.work", ".git" },
         settings = {
           gopls = {
             completeUnimported = true,
@@ -158,7 +163,7 @@ return {
       })
 
       -- Enable all configured servers
-      vim.lsp.enable("golangci_lint_ls")
+      -- vim.lsp.enable("golangci_lint_ls") -- Disabled due to stability issues
       vim.lsp.enable("ts_ls")
       vim.lsp.enable("lua_ls")
       vim.lsp.enable("tailwindcss")
@@ -233,12 +238,20 @@ return {
         })
 
         for _, client in ipairs(active_clients) do
-          vim.lsp.stop_client(client.id)
+          -- Skip copilot to avoid errors
+          if client.name ~= "copilot" then
+            vim.lsp.stop_client(client.id)
+          end
         end
 
         vim.defer_fn(function()
-          vim.cmd("w!")
-          vim.cmd("e")
+          local ok, err = pcall(function()
+            vim.cmd("w!")
+            vim.cmd("e")
+          end)
+          if not ok then
+            vim.notify("Error restarting LSP: " .. tostring(err), vim.log.levels.WARN)
+          end
         end, 100)
       end
 

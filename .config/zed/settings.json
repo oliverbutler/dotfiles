@@ -19,12 +19,12 @@
     "always_allow_tool_actions": true,
     "model_parameters": [],
     "default_model": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-latest",
+      "provider": "copilot_chat",
+      "model": "claude-sonnet-4.5",
     },
   },
   "features": {
-    "edit_prediction_provider": "copilot",
+    "edit_prediction_provider": "zed",
     "experimental_edit_prediction_context_retrieval": true,
   },
   "vim_mode": true,

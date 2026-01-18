@@ -7,6 +7,7 @@ export PATH=/Users/olly/.pub-cache/bin:$PATH
 export PATH=/Users/olly/.local/bin:$PATH
 export PATH=/opt/homebrew/opt/libpq/bin:$PATH
 export PATH="/Users/olly/.cache/.bun/bin:$PATH"
+export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 
 
 # Set config homes
