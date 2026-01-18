@@ -84,7 +84,9 @@ return {
         return { "lsp", "indent" }
       end,
       fold_virt_text_handler = handler,
-      close_fold_kinds = { "imports", "comment" },
+      close_fold_kinds_for_ft = {
+        default = { "imports", "comment" },
+      },
       enable_get_fold_virt_text = true,
     })
   end,
