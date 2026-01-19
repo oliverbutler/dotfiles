@@ -8,7 +8,6 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-neotest/neotest-jest" },
 	{ src = "https://github.com/nvim-neotest/neotest-go" },
 	{ src = "https://github.com/marilari88/neotest-vitest" },
-	{ src = "https://github.com/arthur944/neotest-bun" },
 })
 
 -----------------------------------------
@@ -106,7 +105,6 @@ require("neotest").setup({
 	},
 	adapters = {
 		require("neotest-go"),
-		require("neotest-bun"),
 		require("neotest-jest")({
 			jestCommand = "pnpm jest --expand --runInBand",
 			env = {},
