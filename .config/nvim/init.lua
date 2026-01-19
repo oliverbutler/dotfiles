@@ -111,6 +111,13 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
 vim.g.maplocalleader = "," -- Same for `maplocalleader`
 
+-- Delete Neovim 0.11+ default LSP gr* mappings that cause delay on "gr"
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "grr")
+vim.keymap.del("n", "grt")
+
 require("lazy").setup("plugins", {
   change_detection = {
     notify = false,

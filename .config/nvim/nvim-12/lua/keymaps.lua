@@ -82,3 +82,10 @@ vim.keymap.set("n", "<leader>-", function()
 		vim.cmd("qa!")
 	end
 end, { desc = "Quit Neovim with prompt to save changes" })
+
+-- Delete Neovim 0.11+ default LSP gr* mappings that cause delay on "gr"
+vim.keymap.del("n", "gra")
+vim.keymap.del("n", "gri")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "grr")
+vim.keymap.del("n", "grt")

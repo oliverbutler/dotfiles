@@ -60,6 +60,10 @@ require("snacks").setup({
 			},
 		},
 		sources = {
+			-- LSP references: show empty picker immediately
+			lsp_references = {
+                include_declaration = false,
+			},
 			grep_word = {
 				hidden = true,
 				ignored = true,
