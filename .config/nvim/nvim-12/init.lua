@@ -1,4 +1,5 @@
 ------------------------------
+
 -- nvim 12 config 2026
 ------------------------------
 
@@ -32,12 +33,20 @@ vim.opt.winborder = "rounded" -- Use rounded borders for windows
 vim.opt.hlsearch = false -- Disable highlighting of search results
 vim.opt.clipboard = { "unnamedplus" } -- Sync clipboard with system
 vim.opt.scrolloff = 25 -- Minimal number of screen lines to keep above and below the cursor.
+vim.opt.shortmess:append("F") -- Don't show file info when editing
 
 require("keymaps")
 
-require("plugins.mini-icons")
-require("plugins.mini-files")
+require("plugins.blink")
 require("plugins.catppuccin")
+require("plugins.flash")
+require("plugins.git")
+require("plugins.lazydev")
+require("plugins.lualine")
+require("plugins.mini-files")
+require("plugins.mini-icons")
+require("plugins.noice")
 require("plugins.snacks")
+require("plugins.whichkey")
 
 require("autocmds")

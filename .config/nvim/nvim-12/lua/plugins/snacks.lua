@@ -36,7 +36,6 @@ require("snacks").setup({
 				pane = 2,
 				{ icon = " ",         section = "recent_files", padding = 1 },
 				{ section = "keys",   gap = 1,                  padding = 1 },
-				{ section = "startup" },
 			},
 		},
 	},
@@ -238,6 +237,22 @@ vim.keymap.set("n", "<leader>gf", function()
 	Snacks.lazygit.log_file()
 end, { desc = "LazyGit File History" })
 
+
+-- LSP: Implementations
+vim.keymap.set("n", "gi", function()
+	Snacks.picker.lsp_implementations()
+end, { desc = "LSP Implementations" })
+
+-- LSP: Definitions
+vim.keymap.set("n", "gd", function()
+	Snacks.picker.lsp_definitions()
+end, { desc = "LSP Definitions" })
+
+-- LSP: References
+vim.keymap.set("n", "gr", function()
+	Snacks.picker.lsp_references()
+end, { desc = "LSP References" })
+
 -----------------------------------------
 -- Custom Symbol Search
 -----------------------------------------
@@ -252,7 +267,7 @@ local function setup_custom_symbol_search()
 		m = "methods",
 	}
 
-	local ollySearchSymbols = require("olly.search-symbols")
+	local ollySearchSymbols = require("search-symbols")
 
 	for key, value in pairs(search_key_map) do
 		vim.keymap.set("n", "<leader>s" .. key, function()

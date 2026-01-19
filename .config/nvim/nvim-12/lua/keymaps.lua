@@ -1,5 +1,5 @@
 -- restart editor
-vim.keymap.set("n", "<leader>re", ":restart<CR>", { noremap = true, desc = "Restart Neovim" })
+vim.keymap.set("n", "<leader>re", ":restart +qall!<CR>", { noremap = true, desc = "Restart Neovim" })
 
 -- make ctrl d and ctrl u re-center the screen
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -51,20 +51,6 @@ vim.keymap.set("n", "<leader>w", function()
 	end
 end)
 
--- LSP: Implementations
-vim.keymap.set("n", "gi", function()
-	Snacks.picker.lsp_implementations()
-end, { desc = "LSP Implementations" })
-
--- LSP: Definitions
-vim.keymap.set("n", "gd", function()
-	Snacks.picker.lsp_definitions()
-end, { desc = "LSP Definitions" })
-
--- LSP: References
-vim.keymap.set("n", "gr", function()
-	Snacks.picker.lsp_references()
-end, { desc = "LSP References" })
 
 -- Quit
 vim.keymap.set("n", "<leader>q", function()
@@ -76,3 +62,23 @@ vim.keymap.set("n", "<leader>fo", function()
 	local file_path = vim.fn.expand("%:p")
 	vim.fn.system({ "open", "-R", file_path })
 end, { noremap = true, silent = true, desc = "Open current file in Finder" })
+
+-- Close neovim safely
+vim.keymap.set("n", "<leader>-", function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local modified = vim.api.nvim_buf_get_option(bufnr, "modified")
+	if modified then
+		vim.ui.input({
+			prompt = "You have unsaved changes. Save before quitting? (y/n) ",
+		}, function(input)
+			if input == "y" then
+				vim.cmd("wa")
+				vim.cmd("qa!")
+			elseif input == "n" or input == "N" then
+				vim.cmd("qa!")
+			end
+		end)
+	else
+		vim.cmd("qa!")
+	end
+end, { desc = "Quit Neovim with prompt to save changes" })
