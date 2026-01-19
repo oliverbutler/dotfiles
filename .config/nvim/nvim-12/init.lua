@@ -1,12 +1,12 @@
 ------------------------------
-
--- nvim 12 config 2026
+-- Olly's nvim 0.12 config 2026
 ------------------------------
 
 vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
 vim.g.maplocalleader = "," -- Same for `maplocalleader`
 
 vim.opt.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50" -- Use vertical line cursor in insert mode
+
 vim.opt.signcolumn = "yes:1" -- Always show sign column
 vim.opt.termguicolors = true -- Enable true colors
 vim.opt.ignorecase = true -- Ignore case in search
@@ -43,10 +43,14 @@ require("plugins.flash")
 require("plugins.git")
 require("plugins.lazydev")
 require("plugins.lualine")
+require("plugins.mason")
 require("plugins.mini-files")
 require("plugins.mini-icons")
 require("plugins.noice")
 require("plugins.snacks")
+require("plugins.treesitter")
+require("plugins.ufo")
 require("plugins.whichkey")
 
+require("lsp")
 require("autocmds")
