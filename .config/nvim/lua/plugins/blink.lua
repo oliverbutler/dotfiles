@@ -42,6 +42,7 @@ local opts = {
 				preselect = true,
 			},
 		},
+		ghost_text = { enabled = false }, -- Disable to avoid conflict with copilot
 		documentation = {
 			auto_show = true,
 			auto_show_delay_ms = 200,

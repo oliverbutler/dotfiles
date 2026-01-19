@@ -43,15 +43,10 @@ require("lualine").setup({
 		component_separators = "",
 	},
 	sections = {
-		lualine_a = { "mode" },
-		lualine_b = { "diagnostics" },
-		lualine_c = { 
-			{ 
-				"filename", 
-				path = 1,  -- 0 = just filename, 1 = relative path, 2 = absolute path
-			} 
-		},
-		lualine_x = { shortened_branch, "diff" },
+		lualine_a = { "mode", "grapple" },
+		lualine_b = { shortened_branch, "diff", "diagnostics" },
+		lualine_c = { { "filename", path = 1 } },
+		lualine_x = {},
 		lualine_y = {},
 		lualine_z = { "location" },
 	},
@@ -63,4 +58,5 @@ require("lualine").setup({
 		lualine_y = {},
 		lualine_z = {},
 	},
+	extensions = { "trouble" },
 })

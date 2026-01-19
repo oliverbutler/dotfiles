@@ -57,6 +57,8 @@ require("plugins.indent-blankline")
 require("plugins.conform")
 require("plugins.undotree")
 require("plugins.neotest")
+require("plugins.copilot")
+require("plugins.grapple")
 
 require("lsp")
 require("autocmds")
