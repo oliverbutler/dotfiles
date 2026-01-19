@@ -8,6 +8,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-neotest/neotest-jest" },
 	{ src = "https://github.com/nvim-neotest/neotest-go" },
 	{ src = "https://github.com/marilari88/neotest-vitest" },
+	{ src = "https://github.com/arthur944/neotest-bun" },
 })
 
 -----------------------------------------
@@ -105,6 +106,7 @@ require("neotest").setup({
 	},
 	adapters = {
 		require("neotest-go"),
+		require("neotest-bun"),
 		require("neotest-jest")({
 			jestCommand = "pnpm jest --expand --runInBand",
 			env = {},
@@ -386,7 +388,7 @@ curl -s https://api.anthropic.com/v1/messages \
 					-- Find the toEqual or toStrictEqual in the current line
 					local cur_line = vim.api.nvim_get_current_line()
 					local toEqual_pos = cur_line:find("toEqual%(") or
-					    cur_line:find("toStrictEqual%(")
+						cur_line:find("toStrictEqual%(")
 
 					if toEqual_pos then
 						-- Save current position

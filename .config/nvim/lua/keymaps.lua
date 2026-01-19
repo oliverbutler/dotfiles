@@ -11,6 +11,12 @@ end, { noremap = true, desc = "Restart Neovim with session" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
+-- Ctrl+hjkl to navigate between windows/panes
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below window" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above window" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+
 -- Map leader [ and ] to navigate cursor positions
 vim.keymap.set("n", "<leader>[", "<C-o>", { noremap = true })
 vim.keymap.set("n", "<leader>]", "<C-i>", { noremap = true })
