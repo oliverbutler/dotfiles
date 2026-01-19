@@ -15,6 +15,8 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 
+alias nvim12="NVIM_APPNAME=nvim/nvim-12 nvim"
+
 
 # Set nvim theme (this NVIM_THEME is set from my tmux color switch script)
 export NVIM_THEME="$(tmux show-environment -g NVIM_THEME | cut -d= -f2)"
