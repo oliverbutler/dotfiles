@@ -1,5 +1,11 @@
--- restart editor
-vim.keymap.set("n", "<leader>re", ":restart +qall!<CR>", { noremap = true, desc = "Restart Neovim" })
+-- restart editor with session
+vim.keymap.set("n", "<leader>re", function()
+	-- Save current session before restarting
+	local session_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+	require("mini.sessions").write(session_name, { force = true })
+	-- Restart and restore the session
+	vim.cmd("restart lua MiniSessions.read('" .. session_name .. "')")
+end, { noremap = true, desc = "Restart Neovim with session" })
 
 -- make ctrl d and ctrl u re-center the screen
 vim.keymap.set("n", "<C-d>", "<C-d>zz")

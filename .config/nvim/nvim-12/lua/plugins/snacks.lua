@@ -34,8 +34,8 @@ require("snacks").setup({
 			},
 			{
 				pane = 2,
-				{ icon = " ",         section = "recent_files", padding = 1 },
-				{ section = "keys",   gap = 1,                  padding = 1 },
+				{ icon = " ",       section = "recent_files", padding = 1 },
+				{ section = "keys", gap = 1,                  padding = 1 },
 			},
 		},
 	},
@@ -62,7 +62,7 @@ require("snacks").setup({
 		sources = {
 			-- LSP references: show empty picker immediately
 			lsp_references = {
-                include_declaration = false,
+				include_declaration = false,
 			},
 			grep_word = {
 				hidden = true,

@@ -17,7 +17,7 @@ vim.opt.tabstop = 4 -- Number of spaces for a tab
 vim.opt.softtabstop = 4 -- Number of spaces for a tab when editing
 vim.opt.shiftwidth = 4 -- Number of spaces for autoindent
 vim.opt.shiftround = true -- Round indent to multiple of shiftwidth
-vim.opt.listchars = "tab: ,multispace:|   " -- Characters to show for tabs, spaces, and end of line
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" } -- Characters to show for whitespace
 vim.opt.list = true -- Show whitespace characters
 vim.opt.number = true -- Show line numbers
 vim.opt.relativenumber = true -- Show relative line numbers
@@ -37,6 +37,7 @@ vim.opt.shortmess:append("F") -- Don't show file info when editing
 
 require("keymaps")
 
+require("plugins.treesitter")
 require("plugins.blink")
 require("plugins.catppuccin")
 require("plugins.flash")
@@ -46,11 +47,14 @@ require("plugins.lualine")
 require("plugins.mason")
 require("plugins.mini-files")
 require("plugins.mini-icons")
+require("plugins.mini-sessions")
 require("plugins.noice")
 require("plugins.snacks")
-require("plugins.treesitter")
 require("plugins.ufo")
 require("plugins.whichkey")
+require("plugins.vim-sleuth")
+require("plugins.indent-blankline")
+require("plugins.conform")
 
 require("lsp")
 require("autocmds")

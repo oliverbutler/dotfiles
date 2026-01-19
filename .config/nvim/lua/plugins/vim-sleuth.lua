@@ -1,3 +1,5 @@
 return {
-	"tpope/vim-sleuth",
+	{
+		erc = "tpope/vim-sleuth"
+	},
 }
