@@ -1,18 +1,17 @@
-return {
-  "folke/which-key.nvim",
-  event = "VimEnter",
-  dependencies = {
-    { "echasnovski/mini.icons", version = false },
-  },
-  config = function(_, opts)
-    local wk = require("which-key")
-    wk.setup(opts)
-  end,
-  opts = {
-    triggers = {
-      { "<leader>" },
-      { "s", mode = { "n", "v" } },
-      { "v", mode = { "n", "v" } },
-    },
-  },
-}
+-- Which-key.nvim - Displays available keybindings in popup
+
+vim.pack.add({
+	{ src = "https://github.com/folke/which-key.nvim" }
+})
+
+-----------------------------------------
+-- Configuration
+-----------------------------------------
+
+require("which-key").setup({
+	triggers = {
+		{ "<leader>" },
+		{ "s", mode = { "n", "v" } },
+		{ "v", mode = { "n", "v" } },
+	},
+})

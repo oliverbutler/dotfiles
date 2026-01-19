@@ -1,5 +1,4 @@
-return {
-	{
-		erc = "tpope/vim-sleuth"
-	},
-}
+vim.pack.add({
+    { src = "https://github.com/tpope/vim-sleuth" }
+})
+

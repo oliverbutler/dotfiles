@@ -1,69 +1,57 @@
-return {
-  "williamboman/mason.nvim",
-  dependencies = {
-    "williamboman/mason-lspconfig.nvim",
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
-    "jay-babu/mason-nvim-dap.nvim",
-  },
-  cmd = "Mason",
-  event = "BufReadPre",
-  config = function()
-    local mason = require("mason")
-    local mason_lspconfig = require("mason-lspconfig")
-    local mason_tool_installer = require("mason-tool-installer")
-    local mason_dap = require("mason-nvim-dap")
+-- Mason.nvim - LSP server installer and manager
+-- Automatically installs LSP servers on startup
 
-    mason.setup({
-      ui = {
-        icons = {
-          package_installed = "✓",
-          package_pending = "➜",
-          package_uninstalled = "✗",
-        },
-      },
-    })
+vim.pack.add({
+	{ src = "https://github.com/mason-org/mason.nvim" },
+})
 
-    mason_lspconfig.setup({
-      ensure_installed = {
-        "ts_ls",
-        "html",
-        "cssls",
-        "tailwindcss",
-        "lua_ls",
-        "prismals",
-        "terraformls",
-        "templ",
-        "htmx",
-        "typos_lsp",
-        "gopls",
-        "golangci_lint_ls",
-      },
-      automatic_installation = true,
-      handlers = {
-        -- Prevent stylua from being set up as an LSP (it's a formatter, not an LSP server)
-        stylua = function() end,
-        -- Prevent vtsls from being set up (we're using ts_ls instead)
-        vtsls = function() end,
-      },
-    })
+local mason = require("mason")
+local mason_registry = require("mason-registry")
 
-    mason_tool_installer.setup({
-      ensure_installed = {
-        "eslint",
-        "prettierd",
-        "sleek",
-        "gofumpt",
-        "nixfmt",
-      },
-      automatic_installation = true,
-    })
+mason.setup({
+	ui = {
+		icons = {
+			package_installed = "✓",
+			package_pending = "➜",
+			package_uninstalled = "✗",
+		},
+	},
+})
 
-    mason_dap.setup({
-      automatic_installation = true,
-      ensure_installed = {
-        "js",
-        "delve",
-      },
-    })
-  end,
+-- List of LSP servers to auto-install
+-- Maps LSP name to Mason package name
+local ensure_installed = {
+	"vtsls",
+	"lua-language-server",
+	"gopls",
+	"rust-analyzer",
+	"eslint-lsp",
+	"tailwindcss-language-server",
+	"html-lsp",
+	"htmx-lsp",
+	"terraform-ls",
+	"typos-lsp",
 }
+
+-- Auto-install LSP servers
+local function ensure_installed_servers()
+	for _, server in ipairs(ensure_installed) do
+		local package = mason_registry.get_package(server)
+		if not package:is_installed() then
+			vim.notify("Installing " .. server, vim.log.levels.INFO, {
+				title = "Mason",
+			})
+			package:install()
+		end
+	end
+end
+
+-- Wait for Mason registry to be ready before installing
+if mason_registry.refresh then
+	mason_registry.refresh(function()
+		ensure_installed_servers()
+	end)
+else
+	ensure_installed_servers()
+end
+
