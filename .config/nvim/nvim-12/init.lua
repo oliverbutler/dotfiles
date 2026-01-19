@@ -55,6 +55,7 @@ require("plugins.whichkey")
 require("plugins.vim-sleuth")
 require("plugins.indent-blankline")
 require("plugins.conform")
+require("plugins.undotree")
 
 require("lsp")
 require("autocmds")
