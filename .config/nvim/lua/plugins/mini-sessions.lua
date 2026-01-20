@@ -15,7 +15,19 @@ require("mini.sessions").setup({
 	force = { read = false, write = true, delete = false },
 	-- Hook functions for actions
 	hooks = {
-		pre = { read = nil, write = nil, delete = nil },
+		pre = {
+			read = nil,
+			write = function()
+				-- Close neotest windows before saving session
+				-- These don't restore properly and appear as blank panes
+				local ok, neotest = pcall(require, "neotest")
+				if ok then
+					pcall(function() neotest.summary.close() end)
+					pcall(function() neotest.output_panel.close() end)
+				end
+			end,
+			delete = nil,
+		},
 		post = { read = nil, write = nil, delete = nil },
 	},
 	-- Whether to print session path after action
