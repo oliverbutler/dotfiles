@@ -14,6 +14,22 @@ vim.pack.add({
 -- Helper Functions
 -----------------------------------------
 
+-- Function to find the nearest directory containing a file
+local function find_nearest_file_dir(start_path, filenames)
+	local current_dir = start_path
+	while current_dir ~= "/" do
+		for _, filename in ipairs(filenames) do
+			local test_path = current_dir .. "/" .. filename
+			if vim.fn.filereadable(test_path) == 1 then
+				return current_dir
+			end
+		end
+		-- Move up one directory
+		current_dir = vim.fn.fnamemodify(current_dir, ":h")
+	end
+	return nil
+end
+
 local function get_log_file_path()
 	local home = os.getenv("HOME")
 	return home .. "/.config/nvim/logs/neotest-ai.log"
@@ -106,26 +122,68 @@ require("neotest").setup({
 	adapters = {
 		require("neotest-go"),
 		require("neotest-jest")({
-			jestCommand = "pnpm jest --expand --runInBand",
-			env = {},
-			jestConfigFile = function(path)
-				local file = vim.fn.expand("%:p")
-				local new_config = vim.fn.getcwd() .. "/jest.config.ts"
-
+			jestCommand = "npm test -- --colors",
+			env = { CI = "true", FORCE_COLOR = "1" },
+			jestConfigFile = function(file)
+				-- First, check if we're in a monorepo with /libs/ structure
 				if string.find(file, "/libs/") then
-					new_config = string.match(file, "(.-/[^/]+/)src") .. "jest.config.ts"
+					local package_dir = string.match(file, "(.-/[^/]+/)src")
+					if package_dir then
+						-- Look for jest config in the package directory
+						for _, config_name in ipairs({ "jest.config.ts", "jest.config.js" }) do
+							local config_path = package_dir .. config_name
+							if vim.fn.filereadable(config_path) == 1 then
+								return config_path
+							end
+						end
+					end
 				end
 
-				return new_config
+				-- Otherwise, find the nearest jest config from the file location
+				local file_dir = vim.fn.fnamemodify(file, ":h")
+				local config_dir = find_nearest_file_dir(file_dir, {
+					"jest.config.ts",
+					"jest.config.js",
+					"jest.config.json",
+				})
+
+				if config_dir then
+					-- Return the first config file found
+					for _, config_name in ipairs({ "jest.config.ts", "jest.config.js", "jest.config.json" }) do
+						local config_path = config_dir .. "/" .. config_name
+						if vim.fn.filereadable(config_path) == 1 then
+							return config_path
+						end
+					end
+				end
+
+				-- Fallback to cwd
+				return vim.fn.getcwd() .. "/jest.config.js"
 			end,
-			cwd = function()
-				local file = vim.fn.expand("%:p")
-				local new_cwd = vim.fn.getcwd()
-				if string.find(file, "/libs/") then
-					new_cwd = string.match(file, "(.-/[^/]+/)src")
+			cwd = function(path)
+				-- For monorepo with /libs/, use the package directory
+				if string.find(path, "/libs/") then
+					local package_dir = string.match(path, "(.-/[^/]+/)src")
+					if package_dir then
+						return package_dir
+					end
 				end
 
-				return new_cwd
+				-- Otherwise, find the nearest directory with package.json
+				local file_dir = vim.fn.fnamemodify(path, ":h")
+				local pkg_dir = find_nearest_file_dir(file_dir, { "package.json" })
+
+				return pkg_dir or vim.fn.getcwd()
+			end,
+			-- Custom test file matcher to support both .test.ts and .spec.ts
+			isTestFile = function(file_path)
+				if not file_path then
+					return false
+				end
+				-- Match .test.ts, .test.tsx, .spec.ts, .spec.tsx files
+				local is_test_file = file_path:match("%.test%.tsx?$") ~= nil
+					or file_path:match("%.spec%.tsx?$") ~= nil
+				return is_test_file
 			end,
 		}),
 	},

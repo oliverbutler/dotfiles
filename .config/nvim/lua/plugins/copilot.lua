@@ -24,7 +24,7 @@ require("copilot").setup({
 		enabled = true,
 		auto_trigger = true,
 		keymap = {
-			accept = "<Tab>",
+			accept = "<C-a>",
 			accept_word = "<C-e>",
 			accept_line = "<M-j>",
 			next = "<M-]>",
@@ -35,7 +35,7 @@ require("copilot").setup({
 	nes = {
 		enabled = true,
 		keymap = {
-			accept_and_goto = "<leader>p",
+			accept_and_goto = "<C-p>",
 			accept = false,
 			dismiss = "<Esc>"
 		},
