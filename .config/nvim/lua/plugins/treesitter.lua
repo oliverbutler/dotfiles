@@ -1,6 +1,14 @@
 -- Treesitter - Syntax highlighting and parsing
 -- nvim-treesitter for Neovim 0.12+
 
+-- Check for tree-sitter CLI (required for nvim-treesitter main branch)
+if vim.fn.executable("tree-sitter") ~= 1 then
+	vim.notify(
+		"tree-sitter CLI not found! Parsers won't compile.\nInstall with: brew install tree-sitter-cli",
+		vim.log.levels.WARN
+	)
+end
+
 vim.pack.add({
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })

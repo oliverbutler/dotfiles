@@ -30,6 +30,24 @@ local function find_nearest_file_dir(start_path, filenames)
 	return nil
 end
 
+-- Detect package manager from nearest package.json
+local function get_package_manager(file_path)
+	local file_dir = vim.fn.fnamemodify(file_path, ":h")
+	local pkg_dir = find_nearest_file_dir(file_dir, { "package.json" })
+	if pkg_dir then
+		local pkg_path = pkg_dir .. "/package.json"
+		local file = io.open(pkg_path, "r")
+		if file then
+			local content = file:read("*all")
+			file:close()
+			if content:find("pnpm") then
+				return "pnpm"
+			end
+		end
+	end
+	return "npm"
+end
+
 local function get_log_file_path()
 	local home = os.getenv("HOME")
 	return home .. "/.config/nvim/logs/neotest-ai.log"
@@ -103,11 +121,14 @@ end
 -- Setup
 -----------------------------------------
 
+---@diagnostic disable-next-line: missing-fields
 require("neotest").setup({
+	---@diagnostic disable-next-line: missing-fields
 	summary = {
 		enabled = true,
 		expand_errors = true,
 		follow = true,
+		---@diagnostic disable-next-line: missing-fields
 		mappings = {
 			expand = { "<CR>", "<2-LeftMouse>" },
 			expand_all = "e",
@@ -122,24 +143,16 @@ require("neotest").setup({
 	adapters = {
 		require("neotest-go"),
 		require("neotest-jest")({
-			jestCommand = "npm test -- --colors",
+			jestCommand = function(file)
+				local pm = get_package_manager(file)
+				if pm == "pnpm" then
+					return "pnpm jest --expand --runInBand"
+				end
+				return "npm test -- --colors"
+			end,
 			env = { CI = "true", FORCE_COLOR = "1" },
 			jestConfigFile = function(file)
-				-- First, check if we're in a monorepo with /libs/ structure
-				if string.find(file, "/libs/") then
-					local package_dir = string.match(file, "(.-/[^/]+/)src")
-					if package_dir then
-						-- Look for jest config in the package directory
-						for _, config_name in ipairs({ "jest.config.ts", "jest.config.js" }) do
-							local config_path = package_dir .. config_name
-							if vim.fn.filereadable(config_path) == 1 then
-								return config_path
-							end
-						end
-					end
-				end
-
-				-- Otherwise, find the nearest jest config from the file location
+				-- find the nearest jest config from the file location
 				local file_dir = vim.fn.fnamemodify(file, ":h")
 				local config_dir = find_nearest_file_dir(file_dir, {
 					"jest.config.ts",
@@ -161,15 +174,7 @@ require("neotest").setup({
 				return vim.fn.getcwd() .. "/jest.config.js"
 			end,
 			cwd = function(path)
-				-- For monorepo with /libs/, use the package directory
-				if string.find(path, "/libs/") then
-					local package_dir = string.match(path, "(.-/[^/]+/)src")
-					if package_dir then
-						return package_dir
-					end
-				end
-
-				-- Otherwise, find the nearest directory with package.json
+				-- Find the nearest directory with package.json
 				local file_dir = vim.fn.fnamemodify(path, ":h")
 				local pkg_dir = find_nearest_file_dir(file_dir, { "package.json" })
 
