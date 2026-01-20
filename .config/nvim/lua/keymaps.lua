@@ -75,6 +75,18 @@ vim.keymap.set("n", "<leader>fo", function()
 	vim.fn.system({ "open", "-R", file_path })
 end, { noremap = true, silent = true, desc = "Open current file in Finder" })
 
+vim.keymap.set("n", "<leader>fp", function()
+	local path = vim.fn.expand("%:.")
+	vim.fn.setreg("+", path)
+	vim.notify("Copied: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy relative file path" })
+
+vim.keymap.set("n", "<leader>fP", function()
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	vim.notify("Copied: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy absolute file path" })
+
 -- Close neovim safely
 vim.keymap.set("n", "<leader>-", function()
 	local bufnr = vim.api.nvim_get_current_buf()

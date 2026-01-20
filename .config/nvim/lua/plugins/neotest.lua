@@ -14,6 +14,15 @@ vim.pack.add({
 -- Helper Functions
 -----------------------------------------
 
+-- Get the starting directory for a path (handles both files and directories)
+local function get_start_dir(path)
+	if vim.fn.isdirectory(path) == 1 then
+		return path
+	else
+		return vim.fn.fnamemodify(path, ":h")
+	end
+end
+
 -- Function to find the nearest directory containing a file
 local function find_nearest_file_dir(start_path, filenames)
 	local current_dir = start_path
@@ -30,20 +39,28 @@ local function find_nearest_file_dir(start_path, filenames)
 	return nil
 end
 
--- Detect package manager from nearest package.json
+-- Detect package manager from nearest package.json (skipping NX project package.json files)
 local function get_package_manager(file_path)
-	local file_dir = vim.fn.fnamemodify(file_path, ":h")
-	local pkg_dir = find_nearest_file_dir(file_dir, { "package.json" })
-	if pkg_dir then
-		local pkg_path = pkg_dir .. "/package.json"
-		local file = io.open(pkg_path, "r")
-		if file then
-			local content = file:read("*all")
-			file:close()
-			if content:find("pnpm") then
-				return "pnpm"
+	local file_dir = get_start_dir(file_path)
+	local current_dir = file_dir
+	while current_dir ~= "/" do
+		local pkg_path = current_dir .. "/package.json"
+		if vim.fn.filereadable(pkg_path) == 1 then
+			-- Skip if project.json exists (NX project with minimal package.json)
+			local project_json_path = current_dir .. "/project.json"
+			if vim.fn.filereadable(project_json_path) ~= 1 then
+				local file = io.open(pkg_path, "r")
+				if file then
+					local content = file:read("*all")
+					file:close()
+					if content:find("pnpm") then
+						return "pnpm"
+					end
+				end
+				return "npm"
 			end
 		end
+		current_dir = vim.fn.fnamemodify(current_dir, ":h")
 	end
 	return "npm"
 end
@@ -153,7 +170,7 @@ require("neotest").setup({
 			env = { CI = "true", FORCE_COLOR = "1" },
 			jestConfigFile = function(file)
 				-- find the nearest jest config from the file location
-				local file_dir = vim.fn.fnamemodify(file, ":h")
+				local file_dir = get_start_dir(file)
 				local config_dir = find_nearest_file_dir(file_dir, {
 					"jest.config.ts",
 					"jest.config.js",
@@ -175,7 +192,7 @@ require("neotest").setup({
 			end,
 			cwd = function(path)
 				-- Find the nearest directory with package.json
-				local file_dir = vim.fn.fnamemodify(path, ":h")
+				local file_dir = get_start_dir(path)
 				local pkg_dir = find_nearest_file_dir(file_dir, { "package.json" })
 
 				return pkg_dir or vim.fn.getcwd()

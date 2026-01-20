@@ -60,6 +60,8 @@ require("plugins.undotree")
 require("plugins.neotest")
 require("plugins.copilot")
 require("plugins.grapple")
+require("plugins.opencode")
+require("plugins.todo-comments")
 
 require("lsp")
 require("autocmds")

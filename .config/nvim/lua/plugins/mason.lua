@@ -19,7 +19,6 @@ mason.setup({
 })
 
 -- List of LSP servers to auto-install
--- Maps LSP name to Mason package name
 local ensure_installed = {
 	"vtsls",
 	"lua-language-server",
@@ -33,12 +32,31 @@ local ensure_installed = {
 	"typos-lsp",
 }
 
+-- Formatters and other tools to auto-install
+local ensure_installed_tools = {
+	"prettierd",
+	"stylua",
+	"gofumpt",
+	"nixfmt",
+	"black",
+	"isort",
+}
+
 -- Auto-install LSP servers
 local function ensure_installed_servers()
 	for _, server in ipairs(ensure_installed) do
 		local package = mason_registry.get_package(server)
 		if not package:is_installed() then
 			vim.notify("Installing " .. server, vim.log.levels.INFO, {
+				title = "Mason",
+			})
+			package:install()
+		end
+	end
+	for _, tool in ipairs(ensure_installed_tools) do
+		local package = mason_registry.get_package(tool)
+		if not package:is_installed() then
+			vim.notify("Installing " .. tool, vim.log.levels.INFO, {
 				title = "Mason",
 			})
 			package:install()
@@ -54,4 +72,3 @@ if mason_registry.refresh then
 else
 	ensure_installed_servers()
 end
-

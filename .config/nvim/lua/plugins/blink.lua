@@ -1,9 +1,9 @@
 -- Blink.cmp completion plugin
 
 vim.pack.add({
-	{ src = "https://github.com/saghen/blink.cmp" },
-	{ src = "https://github.com/rafamadriz/friendly-snippets" },
-	{ src = "https://github.com/L3MON4D3/LuaSnip" },
+  { src = "https://github.com/saghen/blink.cmp" },
+  { src = "https://github.com/rafamadriz/friendly-snippets" },
+  { src = "https://github.com/L3MON4D3/LuaSnip" },
 })
 
 -----------------------------------------
@@ -12,87 +12,86 @@ vim.pack.add({
 
 --- @type blink.cmp.Config
 local opts = {
-	keymap = {
-		["<C-x>"] = { "show", "show_documentation", "hide_documentation" },
-		["<C-y>"] = { "select_and_accept" },
-		["<C-e>"] = { "select_and_accept" }, -- easier for laptop
+  keymap = {
+    ["<C-x>"] = { "show", "show_documentation", "hide_documentation" },
+    ["<C-y>"] = { "select_and_accept" },
+    ["<C-e>"] = { "select_and_accept" }, -- easier for laptop
 
-		["<Up>"] = { "select_prev", "fallback" },
-		["<Down>"] = { "select_next", "fallback" },
-		["<S-Tab>"] = { "select_prev", "fallback" },
-		["<Tab>"] = { "select_next", "fallback" },
-		["<C-p>"] = { "select_prev", "fallback" },
-		["<C-n>"] = { "select_next", "fallback" },
+    ["<Up>"] = { "select_prev", "fallback" },
+    ["<Down>"] = { "select_next", "fallback" },
+    ["<S-Tab>"] = { "select_prev", "fallback" },
+    ["<Tab>"] = { "select_next", "fallback" },
+    ["<C-p>"] = { "select_prev", "fallback" },
+    ["<C-n>"] = { "select_next", "fallback" },
 
-		["<C-b>"] = { "scroll_documentation_up", "fallback" },
-		["<C-f>"] = { "scroll_documentation_down", "fallback" },
+    ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+    ["<C-f>"] = { "scroll_documentation_down", "fallback" },
 
-		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
-	},
-	appearance = {
-		use_nvim_cmp_as_default = true,
-		nerd_font_variant = "mono",
-	},
-    fuzzy = {
-        implementation = "lua",
+    ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+  },
+  appearance = {
+    use_nvim_cmp_as_default = true,
+    nerd_font_variant = "mono",
+  },
+  fuzzy = {
+    implementation = "lua",
+  },
+  completion = {
+    list = {
+      selection = {
+        preselect = true,
+      },
     },
-	completion = {
-		list = {
-			selection = {
-				preselect = true,
-			},
-		},
-		ghost_text = { enabled = false }, -- Disable to avoid conflict with copilot
-		documentation = {
-			auto_show = true,
-			auto_show_delay_ms = 200,
-		},
-		menu = {
-			draw = {
-				components = {
-					kind_icon = {
-						ellipsis = false,
-						text = function(ctx)
-							local kind_icon, _, _ = require("mini.icons").get("lsp", ctx
-								.kind)
-							return kind_icon
-						end,
-						-- Optionally, you may also use the highlights from mini.icons
-						highlight = function(ctx)
-							local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
-							return hl
-						end,
-					},
-				},
-			},
-		},
-	},
+    ghost_text = { enabled = false }, -- Disable to avoid conflict with copilot
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 200,
+    },
+    menu = {
+      draw = {
+        components = {
+          kind_icon = {
+            ellipsis = false,
+            text = function(ctx)
+              local kind_icon, _, _ = require("mini.icons").get("lsp", ctx.kind)
+              return kind_icon
+            end,
+            -- Optionally, you may also use the highlights from mini.icons
+            highlight = function(ctx)
+              local _, hl, _ = require("mini.icons").get("lsp", ctx.kind)
+              return hl
+            end,
+          },
+        },
+      },
+    },
+  },
 
-	snippets = { preset = "luasnip" },
+  snippets = { preset = "luasnip" },
 
-	sources = {
-		default = {
-			"lazydev",
-			"lsp",
-			"snippets",
-			"path",
-		},
-		per_filetype = {
-			sql = { "snippets", "dadbod", "buffer" },
-		},
-		providers = {
-			lsp = {
-				name = "LSP",
-				module = "blink.cmp.sources.lsp",
-			},
-			lazydev = {
-				name = "LazyDev",
-				module = "lazydev.integrations.blink",
-				-- make lazydev completions top priority (see `:h blink.cmp`)
-				score_offset = 100,
-			},
-		},
-	},
+  sources = {
+    default = {
+      "lazydev",
+      "lsp",
+      "snippets",
+      "path",
+    },
+    per_filetype = {
+      sql = { "snippets", "dadbod", "buffer" },
+    },
+    providers = {
+      lsp = {
+        name = "LSP",
+        module = "blink.cmp.sources.lsp",
+      },
+      lazydev = {
+        name = "LazyDev",
+        module = "lazydev.integrations.blink",
+        -- make lazydev completions top priority (see `:h blink.cmp`)
+        score_offset = 100,
+      },
+    },
+  },
 }
 
 -----------------------------------------
@@ -100,17 +99,17 @@ local opts = {
 -----------------------------------------
 
 local function to_pascal_case(file_name)
-	local parts = vim.split(file_name, "[-.]")
-	local pascal_case_parts = {}
+  local parts = vim.split(file_name, "[-.]")
+  local pascal_case_parts = {}
 
-	for _, part in ipairs(parts) do
-		if part ~= "ts" then
-			local part_cased = part:gsub("^%l", string.upper)
-			table.insert(pascal_case_parts, part_cased)
-		end
-	end
-	local pascal_name = table.concat(pascal_case_parts, "")
-	return pascal_name
+  for _, part in ipairs(parts) do
+    if part ~= "ts" then
+      local part_cased = part:gsub("^%l", string.upper)
+      table.insert(pascal_case_parts, part_cased)
+    end
+  end
+  local pascal_name = table.concat(pascal_case_parts, "")
+  return pascal_name
 end
 
 local ls = require("luasnip")
@@ -122,10 +121,10 @@ local fmt = require("luasnip.extras.fmt").fmt
 local rep = require("luasnip.extras").rep
 
 ls.add_snippets("typescript", {
-	s(
-		"inject",
-		fmt(
-			[[
+  s(
+    "inject",
+    fmt(
+      [[
 			import {{ Injectable }} from '@nestjs/common';
 
 			@Injectable()
@@ -133,20 +132,20 @@ ls.add_snippets("typescript", {
 				constructor() {{}}
 			}}
 			]],
-			{
-				f(function(_, snip)
-					return to_pascal_case(vim.fn.expand("%:t"))
-				end, {}),
-			}
-		)
-	),
+      {
+        f(function(_, snip)
+          return to_pascal_case(vim.fn.expand("%:t"))
+        end, {}),
+      }
+    )
+  ),
 })
 
 ls.add_snippets("typescript", {
-	s(
-		"controller",
-		fmt(
-			[[
+  s(
+    "controller",
+    fmt(
+      [[
 			import {{ Controller }} from '@nestjs/common';
 			import {{TsRestHandler, tsRestHandler}} from "@ts-rest/nest";
 
@@ -162,78 +161,182 @@ ls.add_snippets("typescript", {
 				}}
 			}}
 			]],
-			{
-				f(function(_, snip)
-					return to_pascal_case(vim.fn.expand("%:t:r"))
-				end, {}),
-				i(1, "contract"), -- First insertion, user types here
-				rep(1), -- Repeat the value entered in the first insertion
-			}
-		)
-	),
+      {
+        f(function(_, snip)
+          return to_pascal_case(vim.fn.expand("%:t:r"))
+        end, {}),
+        i(1, "contract"), -- First insertion, user types here
+        rep(1), -- Repeat the value entered in the first insertion
+      }
+    )
+  ),
 })
 
 ls.add_snippets("typescript", {
-	-- Arrow function snippet
-	s(
-		"cb",
-		fmt(
-			[[
+  -- Arrow function snippet
+  s(
+    "cb",
+    fmt(
+      [[
 () => {{
   {}
 }}
 ]],
-			{
-				i(1),
-			}
-		)
-	),
+      {
+        i(1),
+      }
+    )
+  ),
 
-	s(
-		"acb",
-		fmt(
-			[[
+  s(
+    "acb",
+    fmt(
+      [[
 async () => {{
   {}
 }}
 ]],
-			{
-				i(1),
-			}
-		)
-	),
+      {
+        i(1),
+      }
+    )
+  ),
 
-	-- Async it block snippet
-	s(
-		"tit",
-		fmt(
-			[[
+  -- Async it block snippet
+  s(
+    "tit",
+    fmt(
+      [[
 it('{}', async () => {{
   {}
 }});
 ]],
-			{
-				i(1, "test description"),
-				i(2),
-			}
-		)
-	),
+      {
+        i(1, "test description"),
+        i(2),
+      }
+    )
+  ),
 
-	-- Describe block snippet
-	s(
-		"tde",
-		fmt(
-			[[
+  -- Describe block snippet
+  s(
+    "tde",
+    fmt(
+      [[
 describe('{}', () => {{
   {}
 }});
 ]],
-			{
-				i(1, "test suite description"),
-				i(2),
-			}
-		)
-	),
+      {
+        i(1, "test suite description"),
+        i(2),
+      }
+    )
+  ),
+
+  -- NestJS integration test boilerplate
+  s(
+    "integration",
+    fmt(
+      [[
+import {{ Test, TestingModule }} from '@nestjs/testing';
+import {{ INestApplication }} from '@nestjs/common';
+import {{ {} }} from './{}';
+import {{ {} }} from './{}';
+
+describe('{}', () => {{
+  let app: INestApplication;
+  let moduleRef: TestingModule;
+  let {}: {};
+
+  beforeAll(async () => {{
+    moduleRef = await Test.createTestingModule({{
+      imports: [{}],
+    }}).compile();
+
+    app = moduleRef.createNestApplication();
+    await app.init();
+
+    {} = moduleRef.get({});
+  }});
+
+  beforeEach(() => {{}});
+
+  afterAll(async () => {{
+    await app.close();
+  }});
+
+  describe('{}', () => {{
+    {}
+  }});
+}});
+]],
+      {
+        -- Module name (PascalCase)
+        f(function(_, snip)
+          local dir = vim.fn.expand("%:p:h")
+          local module_file = vim.fn.glob(dir .. "/*.module.ts")
+          if module_file ~= "" then
+            local basename = vim.fn.fnamemodify(module_file, ":t:r")
+            return to_pascal_case(basename)
+          end
+          return "MyModule"
+        end, {}),
+        -- Module file path (without .ts extension)
+        f(function(_, snip)
+          local dir = vim.fn.expand("%:p:h")
+          local module_file = vim.fn.glob(dir .. "/*.module.ts")
+          if module_file ~= "" then
+            return vim.fn.fnamemodify(module_file, ":t:r")
+          end
+          return "my.module"
+        end, {}),
+        -- Service name (PascalCase)
+        f(function(_, snip)
+          return to_pascal_case(vim.fn.expand("%:t:r:r"))
+        end, {}),
+        -- Service file path (without .ts extension)
+        f(function(_, snip)
+          local current_file = vim.fn.expand("%:t")
+          return current_file:gsub("%.spec%.ts$", "")
+        end, {}),
+        -- describe block name (uses service name)
+        f(function(_, snip)
+          return to_pascal_case(vim.fn.expand("%:t:r:r"))
+        end, {}),
+        -- service variable name (camelCase)
+        f(function(_, snip)
+          local pascal = to_pascal_case(vim.fn.expand("%:t:r:r"))
+          return pascal:gsub("^%u", string.lower)
+        end, {}),
+        -- Service type (PascalCase)
+        f(function(_, snip)
+          return to_pascal_case(vim.fn.expand("%:t:r:r"))
+        end, {}),
+        -- Module name in imports array
+        f(function(_, snip)
+          local dir = vim.fn.expand("%:p:h")
+          local module_file = vim.fn.glob(dir .. "/*.module.ts")
+          if module_file ~= "" then
+            local basename = vim.fn.fnamemodify(module_file, ":t:r")
+            return to_pascal_case(basename)
+          end
+          return "MyModule"
+        end, {}),
+        -- service variable assignment
+        f(function(_, snip)
+          local pascal = to_pascal_case(vim.fn.expand("%:t:r:r"))
+          return pascal:gsub("^%u", string.lower)
+        end, {}),
+        -- Service type in moduleRef.get()
+        f(function(_, snip)
+          return to_pascal_case(vim.fn.expand("%:t:r:r"))
+        end, {}),
+        i(1, ""),
+        i(0),
+      }
+    )
+  ),
 })
 
 require("blink.cmp").setup(opts)
