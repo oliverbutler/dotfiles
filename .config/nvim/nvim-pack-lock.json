@@ -80,6 +80,10 @@
       "rev": "6b69f4cf206ed8560669446a0310937d88e1c871",
       "src": "https://github.com/echasnovski/mini.sessions"
     },
+    "multicursor.nvim": {
+      "rev": "3b5c79c4eec52ff18ce69923156422c298b9ae5d",
+      "src": "https://github.com/jake-stewart/multicursor.nvim"
+    },
     "neotest": {
       "rev": "deadfb1af5ce458742671ad3a013acb9a6b41178",
       "src": "https://github.com/nvim-neotest/neotest"
@@ -111,6 +115,22 @@
     "nvim": {
       "rev": "beaf41a30c26fd7d6c386d383155cbd65dd554cd",
       "src": "https://github.com/catppuccin/nvim"
+    },
+    "nvim-dap": {
+      "rev": "085386b9359ddf8d76ad89b98973b8e332dc5ba3",
+      "src": "https://github.com/mfussenegger/nvim-dap"
+    },
+    "nvim-dap-go": {
+      "rev": "b4421153ead5d726603b02743ea40cf26a51ed5f",
+      "src": "https://github.com/leoluz/nvim-dap-go"
+    },
+    "nvim-dap-ui": {
+      "rev": "cf91d5e2d07c72903d052f5207511bf7ecdb7122",
+      "src": "https://github.com/rcarriga/nvim-dap-ui"
+    },
+    "nvim-dap-virtual-text": {
+      "rev": "fbdb48c2ed45f4a8293d0d483f7730d24467ccb6",
+      "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-nio": {
       "rev": "21f5324bfac14e22ba26553caf69ec76ae8a7662",
@@ -163,6 +183,10 @@
     "tree-sitter-templ": {
       "rev": "1c6db04effbcd7773c826bded9783cbc3061bd55",
       "src": "https://github.com/vrischmann/tree-sitter-templ"
+    },
+    "trouble.nvim": {
+      "rev": "bd67efe408d4816e25e8491cc5ad4088e708a69a",
+      "src": "https://github.com/folke/trouble.nvim"
     },
     "undotree": {
       "rev": "178d19e00a643f825ea11d581b1684745d0c4eda",

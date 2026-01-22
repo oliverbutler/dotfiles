@@ -26,7 +26,7 @@ vim.opt.wrap = false -- Disable line wrapping
 vim.opt.cursorline = true -- Highlight the current line
 vim.opt.scrolloff = 8 -- Keep 8 lines above and below the cursor
 vim.opt.inccommand = "nosplit" -- Shows the effects of a command incrementally in the buffer
-vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir' -- Directory for undo files
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- Directory for undo files
 vim.opt.undofile = true -- Enable persistent undo
 vim.opt.completeopt = { "menuone", "popup", "noinsert" } -- Options for completion menu
 vim.opt.winborder = "rounded" -- Use rounded borders for windows
@@ -62,6 +62,9 @@ require("plugins.copilot")
 require("plugins.grapple")
 require("plugins.opencode")
 require("plugins.todo-comments")
+require("plugins.trouble")
+require("plugins.multicursor")
+require("plugins.debugger")
 
 require("lsp")
 require("autocmds")

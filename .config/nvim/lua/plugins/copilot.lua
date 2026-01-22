@@ -49,6 +49,26 @@ require("copilot").setup({
 })
 
 -----------------------------------------
+-- Highlight Configuration
+-----------------------------------------
+
+-- Make Copilot suggestions more transparent using Catppuccin colors
+-- This needs to be set after the colorscheme loads, so we use vim.schedule
+vim.schedule(function()
+  local colors = require("catppuccin.palettes").get_palette()
+  
+  -- Use overlay0 (visible but clearly not actual code) for suggestions
+  vim.api.nvim_set_hl(0, "CopilotSuggestion", {
+    fg = colors.overlay0,
+    italic = true,
+  })
+  
+  vim.api.nvim_set_hl(0, "CopilotAnnotation", {
+    fg = colors.overlay0,
+  })
+end)
+
+-----------------------------------------
 -- Keymaps
 -----------------------------------------
 
