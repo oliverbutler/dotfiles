@@ -56,10 +56,17 @@ vim.diagnostic.config({
 	},
 })
 
--- Register MDX filetype
+-- Register custom filetypes
 vim.filetype.add({
 	extension = {
 		mdx = "mdx",
+		work = "gowork",      -- go.work files
+		tmpl = "gotmpl",      -- Go templates
+		tfvars = "terraform-vars", -- Terraform variable files
+	},
+	pattern = {
+		[".*%.jsx"] = "javascriptreact", -- Use javascriptreact instead of javascript.jsx
+		[".*%.tsx"] = "typescriptreact", -- Use typescriptreact instead of typescript.tsx
 	},
 })
 

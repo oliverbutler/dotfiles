@@ -202,6 +202,56 @@ async () => {{
     )
   ),
 
+  -- BmoError snippet with auto-detected function name
+  s(
+    "ber",
+    fmt(
+      [[
+throw new BmoError('{} > {}', {{
+  data: {{
+    {}
+  }}
+}})
+]],
+      {
+        f(function()
+          -- Get the current buffer content
+          local bufnr = vim.api.nvim_get_current_buf()
+          local cursor = vim.api.nvim_win_get_cursor(0)
+          local current_line = cursor[1]
+
+          -- Search backwards for function/method name
+          for line_num = current_line - 1, math.max(1, current_line - 50), -1 do
+            local line = vim.api.nvim_buf_get_lines(bufnr, line_num - 1, line_num, false)[1]
+            if line then
+              -- Match async method names like: async methodName(
+              local method_match = line:match("async%s+(%w+)%s*%(")
+              if method_match then
+                return method_match
+              end
+
+              -- Match regular method names like: methodName(
+              method_match = line:match("^%s*(%w+)%s*%(")
+              if method_match and method_match ~= "if" and method_match ~= "for" and method_match ~= "while" then
+                return method_match
+              end
+
+              -- Match arrow functions assigned to variables: const name = async (
+              local arrow_match = line:match("const%s+(%w+)%s*=%s*async")
+              if arrow_match then
+                return arrow_match
+              end
+            end
+          end
+
+          return "unknownFunction"
+        end, {}),
+        i(1, "error description"),
+        i(2),
+      }
+    )
+  ),
+
   -- Async it block snippet
   s(
     "tit",
