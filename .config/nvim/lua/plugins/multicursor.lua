@@ -63,19 +63,19 @@ vim.keymap.set({ "n", "x" }, "<leader>S", function()
 end, { desc = "Skip previous match" })
 
 -- Add or skip cursor above/below the main cursor
-vim.keymap.set({ "n", "x" }, "<up>", function()
+vim.keymap.set({ "n", "x" }, "<C-up>", function()
 	mc.lineAddCursor(-1)
 end, { desc = "Add cursor above" })
 
-vim.keymap.set({ "n", "x" }, "<down>", function()
+vim.keymap.set({ "n", "x" }, "<C-down>", function()
 	mc.lineAddCursor(1)
 end, { desc = "Add cursor below" })
 
-vim.keymap.set({ "n", "x" }, "<leader><up>", function()
+vim.keymap.set({ "n", "x" }, "<C-S-up>", function()
 	mc.lineSkipCursor(-1)
 end, { desc = "Skip line above" })
 
-vim.keymap.set({ "n", "x" }, "<leader><down>", function()
+vim.keymap.set({ "n", "x" }, "<C-S-down>", function()
 	mc.lineSkipCursor(1)
 end, { desc = "Skip line below" })
 
