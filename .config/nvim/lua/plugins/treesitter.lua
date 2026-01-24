@@ -19,43 +19,59 @@ vim.fn.mkdir(parser_install_dir, "p")
 vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
 
 require("nvim-treesitter").setup({
-	parser_install_dir = parser_install_dir,
-	highlight = {
-		enable = true,
-		additional_vim_regex_highlighting = false,
-	},
-	indent = {
-		enable = true,
-	},
-	incremental_selection = {
-		enable = true,
-		keymaps = {
-			init_selection = "<CR>",
-			node_incremental = "<CR>",
-			scope_incremental = "<TAB>",
-			node_decremental = "<S-TAB>",
-		},
-	},
+  parser_install_dir = parser_install_dir,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = true,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "<CR>",
+      node_incremental = "<CR>",
+      scope_incremental = "<TAB>",
+      node_decremental = "<S-TAB>",
+    },
+  },
 })
 
--- Install parsers (no-op if already installed)
-require("nvim-treesitter").install({
-  "json",
-  "javascript",
-  "typescript",
-  "tsx",
-  "yaml",
-  "html",
-  "css",
-  "markdown",
-  "markdown_inline",
-  "bash",
-  "lua",
-  "vim",
-  "vimdoc",
-  "go",
-  "rust",
-})
+-- Install parsers asynchronously (no-op if already installed)
+vim.defer_fn(function()
+  require("nvim-treesitter").install({
+    "json",
+    "javascript",
+    "typescript",
+    "tsx",
+    "yaml",
+    "html",
+    "css",
+    "markdown",
+    "markdown_inline",
+    "bash",
+    "lua",
+    "vim",
+    "vimdoc",
+    "go",
+    "rust",
+  })
+end, 0)
 
 -- Register MDX as markdown
 vim.treesitter.language.register("markdown", "mdx")
+
+-- Fix: Force highlight on FileType event (fixes race condition)
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function()
+    -- Small delay to ensure parser is loaded
+    vim.defer_fn(function()
+      if vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
+        return -- Already attached
+      end
+      -- Try to attach highlighter
+      pcall(vim.treesitter.start)
+    end, 50)
+  end,
+})
