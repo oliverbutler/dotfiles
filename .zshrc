@@ -11,6 +11,7 @@ export PATH="/Users/olly/.cache/.bun/bin:$PATH"
 export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 # Unix
 export PATH="/home/olly/.local/share/bob/nvim-bin:$PATH"
+export PATH="/home/olly/.fnm:$PATH"
 
 
 # Set config homes
