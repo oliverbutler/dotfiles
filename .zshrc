@@ -210,7 +210,7 @@ export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init zsh)"
-eval "$(fnm env --use-on-cd --shell zsh --log-level=quiet)"
+eval "$(fnm env --use-on-cd --log-level=quiet)"
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/olly/.lmstudio/bin"
