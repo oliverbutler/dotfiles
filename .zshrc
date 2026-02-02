@@ -1,5 +1,6 @@
 # Add Homebrew's executable directory to the front of the PATH
 export PATH=/usr/local/bin:$PATH
+# MacOS
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=/Users/olly/.local/share/bob/nvim-bin:$PATH
 export PATH=/Users/olly/go/bin:$PATH
@@ -8,6 +9,8 @@ export PATH=/Users/olly/.local/bin:$PATH
 export PATH=/opt/homebrew/opt/libpq/bin:$PATH
 export PATH="/Users/olly/.cache/.bun/bin:$PATH"
 export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
+# Unix
+export PATH="/home/olly/.local/share/bob/nvim-bin:$PATH"
 
 
 # Set config homes
