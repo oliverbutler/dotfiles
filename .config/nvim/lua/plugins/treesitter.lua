@@ -13,29 +13,9 @@ vim.pack.add({
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
 
--- Set parser install directory before setup
-local parser_install_dir = vim.fn.stdpath("data") .. "/site/parser"
-vim.fn.mkdir(parser_install_dir, "p")
-vim.opt.runtimepath:append(vim.fn.stdpath("data") .. "/site")
-
+-- Setup (only install_dir is needed now)
 require("nvim-treesitter").setup({
-  parser_install_dir = parser_install_dir,
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = false,
-  },
-  indent = {
-    enable = true,
-  },
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = "<CR>",
-      node_incremental = "<CR>",
-      scope_incremental = "<TAB>",
-      node_decremental = "<S-TAB>",
-    },
-  },
+  install_dir = vim.fn.stdpath("data") .. "/site",
 })
 
 -- Install parsers asynchronously (no-op if already installed)
@@ -62,16 +42,9 @@ end, 0)
 -- Register MDX as markdown
 vim.treesitter.language.register("markdown", "mdx")
 
--- Fix: Force highlight on FileType event (fixes race condition)
+-- Enable treesitter highlighting for all filetypes with a parser
 vim.api.nvim_create_autocmd("FileType", {
-  callback = function()
-    -- Small delay to ensure parser is loaded
-    vim.defer_fn(function()
-      if vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
-        return -- Already attached
-      end
-      -- Try to attach highlighter
-      pcall(vim.treesitter.start)
-    end, 50)
+  callback = function(args)
+    pcall(vim.treesitter.start, args.buf)
   end,
 })

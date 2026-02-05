@@ -1,8 +1,5 @@
--- GitHub Copilot integration (pure Lua)
-
 vim.pack.add({
   { src = "https://github.com/zbirenbaum/copilot.lua" },
-  { src = "https://github.com/copilotlsp-nvim/copilot-lsp" }, -- NES functionality
 })
 
 -----------------------------------------
@@ -21,7 +18,7 @@ require("copilot").setup({
     auto_refresh = true,
   },
   suggestion = {
-    enabled = true,
+    enabled = false, -- temp disable while plauing with SweepAI
     auto_trigger = true,
     keymap = {
       accept = "<C-a>",
@@ -56,13 +53,13 @@ require("copilot").setup({
 -- This needs to be set after the colorscheme loads, so we use vim.schedule
 vim.schedule(function()
   local colors = require("catppuccin.palettes").get_palette()
-  
+
   -- Use overlay0 (visible but clearly not actual code) for suggestions
   vim.api.nvim_set_hl(0, "CopilotSuggestion", {
     fg = colors.overlay0,
     italic = true,
   })
-  
+
   vim.api.nvim_set_hl(0, "CopilotAnnotation", {
     fg = colors.overlay0,
   })

@@ -217,88 +217,146 @@ end
 -- Pre-compile the result parsing pattern
 local RESULT_PATTERN = "([^:]+):([^:]+):([^:]+):(.+)"
 
+-- Detect which filetypes exist in the current working directory (up to 3 levels deep)
+local function detect_filetypes_in_cwd(directory)
+	local dir = directory or "."
+	local detected = {}
+
+	-- Map file extensions to our internal filetypes
+	local extension_map = {
+		ts = "typescript",
+		tsx = "typescript",
+		js = "javascript",
+		jsx = "javascript",
+		go = "go",
+	}
+
+	-- Use find to scan up to 3 levels deep for relevant files
+	local result = vim.system({
+		"find",
+		dir,
+		"-maxdepth", "3",
+		"-type", "f",
+		"(",
+		"-name", "*.ts",
+		"-o", "-name", "*.tsx",
+		"-o", "-name", "*.js",
+		"-o", "-name", "*.jsx",
+		"-o", "-name", "*.go",
+		")",
+	}, { text = true }):wait()
+
+	if result.code == 0 and result.stdout then
+		for line in result.stdout:gmatch("[^\r\n]+") do
+			-- Extract extension from filename
+			local ext = line:match("%.([^.]+)$")
+			if ext and extension_map[ext] then
+				detected[extension_map[ext]] = true
+			end
+		end
+	end
+
+	-- Convert to array
+	local filetypes = {}
+	for ft, _ in pairs(detected) do
+		table.insert(filetypes, ft)
+	end
+
+	-- If no filetypes detected, default to typescript
+	if #filetypes == 0 then
+		filetypes = { "typescript" }
+	end
+
+	return filetypes
+end
+
 ---@param params {type: string, also_search_file_name: boolean, directory: string}
 ---@return SymbolSearchReturn
 local function get_symbol_results(params)
-  local search_type = params.type
-  local include_file_name_in_search = params.also_search_file_name
-  local directory = params.directory or "."
+	local search_type = params.type
+	local include_file_name_in_search = params.also_search_file_name
+	local directory = params.directory or "."
 
-  -- Detect current filetype
-  local current_filetype = vim.bo.filetype
-  -- Default to typescript if filetype not supported
-  local filetype = valid_search_types[current_filetype] and current_filetype or "typescript"
+	-- Detect all filetypes in the current working directory
+	local filetypes = detect_filetypes_in_cwd(directory)
 
-  -- Validate search type for the current filetype
-  assert(
-    valid_search_types[filetype] and valid_search_types[filetype][search_type],
-    string.format("Invalid search type '%s' for filetype '%s'", search_type, filetype)
-  )
+	---@type SymbolSearchResult[]
+	local results = {}
+	-- Track unique locations using file:line:col as key
+	local seen_locations = {}
 
-  -- Get patterns for current filetype
-  local patterns = ripgrep_line_patterns[filetype][search_type]
+	local start_time = vim.loop.hrtime()
 
-  local title = string.format(
-    "Search %s symbols %s",
-    valid_search_types[filetype][search_type],
-    include_file_name_in_search and " (include file name)" or ""
-  )
+	-- Search across all detected filetypes
+	for _, filetype in ipairs(filetypes) do
+		-- Skip if this filetype doesn't support the requested search type
+		if not (valid_search_types[filetype] and valid_search_types[filetype][search_type]) then
+			goto next_filetype
+		end
 
-  ---@type SymbolSearchResult[]
-  local results = {}
-  -- Track unique locations using file:line:col as key
-  local seen_locations = {}
+		-- Get patterns for this filetype
+		local patterns = ripgrep_line_patterns[filetype][search_type]
 
-  local start_time = vim.loop.hrtime()
+		-- Process results after getting them all
+		for _, pattern in ipairs(patterns) do
+			local lines = stream_ripgrep(pattern, directory, filetype)
 
-  -- Process results after getting them all
-  for _, pattern in ipairs(patterns) do
-    local lines = stream_ripgrep(pattern, directory, filetype)
+			for _, line in ipairs(lines) do
+				local file, lnum, col, text = string.match(line, RESULT_PATTERN)
+				if not file then
+					goto continue
+				end
 
-    for _, line in ipairs(lines) do
-      local file, lnum, col, text = string.match(line, RESULT_PATTERN)
-      if not file then
-        goto continue
-      end
+				local symbol = get_first_symbol(text, filetype)
+				if not symbol then
+					goto continue
+				end
 
-      local symbol = get_first_symbol(text, filetype)
-      if not symbol then
-        goto continue
-      end
+				-- Create a unique location key
+				local location_key = string.format("%s:%s:%s", file, lnum, col)
 
-      -- Create a unique location key
-      local location_key = string.format("%s:%s:%s", file, lnum, col)
+				-- Only add if we haven't seen this exact location before
+				if not seen_locations[location_key] then
+					seen_locations[location_key] = true
+					results[#results + 1] = {
+						symbol = symbol,
+						file = file,
+						lnum = tonumber(lnum),
+						col = tonumber(col),
+						text = text,
+					}
+				end
 
-      -- Only add if we haven't seen this exact location before
-      if not seen_locations[location_key] then
-        seen_locations[location_key] = true
-        results[#results + 1] = {
-          symbol = symbol,
-          file = file,
-          lnum = tonumber(lnum),
-          col = tonumber(col),
-          text = text,
-        }
-      end
+				::continue::
+			end
+		end
 
-      ::continue::
-    end
-  end
+		::next_filetype::
+	end
 
-  local end_time = vim.loop.hrtime()
-  local total_duration_ms = (end_time - start_time) / 1e6
-  local total_matches = vim.tbl_count(seen_locations)
+	local end_time = vim.loop.hrtime()
+	local total_duration_ms = (end_time - start_time) / 1e6
+	local total_matches = vim.tbl_count(seen_locations)
 
-  pcall(
-    vim.notify,
-    string.format("Found %d unique locations in %.0fms", total_matches, total_duration_ms),
-    vim.log.levels.INFO
-  )
+	-- Build title showing which filetypes were searched
+	local filetype_names = table.concat(filetypes, ", ")
+	local title = string.format(
+		"Search %s symbols across %s%s",
+		search_type,
+		filetype_names,
+		include_file_name_in_search and " (include file name)" or ""
+	)
 
-  return {
-    title = title,
-    results = results,
-  }
+	pcall(
+		vim.notify,
+		string.format("Found %d unique locations in %.0fms across %s", total_matches, total_duration_ms, filetype_names),
+		vim.log.levels.INFO
+	)
+
+	return {
+		title = title,
+		results = results,
+	}
 end
 
 return {
