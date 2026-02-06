@@ -18,7 +18,7 @@ require("copilot").setup({
     auto_refresh = true,
   },
   suggestion = {
-    enabled = false, -- temp disable while plauing with SweepAI
+    enabled = true,
     auto_trigger = true,
     keymap = {
       accept = "<C-a>",
