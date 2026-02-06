@@ -5,16 +5,21 @@
     "bindings": {
       "space g l": [
         "task::Spawn",
-        { "task_name": "lazygit", "reveal_target": "center" }
+        { "task_name": "lazygit", "reveal_target": "center" },
       ],
-      "space g ;": [
+      "space ;": [
         "task::Spawn",
-        { "task_name": "lazygit", "reveal_target": "center" }
+        { "task_name": "Television File Finder", "reveal_target": "center" },
+      ],
+      "space '": [
+        "task::Spawn",
+        { "task_name": "Television Grep", "reveal_target": "center" },
       ],
       "space g d": [
         "task::Spawn",
-        { "task_name": "lazydocker", "reveal_target": "center" }
+        { "task_name": "lazydocker", "reveal_target": "center" },
       ],
+
       "space [": "pane::GoBack",
       "space ]": "pane::GoForward",
       "space t r": "task::Spawn",
@@ -24,10 +29,18 @@
       "space r n ": "editor::Rename",
       "space t o": [
         "task::Spawn",
-        { "task_name": "tmux", "reveal_target": "center" }
+        { "task_name": "tmux", "reveal_target": "center" },
       ],
-      "space b o": "pane::CloseInactiveItems" // close other
-    }
+      "space b o": "pane::CloseOtherItems", // close other
+      "space g b": "git::Blame",
+    },
+  },
+  {
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "s": "vim::PushSneak",
+      "shift-s": "vim::PushSneakBackward",
+    },
   },
   {
     // General
@@ -37,7 +50,7 @@
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-j": "workspace::ActivatePaneDown",
       "cmd-,": "workspace::ToggleBottomDock",
-      "cmd-l": "workspace::ToggleRightDock"
-    }
-  }
+      "cmd-l": "workspace::ToggleRightDock",
+    },
+  },
 ]

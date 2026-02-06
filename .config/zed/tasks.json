@@ -10,7 +10,7 @@
     "env": {},
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always"
+    "reveal": "always",
   },
   {
     "label": "lazygit_home",
@@ -20,7 +20,7 @@
     "env": {},
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always"
+    "reveal": "always",
   },
   {
     "label": "lazydocker",
@@ -30,7 +30,7 @@
     "env": {},
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always"
+    "reveal": "always",
   },
   {
     "label": "tmux",
@@ -40,6 +40,20 @@
     "env": {},
     "use_new_terminal": true,
     "allow_concurrent_runs": false,
-    "reveal": "always"
-  }
+    "reveal": "always",
+  },
+  {
+    "label": "Television File Finder",
+    "command": "zed \"$(tv files)\"",
+    "hide": "always",
+    "allow_concurrent_runs": true,
+    "use_new_terminal": true,
+  },
+  {
+    "label": "Television Grep",
+    "command": "zed \"$(tv text)\"",
+    "hide": "always",
+    "allow_concurrent_runs": true,
+    "use_new_terminal": true,
+  },
 ]

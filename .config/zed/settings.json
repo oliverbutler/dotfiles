@@ -7,7 +7,40 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "search": {
+    "regex": false
+  },
+  "buffer_font_family": ".ZedMono",
+  "ssh_connections": [
+    {
+      "host": "maple",
+      "args": [],
+      "projects": []
+    },
+    {
+      "host": "10.90.0.2",
+      "username": "olly",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/olly/projects/homelab"
+          ]
+        }
+      ],
+      "nickname": "agent"
+    }
+  ],
+  "icon_theme": "Catppuccin Mocha",
+  "git": {
+    "disable_git": true,
+  },
   "edit_predictions": {
+    "disabled_globs": [],
+    "provider": "zed",
+    "sweep": {
+      "privacy_mode": true,
+    },
     "mode": "eager",
   },
   "preview_tabs": {
@@ -15,6 +48,11 @@
   },
   "vertical_scroll_margin": 20.0,
   "agent": {
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "claude-sonnet-4.5"
+    },
+    "use_modifier_to_send": true,
     "play_sound_when_agent_done": true,
     "always_allow_tool_actions": true,
     "model_parameters": [],
@@ -24,7 +62,6 @@
     },
   },
   "features": {
-    "edit_prediction_provider": "zed",
     "experimental_edit_prediction_context_retrieval": true,
   },
   "vim_mode": true,
