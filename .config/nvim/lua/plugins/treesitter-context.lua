@@ -1,12 +1,12 @@
 -- Treesitter Context - Shows sticky context at the top of the buffer
 
 vim.pack.add({
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter-context" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter-context" },
 })
 
 require("treesitter-context").setup({
-	enable = true,
-	max_lines = 3,
+  enable = true,
+  max_lines = 3,
 })
 
 -----------------------------------------
@@ -14,5 +14,5 @@ require("treesitter-context").setup({
 -----------------------------------------
 
 vim.keymap.set("n", "[c", function()
-	require("treesitter-context").go_to_context(vim.v.count1)
+  require("treesitter-context").go_to_context(vim.v.count1)
 end, { desc = "Go to context" })
