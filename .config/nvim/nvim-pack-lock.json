@@ -16,14 +16,6 @@
       "rev": "4f494c6e124acbe31a8f5d58effa0c14aa38a6d5",
       "src": "https://github.com/Kaiser-Yang/blink-cmp-avante"
     },
-    "blink-edit": {
-      "rev": "1659bb6f0327f59c9642aa54502c8ae2b88f3124",
-      "src": "https://git.local.oliverbutler.uk/olly/blink-edit"
-    },
-    "blink-edit.nvim": {
-      "rev": "220f5777f5597f6d7868981d6ff9b6218247fec4",
-      "src": "https://github.com/oliverbutler/blink-edit.nvim"
-    },
     "blink.cmp": {
       "rev": "4b18c32adef2898f95cdef6192cbd5796c1a332d",
       "src": "https://github.com/saghen/blink.cmp"
@@ -76,14 +68,6 @@
     "lualine.nvim": {
       "rev": "47f91c416daef12db467145e16bed5bbfe00add8",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
-    },
-    "maple-edit": {
-      "rev": "1659bb6f0327f59c9642aa54502c8ae2b88f3124",
-      "src": "https://git.local.oliverbutler.uk/olly/maple-edit"
-    },
-    "maple-tab": {
-      "rev": "1659bb6f0327f59c9642aa54502c8ae2b88f3124",
-      "src": "https://git.local.oliverbutler.uk/olly/maple-tab"
     },
     "mason.nvim": {
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
@@ -184,6 +168,10 @@
     "nvim-ufo": {
       "rev": "ab3eb124062422d276fae49e0dd63b3ad1062cfc",
       "src": "https://github.com/kevinhwang91/nvim-ufo"
+    },
+    "obsidian.nvim": {
+      "rev": "8ab5bb9b58edafce994f8c8e709d82c37e3257e0",
+      "src": "https://github.com/obsidian-nvim/obsidian.nvim"
     },
     "opencode.nvim": {
       "rev": "632ec5879295a3103fa39742b2e3f0639496c96f",
