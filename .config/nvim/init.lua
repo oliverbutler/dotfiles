@@ -64,7 +64,7 @@ require("plugins.todo-comments")
 require("plugins.trouble")
 require("plugins.multicursor")
 require("plugins.debugger")
-require("plugins.maple-tab")
+-- require("plugins.maple-tab")
 require("plugins.codecompanion")
 require("plugins.mini_diff")
 
