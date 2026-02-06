@@ -38,6 +38,7 @@ vim.opt.shortmess:append("F") -- Don't show file info when editing
 require("keymaps")
 
 require("plugins.treesitter")
+require("plugins.treesitter-context")
 require("plugins.blink")
 require("plugins.catppuccin")
 require("plugins.flash")
