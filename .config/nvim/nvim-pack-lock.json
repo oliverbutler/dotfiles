@@ -16,6 +16,14 @@
       "rev": "4f494c6e124acbe31a8f5d58effa0c14aa38a6d5",
       "src": "https://github.com/Kaiser-Yang/blink-cmp-avante"
     },
+    "blink-edit": {
+      "rev": "1659bb6f0327f59c9642aa54502c8ae2b88f3124",
+      "src": "https://git.local.oliverbutler.uk/olly/blink-edit"
+    },
+    "blink-edit.nvim": {
+      "rev": "220f5777f5597f6d7868981d6ff9b6218247fec4",
+      "src": "https://github.com/oliverbutler/blink-edit.nvim"
+    },
     "blink.cmp": {
       "rev": "4b18c32adef2898f95cdef6192cbd5796c1a332d",
       "src": "https://github.com/saghen/blink.cmp"
@@ -24,6 +32,10 @@
       "rev": "26fa57cd0ac019c9bae539e7530f7c9401cbee55",
       "src": "https://github.com/olimorris/codecompanion.nvim",
       "version": "18.0.0 - 19.0.0"
+    },
+    "codediff.nvim": {
+      "rev": "648610cb97c40640bc25e4c1bcbe6bf8c76ff826",
+      "src": "https://github.com/esmuellert/codediff.nvim"
     },
     "conform.nvim": {
       "rev": "c2526f1cde528a66e086ab1668e996d162c75f4f",
@@ -61,6 +73,10 @@
       "rev": "b41ddfc1c39f87f3d1799b99c2f0f1daa524c5f7",
       "src": "https://github.com/cbochs/grapple.nvim"
     },
+    "grug-far.nvim": {
+      "rev": "275dbedc96e61a6b8d1dfb28ba51586ddd233dcf",
+      "src": "https://github.com/MagicDuck/grug-far.nvim"
+    },
     "lazydev.nvim": {
       "rev": "5231c62aa83c2f8dc8e7ba957aa77098cda1257d",
       "src": "https://github.com/folke/lazydev.nvim"
@@ -68,6 +84,14 @@
     "lualine.nvim": {
       "rev": "47f91c416daef12db467145e16bed5bbfe00add8",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
+    },
+    "maple-edit": {
+      "rev": "1659bb6f0327f59c9642aa54502c8ae2b88f3124",
+      "src": "https://git.local.oliverbutler.uk/olly/maple-edit"
+    },
+    "maple-tab": {
+      "rev": "1659bb6f0327f59c9642aa54502c8ae2b88f3124",
+      "src": "https://git.local.oliverbutler.uk/olly/maple-tab"
     },
     "mason.nvim": {
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
@@ -212,6 +236,10 @@
     "vim-sleuth": {
       "rev": "be69bff86754b1aa5adcbb527d7fcd1635a84080",
       "src": "https://github.com/tpope/vim-sleuth"
+    },
+    "vim-tmux-navigator": {
+      "rev": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432",
+      "src": "https://github.com/christoomey/vim-tmux-navigator"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

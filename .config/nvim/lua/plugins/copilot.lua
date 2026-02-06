@@ -13,6 +13,7 @@ vim.g.copilot_nes_debounce = 500
 -----------------------------------------
 
 require("copilot").setup({
+  copilot_node_command = "/users/olly/node-24",
   panel = {
     enabled = true,
     auto_refresh = true,
