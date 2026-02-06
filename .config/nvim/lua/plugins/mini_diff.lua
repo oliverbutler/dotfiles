@@ -25,3 +25,9 @@ end, { desc = "Go to Next Hunk" })
 vim.keymap.set("n", "<leader>gk", function()
   require("mini.diff").goto_hunk("prev", {})()
 end, { desc = "Go to Previous Hunk" })
+
+vim.keymap.set("n", "<leader>gy", function()
+  -- Execute the yank operator with the hunk text object
+  local yank_op = require("mini.diff").operator("yank")
+  vim.api.nvim_feedkeys(yank_op .. "gh", "mx", false)
+end, { desc = "Yank Hunk" })
