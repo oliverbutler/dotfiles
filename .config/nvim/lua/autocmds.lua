@@ -2,6 +2,7 @@ vim.cmd.filetype("plugin indent on") -- Enable filetype detection, plugins, and 
 
 vim.cmd.colorscheme("catppuccin") -- Set colorscheme
 
+-- Highlight yanked text
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank({ higroup = "Search" })
