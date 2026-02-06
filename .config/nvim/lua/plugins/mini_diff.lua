@@ -5,7 +5,9 @@ vim.pack.add({
 })
 
 require("mini.diff").setup({
-  -- Configuration options
+  view = {
+    style = "sign",
+  },
 })
 
 -----------------------------------------
@@ -13,14 +15,13 @@ require("mini.diff").setup({
 -----------------------------------------
 
 vim.keymap.set("n", "<leader>gh", function()
-  require("mini.diff").toggle_overlay()
+  require("mini.diff").toggle_overlay(vim.api.nvim_get_current_buf())
 end, { desc = "Toggle Diff Overlay" })
 
 vim.keymap.set("n", "<leader>gj", function()
-  require("mini.diff").goto_hunk()
+  require("mini.diff").goto_hunk("next", {})()
 end, { desc = "Go to Next Hunk" })
 
 vim.keymap.set("n", "<leader>gk", function()
-  require("mini.diff").goto_hunk({ count = -1 })
+  require("mini.diff").goto_hunk("prev", {})()
 end, { desc = "Go to Previous Hunk" })
-

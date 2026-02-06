@@ -1,7 +1,6 @@
--- Git plugins: gitsigns, blame, diffview
+-- Git plugins:  blame, diffview
 
 vim.pack.add({
-  { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/FabijanZulj/blame.nvim" },
   { src = "https://github.com/sindrets/diffview.nvim" },
 })
@@ -9,9 +8,6 @@ vim.pack.add({
 -----------------------------------------
 -- Configuration
 -----------------------------------------
-
--- Gitsigns
-require("gitsigns").setup({})
 
 -- Blame
 require("blame").setup({})
@@ -25,15 +21,6 @@ vim.opt.fillchars:append({ diff = "╱" })
 -----------------------------------------
 -- Keymaps
 -----------------------------------------
-
--- Gitsigns keymaps
-vim.keymap.set("n", "<leader>gp", function()
-  require("gitsigns").preview_hunk()
-end, { desc = "Preview Git Hunk" })
-
-vim.keymap.set("n", "<leader>gi", function()
-  require("gitsigns").preview_hunk_inline()
-end, { desc = "Preview Git Hunk Inline" })
 
 -- Blame keymap
 vim.keymap.set("n", "<leader>gb", "<cmd>BlameToggle<CR>", { desc = "Toggle Git Blame" })

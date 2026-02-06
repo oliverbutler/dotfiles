@@ -16,7 +16,7 @@ require("codecompanion").setup({
     chat = {
       adapter = {
         name = "copilot",
-        model = "gpt-4.1",
+        model = "claude-sonnet-4.5",
       },
       opts = {
         completion_provider = "blink",
@@ -24,8 +24,8 @@ require("codecompanion").setup({
     },
     inline = {
       adapter = {
-        name = "anthropic",
-        model = "claude-4.5-sonnet",
+        name = "copilot",
+        model = "claude-sonnet-4.5",
       },
       keymaps = {
         accept_change = {
@@ -49,6 +49,9 @@ require("codecompanion").setup({
     diff = {
       enabled = true,
       provider = providers.mini_diff,
+      window = {
+        position = "right",
+      },
     },
   },
   opts = {

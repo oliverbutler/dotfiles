@@ -20,7 +20,7 @@ vim.opt.shiftround = true -- Round indent to multiple of shiftwidth
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" } -- Characters to show for whitespace
 vim.opt.list = true -- Show whitespace characters
 vim.opt.number = true -- Show line numbers
-vim.opt.relativenumber = true -- Show relative line numbers
+vim.opt.relativenumber = false -- Show relative line numbers
 vim.opt.numberwidth = 2 -- Width of the line number column
 vim.opt.wrap = false -- Disable line wrapping
 vim.opt.cursorline = true -- Highlight the current line
